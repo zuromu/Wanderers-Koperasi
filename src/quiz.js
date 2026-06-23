@@ -18,6 +18,16 @@ export const QUIZZES = {
     right: 'Tepat! Simpanan Pokok dibayar SEKALI saat menjadi anggota.',
     wrong: 'Simpanan Pokok dibayar SEKALI di awal. Yang dibayar rutin tiap bulan adalah Simpanan Wajib.',
   },
+  wajib: {
+    q: 'KUIS: Simpanan Wajib dalam koperasi adalah...',
+    options: [
+      { t: 'Tabungan rutin yang dibayar tiap periode oleh setiap anggota', correct: true },
+      { t: 'Bayaran bunga atas pinjaman yang diambil', correct: false },
+      { t: 'Denda keterlambatan pembayaran', correct: false },
+    ],
+    right: 'Tepat! Simpanan Wajib adalah tabungan RUTIN. Makin besar simpananmu, makin besar SHU-mu nanti.',
+    wrong: 'Simpanan Wajib adalah tabungan RUTIN tiap anggota, bukan denda atau bunga. Ini yang membedakannya dari Simpanan Pokok.',
+  },
   modal: {
     q: 'KUIS: Kenapa pinjam modal ke KOPERASI lebih baik daripada ke rentenir?',
     options: [
@@ -37,6 +47,16 @@ export const QUIZZES = {
     ],
     right: 'Tepat! SHU dibagi adil sesuai simpanan dan keaktifan tiap anggota.',
     wrong: 'SHU bukan undian: dibagi sesuai besar simpanan dan jasa/transaksi tiap anggota.',
+  },
+  rat: {
+    q: 'KUIS: RAT (Rapat Anggota Tahunan) menerapkan prinsip...',
+    options: [
+      { t: 'Satu anggota, satu suara, tanpa melihat besar simpanan', correct: true },
+      { t: 'Anggota dengan simpanan terbesar punya suara terbanyak', correct: false },
+      { t: 'Hanya pengurus koperasi yang boleh memberikan suara', correct: false },
+    ],
+    right: 'Tepat! Koperasi demokratis: SATU anggota, SATU suara. Beda dari perusahaan saham yang suaranya proporsional modal.',
+    wrong: 'Koperasi menjunjung demokrasi: satu anggota, satu suara, apapun besar simpanannya. Itulah yang membuatnya berbeda.',
   },
 };
 

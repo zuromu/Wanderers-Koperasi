@@ -8,10 +8,10 @@ import * as Audio from './audio.js';
 
 const CONCEPTS = [
   { key:'pokok', label:'Simpanan Pokok, dibayar sekali saat mendaftar' },
-  { key:null,    label:'Simpanan Wajib, tabungan rutin anggota' },
+  { key:'wajib', label:'Simpanan Wajib, tabungan rutin anggota' },
   { key:'modal', label:'Pinjam Modal, koperasi vs rentenir' },
   { key:'shu',   label:'SHU, bagi hasil sesuai simpanan & keaktifan' },
-  { key:null,    label:'RAT, Rapat Anggota Tahunan, suara tiap anggota' },
+  { key:'rat',   label:'RAT, Rapat Anggota Tahunan, satu anggota satu suara' },
 ];
 
 function mark(key){
