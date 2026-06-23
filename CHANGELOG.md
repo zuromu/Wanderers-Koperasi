@@ -3,6 +3,15 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.25.0], NPC sprites & world polish
+
+### Ditambahkan
+- Warga desa kini tampil sebagai karakter pixel-art penuh (20×30 px: topi berwarna, kepala, badan, kaki), bukan lingkaran polos; 6 varian kostum berbeda menggunakan `generateTexture`.
+- Warga menghadap kiri/kanan sesuai arah gerak (flip sprite horizontal).
+- Bayangan oval di bawah tiap warga; animasi bob idle berbeda tiap warga.
+- Lantai jalan berbatu: garis sendi paving menambah tekstur depth tanpa biaya render ekstra.
+- 3 bayangan awan dengan kecepatan & ukuran berbeda menggantikan awan tunggal (atmosfer lebih hidup).
+
 ## [0.24.0], Recap access & glossary expansion
 
 ### Ditambahkan
