@@ -36,6 +36,8 @@ export class Village extends Phaser.Scene {
 
     this.drawGround();
     this.drawWater();
+    this.drawWaterFoam();
+    this.drawTrees();
     this.makeCloudShadow();
     this.drawBuildings();
     this.makeMarker();
@@ -87,6 +89,55 @@ export class Village extends Phaser.Scene {
     }
   }
 
+  /* -------- Busa tepian air -------- */
+  drawWaterFoam(){
+    const g = this.add.graphics().setDepth(1.1);
+    for (let y=0; y<ROWS; y++){
+      for (let x=0; x<COLS; x++){
+        if (+MAP[y][x] !== 2) continue;
+        if (y>0 && +MAP[y-1][x]!==2)
+          g.fillStyle(C.foam, 0.32).fillRect(x*TILE+3, y*TILE, TILE-6, 3);
+        if (y<ROWS-1 && +MAP[y+1][x]!==2)
+          g.fillStyle(C.foam, 0.32).fillRect(x*TILE+3, y*TILE+TILE-3, TILE-6, 3);
+        if (x>0 && +MAP[y][x-1]!==2)
+          g.fillStyle(C.foam, 0.32).fillRect(x*TILE, y*TILE+3, 3, TILE-6);
+        if (x<COLS-1 && +MAP[y][x+1]!==2)
+          g.fillStyle(C.foam, 0.32).fillRect(x*TILE+TILE-3, y*TILE+3, 3, TILE-6);
+      }
+    }
+  }
+
+  /* -------- Pohon dekoratif di tepi peta -------- */
+  drawTrees(){
+    const r = rng(42);
+    const g = this.add.graphics().setDepth(2.5);
+    const TREE_POS = [
+      [2,1],[5,1],[12,1],[17,1],
+      [1,3],[1,6],[1,9],[1,11],
+      [18,3],[18,6],[18,9],[18,11],
+      [2,11],[6,11],[13,11],[17,11],
+    ];
+    TREE_POS.forEach(([tx, ty]) => {
+      const cx = tx*TILE + TILE/2 + (r()-0.5)*4;
+      const cy = ty*TILE + TILE/2;
+      const s  = 0.88 + r()*0.24;
+      // Bayangan pohon
+      g.fillStyle(C.shadow, 0.11).fillEllipse(cx, cy+13, 26*s, 9*s);
+      // Batang
+      g.fillStyle(C.woodDark).fillRect(cx-2.5*s, cy+2, 5*s, 13);
+      g.lineStyle(1, C.ink, 0.75).strokeRect(cx-2.5*s, cy+2, 5*s, 13);
+      // Daun bawah
+      g.fillStyle(C.leaf).fillCircle(cx, cy-4, 11*s);
+      g.lineStyle(1.5, C.ink, 0.55).strokeCircle(cx, cy-4, 11*s);
+      // Sisi gelap daun
+      g.fillStyle(C.leafDark, 0.38).fillCircle(cx+2*s, cy+1, 6*s);
+      // Daun atas (lebih terang)
+      g.fillStyle(C.leafHi, 0.8).fillCircle(cx-1, cy-10*s, 7*s);
+      // Kilatan cahaya
+      g.fillStyle(0xffffff, 0.09).fillCircle(cx-3*s, cy-12*s, 3*s);
+    });
+  }
+
   /* -------- Bayangan awan bergerak -------- */
   makeCloudShadow(){
     this.cloudShadow = this.add.ellipse(-90, ROWS*TILE*0.28, 200, 65, C.shadow, 0.07).setDepth(1.5);
@@ -113,6 +164,11 @@ export class Village extends Phaser.Scene {
         color:'#241d2e', backgroundColor:'#e0a52b',
         padding:{ x:4, y:2 },
       }).setOrigin(.5).setDepth(4).setAlpha(.95);
+      if (s.id === 'koperasi'){
+        this.add.rectangle(cx, cy-30, 2, 18, C.ink).setDepth(3.8).setOrigin(0.5, 1);
+        const flag = this.add.rectangle(cx, cy-43, 13, 8, C.roofRed).setDepth(3.8).setOrigin(0, 0.5);
+        this.tweens.add({ targets:flag, scaleX:{ from:1, to:0.65 }, duration:680, yoyo:true, repeat:-1, ease:'Sine.easeInOut' });
+      }
     });
   }
 
@@ -126,6 +182,11 @@ export class Village extends Phaser.Scene {
     g.lineStyle(2, C.ink, 1);
     g.strokePoints([{x:cx-14,y:cy-4},{x:cx+14,y:cy-4},{x:cx,y:cy-18}], true);
     g.fillStyle(C.woodDark, 0.4).fillRect(cx-14, cy-6, 28, 3);
+    // Cerobong asap
+    g.fillStyle(C.stoneDark).fillRect(cx+5, cy-22, 5, 8);
+    g.lineStyle(1.5, C.ink, 1).strokeRect(cx+5, cy-22, 5, 8);
+    g.fillStyle(C.stoneDark, 0.6).fillRect(cx+4, cy-25, 7, 4);
+    g.lineStyle(1, C.ink, 0.8).strokeRect(cx+4, cy-25, 7, 4);
     // Pintu
     g.fillStyle(C.woodDark).fillRoundedRect(cx-4, cy-4, 8, 13, 1);
     g.lineStyle(1.5, C.ink, 1).strokeRoundedRect(cx-4, cy-4, 8, 13, 1);
@@ -343,11 +404,14 @@ export class Village extends Phaser.Scene {
   /* -------- Partikel pollen melayang -------- */
   makePollen(){
     const r = rng(99);
-    for (let i=0; i<5; i++){
+    const colors = [C.foam, C.foam, 0xfffacd, C.gold, C.foam, 0xfff0b0];
+    for (let i=0; i<10; i++){
       const x = r() * COLS*TILE;
       const y = 30 + r() * (ROWS*TILE - 60);
-      const dot = this.add.arc(x, y, 1.8, 0, 360, false, C.foam, 0.55).setDepth(5);
-      this.pollen.push({ obj:dot, ox:x, oy:y, sp:0.14+r()*0.18, ph:r()*Math.PI*2 });
+      const col = colors[(r()*colors.length)|0];
+      const rad = 1.4 + r()*0.8;
+      const dot = this.add.arc(x, y, rad, 0, 360, false, col, 0.38+r()*0.28).setDepth(5);
+      this.pollen.push({ obj:dot, ox:x, oy:y, sp:0.11+r()*0.22, ph:r()*Math.PI*2 });
     }
   }
 
