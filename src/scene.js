@@ -493,6 +493,10 @@ export class Village extends Phaser.Scene {
     if (+MAP[ny][nx] === 2) return;
     if (nx < this.px) this.pBody.setFlipX(true);
     else if (nx > this.px) this.pBody.setFlipX(false);
+    // Jejak kaki memudar di posisi lama
+    const fpx = this.px*TILE+TILE/2, fpy = this.py*TILE+TILE/2+9;
+    const fp = this.add.ellipse(fpx, fpy, 7, 4, C.shadow, 0.22).setDepth(0.4);
+    this.tweens.add({ targets:fp, alpha:0, duration:440, ease:'Quad.easeOut', onComplete:()=> fp.destroy() });
     this.px = nx; this.py = ny;
     this.moving = true;
     Audio.play('move');
