@@ -34,7 +34,19 @@ export function interact(spotId){
 
     /* ----- Kantor Koperasi: Simpanan Pokok & Wajib ----- */
     case 'koperasi':
-      if (S.stage === 'JOIN'){
+      if (S.stage === 'DONE'){
+        say('Kantor Koperasi',
+          `Desa makin maju berkat koperasi! Simpananmu: ${rupiah(S.simpananPokok + S.simpananWajib)}. ` +
+          `SHU yang kamu terima di RAT: ${rupiah(S.shu)}. Kamu masih bisa menambah Simpanan Wajib kapan saja.`,
+          [
+            { label:'Setor Rp10.000', cond:S.money>=10000, go:()=>{
+              S.money-=10000; S.simpananWajib+=10000; refresh();
+              say('Kantor Koperasi','Simpanan Wajib bertambah! Anggota koperasi yang setia.',
+                [{ label:'Oke', go:closeDialogue }]);
+            }},
+            { label:'Tutup', go:closeDialogue },
+          ]);
+      } else if (S.stage === 'JOIN'){
         say('Kantor Koperasi',
           'Untuk jadi ANGGOTA, kamu bayar SIMPANAN POKOK satu kali: Rp50.000. Ini modal awal bersama koperasi. Bayar sekarang?',
           [

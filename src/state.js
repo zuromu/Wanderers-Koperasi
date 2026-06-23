@@ -76,9 +76,11 @@ export function questInfo(){
     case 'RAT':
       return { title:'Rapat Anggota Tahunan',
                objective:'Hadiri RAT di Balai Desa untuk terima SHU.', target:'balai', step:7, total:T };
-    case 'DONE':
-      return { title:'Misi Selesai!',
-               objective:'Kamu paham siklus koperasi. Jelajahi bebas!', target:null, step:T, total:T };
+    case 'DONE':{
+      const g = literacyGrade();
+      return { title:'Misi Selesai! • Nilai ' + g.grade,
+               objective:'Jelajahi desa bebas! Nilai literasi koperasimu: ' + g.title + '.', target:null, step:T, total:T };
+    }
     default:
       return { title:'Misi', objective:'...', target:null, step:0, total:T };
   }
