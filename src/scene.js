@@ -66,6 +66,7 @@ export class Village extends Phaser.Scene {
     this.makeBirds();
     this.makeRipples();
     this.makeNpcs();
+    this.makeLeaves();
     this.makeVignette();
     this.bindInput();
 
@@ -594,6 +595,8 @@ export class Village extends Phaser.Scene {
   /* -------- Warga desa yang berkeliaran -------- */
   makeNpcs(){
     this.makeNpcTextures();
+    // Variasi ukuran: 2 anak kecil, 1 warga tua, sisanya normal
+    const SCALES = [0.82, 1.0, 1.0, 1.08, 0.85, 1.0, 1.0];
     const walkable = [];
     for (let y=1; y<ROWS-1; y++)
       for (let x=1; x<COLS-1; x++)
@@ -603,10 +606,33 @@ export class Village extends Phaser.Scene {
       const wx = sx*TILE+TILE/2, wy = sy*TILE+TILE/2;
       const shadow = this.add.ellipse(0, 9, 18, 7, C.shadow, 0.28);
       const sprite = this.add.image(0, 0, `npc_${i % 6}`).setOrigin(0.5, 0.88);
-      const c = this.add.container(wx, wy, [shadow, sprite]).setDepth(2.1);
+      const c = this.add.container(wx, wy, [shadow, sprite]).setDepth(2.1).setScale(SCALES[i]);
       this.tweens.add({ targets:sprite, y:-2, duration:800+i*110, yoyo:true, repeat:-1, ease:'Sine.easeInOut' });
       this.npcs.push({ container:c, sprite, tx:sx, ty:sy, moveAt:Math.random()*2500 });
     }
+  }
+
+  /* -------- Daun gugur ambien -------- */
+  makeLeaves(){
+    if (!this.textures.exists('lf')){
+      const g = this.add.graphics();
+      g.fillStyle(0x5aa653, 0.9).fillEllipse(6, 3, 12, 6);
+      g.lineStyle(0.5, 0x3f7d3d, 0.5).lineBetween(1, 3, 11, 3);
+      g.generateTexture('lf', 12, 6);
+      g.destroy();
+    }
+    const W = COLS*TILE;
+    this.add.particles(W/2, -8, 'lf', {
+      x:{ min:0, max:W }, y:0,
+      speedY:{ min:18, max:52 },
+      speedX:{ min:-16, max:16 },
+      lifespan:{ min:5500, max:9000 },
+      scale:{ min:0.6, max:1.7 },
+      rotate:{ min:0, max:360 },
+      tint:[C.leaf, C.leafHi, 0xc6e04c, 0xffe08a, C.gold],
+      alpha:{ start:0.58, end:0 },
+      frequency:550, quantity:1,
+    }).setDepth(4.8);
   }
 
   /* -------- Vignette tepi layar -------- */

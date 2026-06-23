@@ -3,6 +3,13 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.30.0], Falling leaves, NPC size variety, double-frame border
+
+### Ditambahkan
+- **Daun berguguran** (`makeLeaves()`): partikel daun hijau/kuning/oranye warna-warni jatuh terus-menerus di seluruh kanvas (frekuensi 550 ms, depth 4.8).
+- **Variasi ukuran NPC**: warga desa kini punya skala berbeda — anak kecil (0.82×), warga tua (1.08×), dan ukuran normal — membuat desa terasa lebih hidup.
+- **Bingkai ganda layar**: `#game` mendapat `box-shadow` bertiga — garis luar gelap tipis, bayangan dalam, dan garis dalam emas transparan — tampilan lebih premium.
+
 ## [0.29.0], Village well, enhanced confetti, win border glow
 
 ### Ditambahkan

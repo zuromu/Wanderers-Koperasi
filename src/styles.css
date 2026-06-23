@@ -20,7 +20,7 @@ h1 span{color:var(--gold)}
   0%,100%{box-shadow:0 8px 32px rgba(0,0,0,.6)}
   40%{box-shadow:0 8px 32px rgba(0,0,0,.6), 0 0 64px rgba(224,165,43,.65), 0 0 120px rgba(224,165,43,.25)}}
 #game{border:3px solid var(--gold);border-radius:8px;overflow:hidden;background:#000;
-  box-shadow:0 8px 32px rgba(0,0,0,.6)}
+  box-shadow:0 0 0 1px var(--gold-dark), 0 8px 32px rgba(0,0,0,.6), inset 0 0 0 1px rgba(224,165,43,.15)}
 #game.win-glow{animation:winGlow 1.6s ease-out}
 
 /* HUD - panel perkamen */
