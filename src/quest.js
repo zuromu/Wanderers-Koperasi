@@ -62,7 +62,7 @@ export function interact(spotId){
     case 'bendahara':
       if (S.stage === 'LOAN'){
         say('Bendahara',
-          'Kamu butuh modal Rp75.000 untuk bertani. Ada dua pilihan:\n\n🏦 KOPERASI: kembalikan Rp75.000 saja (jasa ringan, untung balik ke anggota).\n💸 RENTENIR: terima Rp75.000 tapi kembalikan Rp97.500 (bunga 30%!).\n\nPilih yang mana?',
+          'Kamu butuh modal Rp75.000 untuk bertani. Ada dua pilihan:\n\nKOPERASI: kembalikan Rp75.000 saja (jasa ringan, untung balik ke anggota).\nRENTENIR: terima Rp75.000 tapi kembalikan Rp97.500 (bunga 30%!).\n\nPilih yang mana?',
           [
             { label:'Pinjam dari Koperasi (balik Rp75.000)', go:()=>{
               S.money+=75000; S.loan=75000; S.loanType='koperasi'; S.stage='PLANT';
@@ -99,7 +99,7 @@ export function interact(spotId){
           'Beli bibit Rp60.000 lalu tanam. Setelah ditanam, panen langsung tumbuh (versi demo dipercepat).',
           [{ label:'Beli & Tanam (Rp60.000)', cond:S.money>=60000, go:()=>{
             S.money-=60000; S.seeds=0; S.harvest=10; S.rounds++; S.stage='SELL';
-            say('Ladang','🌱➡️🌾 Panen melimpah! Kamu dapat 10 hasil panen. Bawa ke Pasar untuk dijual.',
+            say('Ladang','Panen melimpah! Kamu dapat 10 hasil panen. Bawa ke Pasar untuk dijual.',
               [{ label:'Ke Pasar', go:advance }]);
           }}]);
       } else if (S.isMember){
@@ -127,7 +127,7 @@ export function interact(spotId){
           [{ label:`Jual (${rupiah(earn)})`, go:()=>{
             S.money += earn; S.harvest = 0;
             if (S.stage === 'SELL') S.stage = 'REPAY';
-            say('Pasar','Laku semua! 💵 Untungmu bisa dipakai melunasi pinjaman koperasi.',
+            say('Pasar','Laku semua! Untungmu bisa dipakai melunasi pinjaman koperasi.',
               [{ label:'Lanjut', go:advance }]);
           }}]);
       } else {
@@ -151,7 +151,7 @@ export function interact(spotId){
           `--------------\n` +
           `TOTAL SHU = ${rupiah(S.shu)}\n\n` +
           `Inilah inti koperasi: makin aktif & banyak menabung, makin besar bagianmu. Untung dinikmati bersama!`,
-          [{ label:'Terima SHU 🎉', go:()=> askQuiz('shu', ()=>{ advance(); winScreen(); }) }]);
+          [{ label:'Terima SHU!', go:()=> askQuiz('shu', ()=>{ advance(); winScreen(); }) }]);
       } else if (S.stage === 'DONE'){
         say('Balai Desa','RAT tahun ini sudah selesai. Terima kasih sudah belajar koperasi, Wanderer!');
       } else {

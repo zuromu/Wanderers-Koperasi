@@ -47,7 +47,7 @@ export async function runDemo(scene){
   const cap = ensureCaption();
 
   for (const st of STEPS){
-    cap.textContent = '🎬 ' + st.cap;
+    cap.textContent = '' + st.cap;
     if (scene.teleport) await scene.teleport(st.spot);
     await wait(650);
     interact(st.spot);
@@ -62,7 +62,7 @@ export async function runDemo(scene){
     await wait(450);
   }
 
-  cap.textContent = '🎬 Selesai! Itulah siklus koperasi yang lengkap. Tekan Main untuk coba sendiri.';
+  cap.textContent = 'Selesai! Itulah siklus koperasi yang lengkap. Tekan Main untuk coba sendiri.';
   await wait(2600);
   cap.style.display = 'none';
   running = false; S.demo = false;

@@ -54,7 +54,7 @@ export function askQuiz(key, onDone){
     S.quizResult[key] = correct;
     if (correct) { S.quizCorrect++; Audio.play('success'); }
     else Audio.play('error');
-    showDialogue(correct ? '✅ Benar!' : '❌ Kurang Tepat',
+    showDialogue(correct ? 'Benar!' : 'Kurang Tepat',
       correct ? quiz.right : quiz.wrong,
       [{ label: 'Lanjut', go: () => onDone && onDone() }]);
   };
@@ -65,7 +65,7 @@ export function askQuiz(key, onDone){
   if (!S.demo) opts = shuffle(opts);
 
   const choices = opts.map(o => ({ label: o.t, go: () => finish(o.correct) }));
-  showDialogue('📝 Kuis Koperasi', quiz.q, choices);
+  showDialogue('Kuis Koperasi', quiz.q, choices);
 }
 
 function shuffle(a){
