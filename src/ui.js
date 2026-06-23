@@ -11,6 +11,22 @@ import { showRecap } from './certificate.js';
 let sceneRef = null;
 export function setSceneRef(scene){ sceneRef = scene; }
 
+/* Badge berwarna per pembicara untuk header dialog */
+const BADGE_MAP = {
+  'Kepala Desa':       { c:'#7a5d3a', i:'KD' },
+  'Kantor Koperasi':   { c:'#2d6cb5', i:'K'  },
+  'Bendahara':         { c:'#a9781b', i:'B'  },
+  'Ladang':            { c:'#4a8a30', i:'L'  },
+  'Pasar':             { c:'#c06030', i:'P'  },
+  'Balai Desa (RAT)':  { c:'#5a4090', i:'BD' },
+  'Balai Desa':        { c:'#5a4090', i:'BD' },
+  'Sumur Desa':        { c:'#3a7090', i:'S'  },
+  'Warga Desa':        { c:'#4a6a5a', i:'W'  },
+  'Wanderer':          { c:'#241d2e', i:'?'  },
+  'Peringatan Penting':{ c:'#c0432f', i:'!'  },
+  'Tamat!':            { c:'#7fc96b', i:'★'  },
+};
+
 /* ---------------- Dialog (dengan efek ketik) ---------------- */
 let dialogueOpen = false, pendingClose = null;
 let typing = false, typeTimer = null, fullText = '', pendingChoices = null;
@@ -25,7 +41,8 @@ export const isDialogueOpen = () => dialogueOpen;
 
 export function showDialogue(who, text, choices){
   dialogueOpen = true; pendingClose = null; pendingChoices = choices || null;
-  dwho.textContent = who;
+  const bd = BADGE_MAP[who] || { c:'#241d2e', i:who[0] };
+  dwho.innerHTML = `<span class="who-badge" style="background:${bd.c}">${bd.i}</span>${who}`;
   dchoices.innerHTML = '';
   if (darrow) darrow.style.display = 'none';
   dlg.classList.remove('dlg-open');

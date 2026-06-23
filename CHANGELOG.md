@@ -3,6 +3,16 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.34.0], Premium UI — speaker badges, dialogue polish, quest panel
+
+### Ditambahkan
+- **Speaker badge berwarna**: setiap NPC/lokasi kini memiliki lencana bulat berwarna di header dialog (Kepala Desa=coklat, Koperasi=biru, Bendahara=emas, Ladang=hijau, Pasar=oranye, Balai Desa=ungu, dll.) — tampilan profesional seperti RPG studio.
+- **Tombol pilihan dengan aksen**: choice button mendapat `border-left:4px` yang berubah warna saat hover, memberikan affordance visual yang lebih jelas.
+- **Header dialog bergradien** lebih kaya (3 titik warna emas) dengan badge terintegrasi di flexbox.
+- **Area teks dialog** mendapat subtle gradient latar dan `line-height:1.6` untuk keterbacaan lebih baik.
+- **Panel misi** mendapat garis vertikal emas `::before` di sebelah kiri judul misi — tanda visual yang elegan.
+- **Hint bar** dialog mendapat separator tipis di atas.
+
 ## [0.33.0], Character polish — walk cycle, footstep dust, name tag
 
 ### Ditambahkan
