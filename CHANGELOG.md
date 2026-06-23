@@ -3,6 +3,30 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.5.0], World polish
+
+### Ditambahkan
+- 16 pohon dekoratif pixel-art di tepi peta (batang, dua lapis daun, kilatan cahaya).
+- Busa tepian air (foam) di setiap titik perbatasan air–daratan.
+- Cerobong asap pada bangunan Kepala Desa.
+- Bendera merah animasi (waving) di atas Kantor Koperasi.
+- 10 partikel pollen melayang dengan variasi warna (biru muda, kuning, emas).
+- Favicon SVG inline (lingkaran koperasi emas pada latar gelap).
+
+## [0.4.0], Studio art overhaul
+
+### Ditambahkan
+- Font Google: Jersey 10 (HUD/judul) + Pixelify Sans (dialog/body); dimuat via `document.fonts.ready`.
+- Sprite karakter pemain pixel-art prosedural (28×42 px, 2 frame: idle + jalan).
+- Enam bangunan pixel-art prosedural: Pondok, Kantor Koperasi, Peti Bendahara, Ladang, Warung, Balai Desa.
+- Partikel pollen melayang, bayangan awan bergerak, vignette.
+- UI perkamen (parchment): gradient linen, border ganda emas + tinta, bayangan keras.
+- Ikon SVG menggantikan semua emoji di HUD; tombol teks menggantikan emoji di seluruh kode.
+
+### Dihapus
+- Semua emoji dari kode sumber (UI, quest, dialog, state, quiz, demo).
+- Efek glassmorphism (`backdrop-filter`) dari semua panel.
+
 ## [0.3.0], Accessibility & reach
 
 ### Ditambahkan
