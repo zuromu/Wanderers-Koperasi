@@ -53,6 +53,7 @@ export class Village extends Phaser.Scene {
     this.drawWater();
     this.drawWaterFoam();
     this.drawWaterLilies();
+    this.drawBushes();
     this.drawTrees();
     this.makeClouds();
     this.drawBuildings();
@@ -134,6 +135,26 @@ export class Village extends Phaser.Scene {
           g.fillStyle(C.foam, 0.32).fillRect(x*TILE, y*TILE+3, 3, TILE-6);
         if (x<COLS-1 && +MAP[y][x+1]!==2)
           g.fillStyle(C.foam, 0.32).fillRect(x*TILE+TILE-3, y*TILE+3, 3, TILE-6);
+      }
+    }
+  }
+
+  /* -------- Semak / tanaman dekoratif di rumput -------- */
+  drawBushes(){
+    const g = this.add.graphics().setDepth(1.8);
+    const r = rng(123);
+    for (let y=1; y<ROWS-1; y++){
+      for (let x=1; x<COLS-1; x++){
+        if (+MAP[y][x] !== 0) continue;
+        if (SPOTS.some(s => Math.abs(s.x-x)<=2 && Math.abs(s.y-y)<=2)) continue;
+        if (r() > 0.07) continue;
+        const cx = x*TILE + TILE/2 + (r()-0.5)*8;
+        const cy = y*TILE + TILE/2 + (r()-0.5)*6;
+        const s  = 0.7 + r()*0.35;
+        g.fillStyle(C.leafDark, 0.72).fillCircle(cx, cy, 5.5*s);
+        g.fillStyle(C.leaf,     0.60).fillCircle(cx-2*s, cy-2*s, 3.5*s);
+        g.fillStyle(C.leafHi,   0.42).fillCircle(cx-3*s, cy-3.5*s, 2*s);
+        g.lineStyle(1, C.ink, 0.18).strokeCircle(cx, cy, 5.5*s);
       }
     }
   }
@@ -400,59 +421,49 @@ export class Village extends Phaser.Scene {
 
   _makeCharTextures(){
     if (this.textures.exists('char_i')) return;
-    ['char_i', 'char_w'].forEach((key, fi) => {
+    // fi: 0=idle-front, 1=walk-front, 2=idle-back, 3=walk-back
+    ['char_i', 'char_w', 'char_u', 'char_wu'].forEach((key, fi) => {
       const g = this.add.graphics({ x:0, y:0 });
-      const walk = fi === 1;
-      const ll = walk ? 6 : 8,  rl = walk ? 17 : 15; // posisi kaki
-      const ls = walk ? 5 : 7,  rs = walk ? 16 : 14; // posisi sepatu
+      const walk = fi === 1 || fi === 3;
+      const back = fi === 2 || fi === 3;
+      const ll = walk ? 6 : 8,  rl = walk ? 17 : 15;
+      const ls = walk ? 5 : 7,  rs = walk ? 16 : 14;
 
       // Sepatu
-      g.fillStyle(C.woodDark);
-      g.fillRect(ls, 37, 7, 4);
-      g.fillRect(rs, 37, 7, 4);
+      g.fillStyle(C.woodDark).fillRect(ls, 37, 7, 4).fillRect(rs, 37, 7, 4);
 
       // Kaki (celana)
-      g.fillStyle(C.pants);
-      g.fillRect(ll, 27, 5, 11);
-      g.fillRect(rl, 27, 5, 11);
-      g.lineStyle(1.5, C.ink, 1);
-      g.strokeRect(ll, 27, 5, 11);
-      g.strokeRect(rl, 27, 5, 11);
+      g.fillStyle(C.pants).fillRect(ll, 27, 5, 11).fillRect(rl, 27, 5, 11);
+      g.lineStyle(1.5, C.ink, 1).strokeRect(ll, 27, 5, 11).strokeRect(rl, 27, 5, 11);
 
       // Badan (tunik)
-      g.fillStyle(C.tunic);
-      g.fillRoundedRect(7, 16, 14, 13, 2);
-      g.fillStyle(C.tunicHi, 0.45);
-      g.fillRect(8, 17, 12, 3);
-      g.lineStyle(1.5, C.ink, 1);
-      g.strokeRoundedRect(7, 16, 14, 13, 2);
+      g.fillStyle(C.tunic).fillRoundedRect(7, 16, 14, 13, 2);
+      if (!back){ g.fillStyle(C.tunicHi, 0.45).fillRect(8, 17, 12, 3); }
+      else       { g.fillStyle(C.woodDark, 0.1).fillRect(8, 17, 12, 3); }
+      g.lineStyle(1.5, C.ink, 1).strokeRoundedRect(7, 16, 14, 13, 2);
 
       // Lengan
-      g.fillStyle(C.tunic);
-      g.fillRoundedRect(3, 17, 5, 9, 1);
-      g.fillRoundedRect(20, 17, 5, 9, 1);
-      g.lineStyle(1.5, C.ink, 1);
-      g.strokeRoundedRect(3, 17, 5, 9, 1);
-      g.strokeRoundedRect(20, 17, 5, 9, 1);
+      g.fillStyle(C.tunic)
+        .fillRoundedRect(3, 17, 5, 9, 1).fillRoundedRect(20, 17, 5, 9, 1);
+      g.lineStyle(1.5, C.ink, 1)
+        .strokeRoundedRect(3, 17, 5, 9, 1).strokeRoundedRect(20, 17, 5, 9, 1);
 
       // Leher
-      g.fillStyle(C.skin);
-      g.fillRect(11, 14, 6, 4);
+      g.fillStyle(C.skin).fillRect(11, 14, 6, 4);
 
       // Kepala
-      g.fillStyle(C.skin);
-      g.fillCircle(14, 9, 8);
-      g.lineStyle(2, C.ink, 1);
-      g.strokeCircle(14, 9, 8);
+      g.fillStyle(C.skin).fillCircle(14, 9, 8);
+      g.lineStyle(2, C.ink, 1).strokeCircle(14, 9, 8);
 
-      // Rambut
-      g.fillStyle(C.hair);
-      g.fillRoundedRect(6, 1, 16, 9, 4);
-
-      // Mata
-      g.fillStyle(C.ink);
-      g.fillRect(11, 8, 2, 2);
-      g.fillRect(16, 8, 2, 2);
+      if (back){
+        // Belakang kepala: rambut penuh menutupi wajah
+        g.fillStyle(C.hair).fillCircle(14, 9, 7.5).fillRoundedRect(6, 4, 16, 8, 3);
+        g.fillStyle(0x6e4e3a, 0.4).fillCircle(17, 6, 3.5);
+      } else {
+        // Depan: rambut + mata
+        g.fillStyle(C.hair).fillRoundedRect(6, 1, 16, 9, 4);
+        g.fillStyle(C.ink).fillRect(11, 8, 2, 2).fillRect(16, 8, 2, 2);
+      }
 
       g.generateTexture(key, 28, 42);
       g.destroy();
@@ -590,8 +601,10 @@ export class Village extends Phaser.Scene {
   moveTo(nx, ny){
     if (nx<0 || ny<0 || nx>=COLS || ny>=ROWS) return;
     if (+MAP[ny][nx] === 2) return;
-    if (nx < this.px) this.pBody.setFlipX(true);
-    else if (nx > this.px) this.pBody.setFlipX(false);
+    const isBack = (ny < this.py && nx === this.px);
+    if      (nx < this.px){ this.pBody.setFlipX(true);  this.pFacing = -1; }
+    else if (nx > this.px){ this.pBody.setFlipX(false); this.pFacing =  1; }
+    else { this.pBody.setFlipX(false); }
     // Jejak kaki memudar di posisi lama
     const fpx = this.px*TILE+TILE/2, fpy = this.py*TILE+TILE/2+9;
     const fp = this.add.ellipse(fpx, fpy, 7, 4, C.shadow, 0.22).setDepth(0.4);
@@ -599,12 +612,13 @@ export class Village extends Phaser.Scene {
     this.px = nx; this.py = ny;
     this.moving = true;
     Audio.play('move');
-    this.pBody.setTexture('char_w');
+    this.pBody.setTexture(isBack ? 'char_wu' : 'char_w');
     this.tweens.add({ targets:this.pBody,   scaleX:1.18, scaleY:0.82, duration:70, yoyo:true, ease:'Quad.easeOut' });
     this.tweens.add({ targets:this.pShadow, scaleX:1.3,  duration:70, yoyo:true });
+    const idleTex = isBack ? 'char_u' : 'char_i';
     this.tweens.add({
       targets:this.pc, x:nx*TILE+TILE/2, y:ny*TILE+TILE/2, duration:130, ease:'Quad.easeInOut',
-      onComplete:()=>{ this.moving = false; this.pBody?.setTexture('char_i'); },
+      onComplete:()=>{ this.moving = false; this.pBody?.setTexture(idleTex); },
     });
   }
 

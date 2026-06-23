@@ -3,6 +3,13 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.27.0], 4-directional player, title particles, world bushes
+
+### Ditambahkan
+- Karakter pemain kini punya sprite belakang (`char_u`/`char_wu`): saat bergerak ke atas, punggung karakter terlihat (rambut penuh, wajah tak tampak).
+- Layar judul: 28 partikel emas naik perlahan di latar belakang (`@keyframes tSpark`), memberikan kesan sinematik.
+- Semak dekoratif (`drawBushes`) tersebar di ~7% petak rumput di luar radius bangunan — memperkaya detail dunia.
+
 ## [0.26.0], Dialogue polish & water decorations
 
 ### Ditambahkan

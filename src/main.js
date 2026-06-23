@@ -56,6 +56,20 @@ function startDemo(){
   if (v) runDemo(v);
 }
 
+/* Partikel emas naik di layar judul */
+const tp = $('titleParticles');
+if (tp){
+  for (let i=0; i<28; i++){
+    const sp = document.createElement('div');
+    sp.className = 't-spark';
+    const sz = 2 + Math.random()*3;
+    sp.style.cssText = `left:${Math.random()*100}%;bottom:${5+Math.random()*70}%;` +
+      `width:${sz}px;height:${sz}px;` +
+      `animation-duration:${4+Math.random()*7}s;animation-delay:${-Math.random()*11}s`;
+    tp.appendChild(sp);
+  }
+}
+
 $('btnPlay')?.addEventListener('click', startGame);
 $('btnDemo')?.addEventListener('click', startDemo);
 $('btnAbout')?.addEventListener('click', ()=>{ $('title').style.display='none'; $('about').style.display='flex'; Audio.play('select'); });
