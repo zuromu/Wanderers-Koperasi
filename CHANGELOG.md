@@ -3,6 +3,31 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.8.0], Full 5-quiz curriculum
+
+### Ditambahkan
+- Kuis `wajib`: Simpanan Wajib bukan denda, melainkan tabungan rutin anggota.
+- Kuis `rat`: RAT menerapkan satu anggota satu suara, bukan proporsional modal.
+- Kuis `wajib` dipicu otomatis setelah setoran Simpanan Wajib pertama.
+- Kuis `rat` tersedia interaktif di Balai Desa sebelum tahap RAT.
+- Sertifikat kini melacak semua 5 konsep dengan tanda baca yang tepat.
+- Demo otomatis mencakup setoran Simpanan Wajib dan kuis keempatnya.
+
+## [0.7.0], Certificate & ambient life
+
+### Ditambahkan
+- Sertifikat PNG: latar gradasi hangat, watermark lambang koperasi, hiasan sudut berlian emas.
+- Tanda kuis pada rapor menggunakan HTML entity (&#10003;/&#9888;/&#183;) bukan emoji.
+- 5 burung kecil melintas di langit setiap ~19 detik (depth 5.8, efek yoyo).
+- Status anggota HUD disederhanakan menjadi "Anggota" tanpa karakter tanda centang.
+
+## [0.6.0], Smoke & quest progress
+
+### Ditambahkan
+- 5 partikel asap beranimasi dari cerobong Kepala Desa (siklus berbasis waktu, depth 3.2).
+- Bilah kemajuan misi (emas, transisi CSS) + penunjuk langkah "X / 7" di panel misi.
+- `questInfo()` kini mengembalikan `step` dan `total` untuk setiap tahap misi.
+
 ## [0.5.0], World polish
 
 ### Ditambahkan
