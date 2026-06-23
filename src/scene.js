@@ -77,6 +77,7 @@ export class Village extends Phaser.Scene {
     this.makeInteractHint();
 
     this.cameras.main.fadeIn(450, 8, 6, 12);
+    this.scheduleChirp();
     refresh();
   }
 
@@ -179,24 +180,49 @@ export class Village extends Phaser.Scene {
   }
 
   _drawWell(g, cx, cy){
-    // Tiang penyangga kiri & kanan
-    g.fillStyle(C.wood).fillRect(cx-11, cy-14, 3, 18).fillRect(cx+8, cy-14, 3, 18);
-    g.lineStyle(1.5, C.ink, 1).strokeRect(cx-11, cy-14, 3, 18).strokeRect(cx+8, cy-14, 3, 18);
-    // Palang kayu atas
-    g.fillStyle(C.woodDark).fillRect(cx-13, cy-14, 26, 5);
+    // Tiang penyangga kayu kiri & kanan (dengan highlight)
+    g.fillStyle(C.woodDark).fillRect(cx-11, cy-14, 3, 18);
+    g.fillStyle(C.wood, 0.4).fillRect(cx-11, cy-14, 1, 18);
+    g.lineStyle(1.5, C.ink, 1).strokeRect(cx-11, cy-14, 3, 18);
+    g.fillStyle(C.woodDark).fillRect(cx+8, cy-14, 3, 18);
+    g.fillStyle(C.wood, 0.4).fillRect(cx+8, cy-14, 1, 18);
+    g.lineStyle(1.5, C.ink, 1).strokeRect(cx+8, cy-14, 3, 18);
+    // Palang kayu atas (dengan serat)
+    g.fillStyle(C.wood).fillRect(cx-13, cy-14, 26, 5);
+    g.fillStyle(0xd4a870, 0.3).fillRect(cx-12, cy-13, 24, 1.5);
+    g.fillStyle(C.woodDark, 0.25).fillRect(cx-12, cy-10, 24, 1);
     g.lineStyle(1.5, C.ink, 1).strokeRect(cx-13, cy-14, 26, 5);
-    g.fillStyle(0x9e6e3c, 0.3).fillRect(cx-12, cy-13, 24, 2);
-    // Bibir sumur (batu)
-    g.fillStyle(C.stone).fillRoundedRect(cx-10, cy+2, 20, 12, 3);
-    g.lineStyle(1.5, C.ink, 1).strokeRoundedRect(cx-10, cy+2, 20, 12, 3);
-    g.fillStyle(0xb8b7c4, 0.4).fillRect(cx-9, cy+3, 18, 4);
-    // Lubang gelap + kilatan air
-    g.fillStyle(C.shadow, 0.7).fillEllipse(cx, cy+9, 13, 7);
-    g.fillStyle(C.waterHi, 0.28).fillEllipse(cx-1, cy+10, 6, 3);
-    // Tali + ember kecil
-    g.lineStyle(1, C.ink, 0.65).lineBetween(cx, cy-9, cx, cy+3);
-    g.fillStyle(C.wood).fillRoundedRect(cx-3.5, cy-2, 7, 6, 1);
-    g.lineStyle(1, C.ink, 0.8).strokeRoundedRect(cx-3.5, cy-2, 7, 6, 1);
+    // Bibir sumur: batu bersusun (kiri, tengah, kanan)
+    g.fillStyle(lerpC(C.stone, C.stoneDark, 0.15)).fillRoundedRect(cx-10, cy+2, 9, 12, 2);
+    g.fillStyle(0xb8b7c4, 0.38).fillRect(cx-9, cy+3, 7, 3);
+    g.lineStyle(1, C.ink, 0.85).strokeRoundedRect(cx-10, cy+2, 9, 12, 2);
+    g.fillStyle(C.stone).fillRoundedRect(cx-1, cy+1, 2, 13, 1);
+    g.lineStyle(0.8, C.ink, 0.55).strokeRoundedRect(cx-1, cy+1, 2, 13, 1);
+    g.fillStyle(lerpC(C.stone, C.stoneDark, 0.1)).fillRoundedRect(cx+1, cy+2, 9, 12, 2);
+    g.fillStyle(0xb8b7c4, 0.38).fillRect(cx+2, cy+3, 7, 3);
+    g.lineStyle(1, C.ink, 0.85).strokeRoundedRect(cx+1, cy+2, 9, 12, 2);
+    // Lumut di sisi kiri
+    g.fillStyle(0x5a8a30, 0.32).fillRect(cx-9, cy+9, 3, 4);
+    g.fillStyle(0x5a8a30, 0.22).fillRect(cx+5, cy+10, 2, 3);
+    // Lubang gelap + pantulan air
+    g.fillStyle(C.shadow, 0.80).fillEllipse(cx, cy+9, 14, 8);
+    g.fillStyle(C.water, 0.22).fillEllipse(cx-1, cy+10, 7, 3.5);
+    g.fillStyle(C.waterHi, 0.15).fillEllipse(cx-2, cy+10, 3, 1.5);
+    // Tali zigzag (lebih dinamis dari garis lurus)
+    g.lineStyle(1, C.ink, 0.65);
+    g.lineBetween(cx, cy-9,  cx+1, cy-7);
+    g.lineBetween(cx+1, cy-7, cx-1, cy-5);
+    g.lineBetween(cx-1, cy-5, cx+1, cy-3);
+    g.lineBetween(cx+1, cy-3, cx, cy+2);
+    // Ember kayu (lebih detail)
+    g.fillStyle(C.woodDark).fillRoundedRect(cx-3.5, cy-3, 7, 5.5, 1);
+    g.fillStyle(C.wood, 0.38).fillRect(cx-3, cy-2.5, 5, 1.5);
+    g.lineStyle(0.8, C.stoneDark, 0.65).lineBetween(cx-3.5, cy-0.5, cx+3.5, cy-0.5);
+    g.lineStyle(1, C.ink, 0.9).strokeRoundedRect(cx-3.5, cy-3, 7, 5.5, 1);
+    // Gagang ember (U-shape)
+    g.lineStyle(1, C.ink, 0.5).lineBetween(cx-2.5, cy-3, cx-1.5, cy-5);
+    g.lineBetween(cx-1.5, cy-5, cx+1.5, cy-5);
+    g.lineBetween(cx+1.5, cy-5, cx+2.5, cy-3);
   }
 
   /* -------- Semak / tanaman dekoratif di rumput -------- */
@@ -941,6 +967,11 @@ export class Village extends Phaser.Scene {
     this.add.image(0, 0, key).setOrigin(0).setDepth(100);
   }
 
+  scheduleChirp(){
+    const delay = 7000 + Math.random() * 11000;
+    this.time.delayedCall(delay, () => { Audio.play('chirp'); this.scheduleChirp(); });
+  }
+
   makeInteractHint(){
     this.hintRingGfx = this.add.graphics().setDepth(3.9);
     this.hintText = this.add.text(0, 0, '[ SPASI ]', {
@@ -1127,6 +1158,10 @@ export class Village extends Phaser.Scene {
           if (dx < 0) npc.sprite.setFlipX(true);
           else if (dx > 0) npc.sprite.setFlipX(false);
           this.tweens.add({ targets:npc.container, x:wx, y:wy, duration:550, ease:'Linear' });
+          // Pantul langkah: squish-stretch scaleY saat berjalan
+          this.tweens.killTweensOf(npc.sprite);
+          this.tweens.add({ targets:npc.sprite, scaleY:{from:0.90, to:1.04}, duration:138, yoyo:true, repeat:1, ease:'Quad.easeOut',
+            onComplete:()=> this.tweens.add({ targets:npc.sprite, scaleY:1, duration:80 }) });
         }
         npc.moveAt = time + 1600 + Math.random()*2200;
       }
