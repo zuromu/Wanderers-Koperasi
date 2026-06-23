@@ -3,6 +3,15 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.33.0], Character polish — walk cycle, footstep dust, name tag
+
+### Ditambahkan
+- **Walk cycle 6-frame**: karakter pemain kini memiliki 6 tekstur (`char_i`, `char_wL`, `char_wR`, `char_u`, `char_uL`, `char_uR`) — setiap langkah mengalternasi kaki kiri/kanan yang terlihat bergerak.
+- **Karakter lebih detail**: kerah V, ikat pinggang emas, manset lengan, alis mata, hidung kecil, bayangan sisi wajah & badan, highlight rambut berlapis — mendekati kualitas studio indie.
+- **Debu jejak kaki**: setiap langkah meledakkan 3 partikel debu kecil di posisi lama (warna sesuai tile: pasir di jalan, hijau di rumput).
+- **Tag nama pemain**: setelah masuk game, nama yang diketik di layar judul muncul sebagai label kecil di atas kepala karakter.
+- Import `S` ke scene.js untuk akses nama pemain.
+
 ## [0.32.0], Depth & ambience — grass tufts, props, vertical sky lighting
 
 ### Ditambahkan
