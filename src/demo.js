@@ -63,7 +63,7 @@ export async function runDemo(scene){
     await wait(450);
   }
 
-  cap.textContent = 'Selesai! Itulah siklus koperasi yang lengkap. Tekan Main untuk coba sendiri.';
+  cap.textContent = 'Selesai! Itulah siklus koperasi lengkap. Jelajahi desa bebas — ajak bicara warga untuk fakta koperasi, atau tekan H untuk glosarium!';
   await wait(2600);
   cap.style.display = 'none';
   running = false; S.demo = false;
