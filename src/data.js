@@ -1,5 +1,5 @@
 /**
- * data.js — Data dunia game (peta, lokasi, konstanta).
+ * data.js, Data dunia game (peta, lokasi, konstanta).
  * Tidak ada logika di sini, hanya data murni agar mudah diubah & ditambah.
  */
 

@@ -132,7 +132,7 @@ kbd{background:#2a2e3c;border:1px solid #444;border-radius:4px;padding:1px 6px;f
 .help-list li{padding:5px 4px;border-bottom:1px solid rgba(255,255,255,.07)}
 .help-list b{color:var(--gold)}
 
-/* Kontrol sentuh — hanya pada perangkat sentuh */
+/* Kontrol sentuh, hanya pada perangkat sentuh */
 #touch{display:none}
 @media (hover:none) and (pointer:coarse){ #touch{display:block} }
 #dpad{position:absolute;right:14px;bottom:14px;z-index:26;

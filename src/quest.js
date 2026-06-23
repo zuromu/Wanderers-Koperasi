@@ -1,5 +1,5 @@
 /**
- * quest.js — Logika koperasi inti.
+ * quest.js, Logika koperasi inti.
  *
  * `interact(spotId)` adalah STATE MACHINE switch/case kedua: ia mengevaluasi
  * lokasi yang dikunjungi + state pemain (S.stage) untuk menentukan dialog yang
@@ -21,7 +21,7 @@ export function interact(spotId){
     case 'kepala':
       if (S.stage === 'INTRO'){
         say('Kepala Desa',
-          'Halo, pengembara! Desa kita ingin bangkit lewat KOPERASI — usaha bersama dari, oleh, dan untuk anggota. Mau bergabung dan bantu desa?',
+          'Halo, pengembara! Desa kita ingin bangkit lewat KOPERASI, usaha bersama dari, oleh, dan untuk anggota. Mau bergabung dan bantu desa?',
           [{ label:'Ya, saya mau!', go:()=>{ S.stage='JOIN'; advance(); } }]);
       } else {
         say('Kepala Desa', 'Terus semangat, Wanderer. Ikuti misimu di pojok kanan!');
@@ -66,12 +66,12 @@ export function interact(spotId){
           [
             { label:'Pinjam dari Koperasi (balik Rp75.000)', go:()=>{
               S.money+=75000; S.loan=75000; S.loanType='koperasi'; S.stage='PLANT';
-              say('Bendahara','Pilihan bijak! Dana koperasi cair. Pinjaman koperasi itu amanah bersama — untungnya pun kembali ke kita.',
+              say('Bendahara','Pilihan bijak! Dana koperasi cair. Pinjaman koperasi itu amanah bersama, untungnya pun kembali ke kita.',
                 [{ label:'Siap!', go:()=> askQuiz('modal', advance) }]);
             }},
             { label:'Pinjam dari Rentenir (balik Rp97.500)', go:()=>{
               S.money+=75000; S.loan=97500; S.loanType='rentenir'; S.stage='PLANT';
-              say('Bendahara','Hati-hati... rentenir mencekik dengan bunga tinggi. Kamu harus balikkan Rp97.500 — Rp22.500 lebih mahal! Lain kali, pilih koperasi.',
+              say('Bendahara','Hati-hati... rentenir mencekik dengan bunga tinggi. Kamu harus balikkan Rp97.500, Rp22.500 lebih mahal! Lain kali, pilih koperasi.',
                 [{ label:'Aduh...', go:()=> askQuiz('modal', advance) }]);
             }},
           ]);
@@ -145,10 +145,10 @@ export function interact(spotId){
         S.money += S.shu;
         S.stage = 'DONE';
         say('Balai Desa (RAT)',
-          `RAPAT ANGGOTA TAHUNAN — koperasi untung tahun ini! SHU-mu dihitung adil:\n\n` +
+          `RAPAT ANGGOTA TAHUNAN, koperasi untung tahun ini! SHU-mu dihitung adil:\n\n` +
           `• Jasa Modal (40% dari simpananmu ${rupiah(S.simpananPokok + S.simpananWajib)}) = ${rupiah(jasaModal)}\n` +
           `• Jasa Usaha (keaktifanmu, ${S.rounds}× panen) = ${rupiah(jasaUsaha)}\n` +
-          `——————————————\n` +
+          `--------------\n` +
           `TOTAL SHU = ${rupiah(S.shu)}\n\n` +
           `Inilah inti koperasi: makin aktif & banyak menabung, makin besar bagianmu. Untung dinikmati bersama!`,
           [{ label:'Terima SHU 🎉', go:()=> askQuiz('shu', ()=>{ advance(); winScreen(); }) }]);

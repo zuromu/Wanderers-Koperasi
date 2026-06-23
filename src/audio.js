@@ -1,5 +1,5 @@
 /**
- * audio.js — Audio 100% disintesis lewat Web Audio API (tanpa file aset).
+ * audio.js, Audio 100% disintesis lewat Web Audio API (tanpa file aset).
  * Menyediakan efek suara (SFX) dan musik latar chiptune yang lembut.
  * AudioContext dibuat malas saat interaksi pertama (kebijakan autoplay browser).
  */

@@ -3,7 +3,7 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
-## [0.3.0] — Accessibility & reach
+## [0.3.0], Accessibility & reach
 
 ### Ditambahkan
 - Kontrol sentuh (D-pad + tombol aksi) untuk bermain di ponsel.
@@ -11,7 +11,7 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 - Petunjuk awal (onboarding) saat pertama bermain.
 - Penyesuaian tata letak responsif untuk layar sempit.
 
-## [0.2.0] — Education & proof-of-learning
+## [0.2.0], Education & proof-of-learning
 
 ### Ditambahkan
 - Kuis mikro per-konsep (Simpanan Pokok, Modal, SHU) dengan opsi teracak,
@@ -23,7 +23,7 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 - Input nama pemain di layar judul (untuk sertifikat).
 - Mode Demo Otomatis (~60 dtk) untuk juri: memutar seluruh siklus tanpa input.
 
-## [0.1.0] — MVP
+## [0.1.0], MVP
 
 ### Ditambahkan
 - Dunia desa berbasis grid dengan gerakan pemain (panah / WASD) dan tabrakan.

@@ -1,12 +1,12 @@
 /**
- * state.js — State pemain + state machine misi (quest).
+ * state.js, State pemain + state machine misi (quest).
  *
  * `S` adalah satu-satunya sumber kebenaran untuk progres pemain.
  * `questInfo()` adalah STATE MACHINE berbasis switch/case (sesuai proposal):
  * ia menerjemahkan `S.stage` menjadi judul & tujuan misi yang aktif.
  */
 
-/** State pemain — satu sumber kebenaran. */
+/** State pemain, satu sumber kebenaran. */
 export const S = {
   money: 100000,        // uang saku awal Wanderer
   isMember: false,      // sudah jadi anggota koperasi?
@@ -17,7 +17,7 @@ export const S = {
   harvest: 0,           // hasil panen siap jual
   shu: 0,               // Sisa Hasil Usaha yang diterima
   rounds: 0,            // berapa kali siklus tanam-panen
-  stage: 'INTRO',       // tahap misi aktif — dikendalikan switch/case di bawah
+  stage: 'INTRO',       // tahap misi aktif, dikendalikan switch/case di bawah
   // --- literasi & meta ---
   playerName: 'Wanderer',
   quizCorrect: 0,       // jawaban kuis benar (percobaan pertama)

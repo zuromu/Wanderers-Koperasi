@@ -1,5 +1,5 @@
 /**
- * demo.js — Mode demo otomatis (~60 detik) untuk juri.
+ * demo.js, Mode demo otomatis (~60 detik) untuk juri.
  * Menjalankan seluruh siklus koperasi tanpa input: pemain berjalan ke tiap
  * lokasi, dialog dilewati otomatis, dan kuis dijawab benar. Ada keterangan
  * (caption) yang menjelaskan tiap langkah.
@@ -10,12 +10,12 @@ import { advanceDialogue, isDialogueOpen, refresh } from './ui.js';
 
 const STEPS = [
   { spot:'kepala',    cap:'Wanderer tiba di desa & bertemu Kepala Desa.' },
-  { spot:'koperasi',  cap:'Mendaftar jadi anggota — membayar Simpanan Pokok.' },
+  { spot:'koperasi',  cap:'Mendaftar jadi anggota, membayar Simpanan Pokok.' },
   { spot:'bendahara', cap:'Meminjam modal usaha dari koperasi (bukan rentenir!).' },
   { spot:'ladang',    cap:'Membeli bibit dan mulai bertani.' },
   { spot:'pasar',     cap:'Menjual hasil panen untuk meraih untung.' },
   { spot:'bendahara', cap:'Melunasi pinjaman koperasi dengan bertanggung jawab.' },
-  { spot:'balai',     cap:'Menghadiri RAT & menerima SHU — untung bersama!' },
+  { spot:'balai',     cap:'Menghadiri RAT & menerima SHU, untung bersama!' },
 ];
 
 let running = false;

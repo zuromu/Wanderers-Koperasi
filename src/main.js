@@ -1,5 +1,5 @@
 /**
- * main.js — Titik masuk: konfigurasi & boot Phaser, plus glue untuk layar judul,
+ * main.js, Titik masuk: konfigurasi & boot Phaser, plus glue untuk layar judul,
  * tombol bisukan, dan memulai musik pada interaksi pertama.
  */
 

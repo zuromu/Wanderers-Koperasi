@@ -1,5 +1,5 @@
 /**
- * certificate.js — Rapor literasi akhir + sertifikat yang bisa diunduh.
+ * certificate.js, Rapor literasi akhir + sertifikat yang bisa diunduh.
  * Bukti pembelajaran: ringkasan konsep yang dikuasai, nilai, dan sertifikat PNG.
  */
 import { S, literacyGrade } from './state.js';
@@ -7,11 +7,11 @@ import { rupiah } from './data.js';
 import * as Audio from './audio.js';
 
 const CONCEPTS = [
-  { key:'pokok', label:'Simpanan Pokok — dibayar sekali saat mendaftar' },
-  { key:null,    label:'Simpanan Wajib — tabungan rutin anggota' },
-  { key:'modal', label:'Pinjam Modal — koperasi vs rentenir' },
-  { key:'shu',   label:'SHU — bagi hasil sesuai simpanan & keaktifan' },
-  { key:null,    label:'RAT — Rapat Anggota Tahunan, suara tiap anggota' },
+  { key:'pokok', label:'Simpanan Pokok, dibayar sekali saat mendaftar' },
+  { key:null,    label:'Simpanan Wajib, tabungan rutin anggota' },
+  { key:'modal', label:'Pinjam Modal, koperasi vs rentenir' },
+  { key:'shu',   label:'SHU, bagi hasil sesuai simpanan & keaktifan' },
+  { key:null,    label:'RAT, Rapat Anggota Tahunan, suara tiap anggota' },
 ];
 
 function mark(key){
@@ -35,7 +35,7 @@ export function showRecap(){
     <div class="title-card recap-card">
       <h2>📋 Rapor Literasi Koperasi</h2>
       <div class="grade">${g.grade}</div>
-      <p class="tag" style="margin:2px 0 6px">${S.playerName} — <b>${g.title}</b><br>
+      <p class="tag" style="margin:2px 0 6px">${S.playerName}, <b>${g.title}</b><br>
          Skor kuis: ${S.quizCorrect}/${S.quizTotal} (${Math.round(g.pct*100)}%)</p>
       <ul class="recap-list">${rows}</ul>
       <p class="tag" style="font-size:13px;opacity:.85">Total kekayaan akhir: <b>${rupiah(S.money)}</b>

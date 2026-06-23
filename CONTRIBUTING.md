@@ -25,9 +25,9 @@ python3 -m http.server 8123   # lalu buka http://localhost:8123
 index.html        # kerangka halaman + memuat Phaser (CDN) dan src/main.js
 src/
   styles.css      # seluruh gaya tampilan
-  data.js         # data dunia: peta, lokasi (SPOTS), konstanta — TANPA logika
+  data.js         # data dunia: peta, lokasi (SPOTS), konstanta, TANPA logika
   state.js        # state pemain (S) + state machine misi questInfo() [switch/case]
-  quest.js        # logika koperasi interact() [switch/case] — inti edukasi
+  quest.js        # logika koperasi interact() [switch/case], inti edukasi
   ui.js           # kotak dialog, HUD, papan misi
   scene.js        # scene Phaser: gambar peta, gerakan, input
   main.js         # boot Phaser

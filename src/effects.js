@@ -1,5 +1,5 @@
 /**
- * effects.js — "Juice": teks mengambang, ledakan partikel, getar layar, kilat.
+ * effects.js, "Juice": teks mengambang, ledakan partikel, getar layar, kilat.
  * Semua fungsi menerima `scene` Phaser dan memakai tekstur 'spark' yang dibuat
  * sekali lewat ensureSpark().
  */

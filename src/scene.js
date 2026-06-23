@@ -1,5 +1,5 @@
 /**
- * scene.js — Scene Phaser dunia desa.
+ * scene.js, Scene Phaser dunia desa.
  * Render bergaya "cozy" prosedural (tanpa aset): tanah bertekstur, air beranimasi,
  * kartu bangunan berbayang, pemain ber-container (bayangan + bob + squash),
  * vignette, penanda tujuan berdenyut, plus efek juice saat transaksi.
@@ -127,7 +127,7 @@ export class Village extends Phaser.Scene {
     c.add([this.pShadow, this.pBody]);
     this.pc = c;
     this.moving = false;
-    // bob idle (pada emoji, properti y — tak bentrok dengan gerak container)
+    // bob idle (pada emoji, properti y, tak bentrok dengan gerak container)
     this.tweens.add({ targets:this.pBody, y:-4, duration:900, yoyo:true, repeat:-1, ease:'Sine.easeInOut' });
     this.updateMarker();
   }

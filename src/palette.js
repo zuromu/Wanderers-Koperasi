@@ -1,5 +1,5 @@
 /**
- * palette.js — Palet warna kohesif (cozy stylized) untuk seluruh game.
+ * palette.js, Palet warna kohesif (cozy stylized) untuk seluruh game.
  * Aturan: semua warna sedikit didesaturasi, cahaya hangat + bayangan dingin.
  */
 export const C = {

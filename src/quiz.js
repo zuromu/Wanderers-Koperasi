@@ -1,5 +1,5 @@
 /**
- * quiz.js — Kuis mikro per-konsep untuk MENGUKUR pemahaman koperasi.
+ * quiz.js, Kuis mikro per-konsep untuk MENGUKUR pemahaman koperasi.
  * Muncul di titik-titik kunci; benar/salah dicatat untuk nilai literasi.
  * Saat mode demo, jawaban benar dipilih otomatis.
  */
@@ -59,7 +59,7 @@ export function askQuiz(key, onDone){
       [{ label: 'Lanjut', go: () => onDone && onDone() }]);
   };
 
-  // Opsi diacak agar jawaban benar tidak selalu di posisi pertama —
+  // Opsi diacak agar jawaban benar tidak selalu di posisi pertama -
   // KECUALI mode demo, supaya demo cukup menekan tombol pertama (yang benar).
   let opts = quiz.options.map((o, i) => ({ ...o, i }));
   if (!S.demo) opts = shuffle(opts);

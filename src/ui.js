@@ -1,5 +1,5 @@
 /**
- * ui.js — Lapisan tampilan DOM: kotak dialog (dengan efek ketik), HUD, papan
+ * ui.js, Lapisan tampilan DOM: kotak dialog (dengan efek ketik), HUD, papan
  * misi. Juga menyalurkan efek "juice" ke scene saat uang berubah.
  */
 
@@ -115,7 +115,7 @@ export function winScreen(){
   showDialogue('🎉 Tamat',
     `Kamu telah menyelesaikan siklus koperasi: jadi anggota (Simpanan Pokok), menabung ` +
     `(Simpanan Wajib), pinjam modal, berusaha tani, melunasi pinjaman, dan menerima SHU di RAT. ` +
-    `Total uang akhir: ${rupiah(S.money)}. Inilah koperasi — dari, oleh, untuk anggota!`,
+    `Total uang akhir: ${rupiah(S.money)}. Inilah koperasi, dari, oleh, untuk anggota!`,
     [
       { label:'📋 Lihat Rapor & Sertifikat', go:()=>{ closeDialogue(); showRecap(); } },
       { label:'Jelajahi bebas', go: closeDialogue },
