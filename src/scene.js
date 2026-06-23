@@ -73,6 +73,8 @@ export class Village extends Phaser.Scene {
     this.makeAtmosphere();
     this.makeVignette();
     this.bindInput();
+    this.hintShowing = false;
+    this.makeInteractHint();
 
     this.cameras.main.fadeIn(450, 8, 6, 12);
     refresh();
@@ -415,43 +417,94 @@ export class Village extends Phaser.Scene {
   }
 
   _drawTreasury(g, cx, cy){
-    // Badan peti
-    g.fillStyle(C.wood).fillRoundedRect(cx-12, cy-4, 24, 17, 3);
-    g.lineStyle(2, C.ink, 1).strokeRoundedRect(cx-12, cy-4, 24, 17, 3);
-    g.fillStyle(0xd4a870, 0.4).fillRect(cx-11, cy-3, 22, 4);
-    // Tutup peti (lebih gelap)
-    g.fillStyle(C.woodDark).fillRoundedRect(cx-13, cy-11, 26, 9, 3);
-    g.lineStyle(2, C.ink, 1).strokeRoundedRect(cx-13, cy-11, 26, 9, 3);
-    g.fillStyle(0x9e6e3c, 0.35).fillRect(cx-12, cy-10, 24, 2);
-    // Pita emas di sambungan
-    g.fillStyle(C.gold, 0.8).fillRect(cx-12, cy-4, 24, 2);
-    // Gembok emas
-    g.fillStyle(C.gold).fillCircle(cx, cy-6, 4);
-    g.lineStyle(2, C.goldDark, 1).strokeCircle(cx, cy-6, 4);
-    g.fillStyle(C.goldDark).fillRect(cx-1.5, cy-5, 3, 4);
-    // Baut sudut
-    g.fillStyle(C.gold);
-    [[-9,-7],[9,-7],[-9,9],[9,9]].forEach(([bx,by]) => g.fillCircle(cx+bx, cy+by, 2.5));
+    // Alas/plinth batu
+    g.fillStyle(C.stoneDark).fillRect(cx-13, cy+9, 26, 4);
+    g.lineStyle(1.5, C.ink, 1).strokeRect(cx-13, cy+9, 26, 4);
+    // Badan gedung batu
+    g.fillStyle(C.stone).fillRect(cx-11, cy-6, 22, 17);
+    g.lineStyle(2, C.ink, 1).strokeRect(cx-11, cy-6, 22, 17);
+    g.fillStyle(0xb8b7c4, 0.35).fillRect(cx-10, cy-5, 20, 4);
+    // Entablatur
+    g.fillStyle(C.stoneDark).fillRect(cx-13, cy-8, 26, 4);
+    g.lineStyle(2, C.ink, 1).strokeRect(cx-13, cy-8, 26, 4);
+    // Pedimen segitiga
+    g.fillStyle(C.stone).fillTriangle(cx-13, cy-8, cx+13, cy-8, cx, cy-18);
+    g.lineStyle(0.7, C.stoneDark, 0.22);
+    for (let ri=2; ri<9; ri+=2.8){ const ry=cy-18+ri; const hw=ri*1.3; g.lineBetween(cx-hw,ry,cx+hw,ry); }
+    g.lineStyle(2, C.ink, 1).strokePoints([{x:cx-13,y:cy-8},{x:cx+13,y:cy-8},{x:cx,y:cy-18}], true);
+    // Pintu brankas: lengkungan di atas + badan persegi
+    const dx=cx, dy=cy-2;
+    g.fillStyle(C.shadow, 0.62).fillCircle(dx, dy, 5.5);
+    g.fillStyle(C.shadow, 0.62).fillRect(dx-5.5, dy, 11, 8);
+    g.lineStyle(2, C.ink, 0.9).strokeCircle(dx, dy, 5.5);
+    g.lineBetween(dx-5.5, dy, dx-5.5, dy+8);
+    g.lineBetween(dx+5.5, dy, dx+5.5, dy+8);
+    g.lineBetween(dx-5.5, dy+8, dx+5.5, dy+8);
+    // Baut pintu (sudut)
+    g.fillStyle(C.gold, 0.75);
+    [[-3,-4],[3,-4],[-3,3],[3,3]].forEach(([bx,by]) => g.fillCircle(dx+bx, dy+by, 1.5));
+    // Lubang kunci
+    g.fillStyle(C.goldDark).fillCircle(dx, dy+6, 2);
+    g.fillStyle(C.goldDark).fillRect(dx-1, dy+7, 2, 3);
+    // Koin emas di dasar (simbol kekayaan)
+    [-6,-1,4].forEach(ox => {
+      g.fillStyle(C.gold, 0.78).fillCircle(cx+ox, cy+11, 2.5);
+      g.lineStyle(0.5, C.goldDark, 0.65).strokeCircle(cx+ox, cy+11, 2.5);
+    });
   }
 
   _drawField(g, cx, cy){
-    // 3 petak tanah subur
-    for (let row=0; row<3; row++){
-      const ry = cy - 10 + row*8;
-      const sc = row === 1 ? C.path : C.pathShade;
-      g.fillStyle(sc).fillRoundedRect(cx-13, ry, 26, 6, 1);
-      g.lineStyle(1, C.ink, 0.25).strokeRoundedRect(cx-13, ry, 26, 6, 1);
-      // Tanaman per petak
-      g.fillStyle(C.leaf);
-      for (let i=0; i<4; i++) g.fillCircle(cx-10+i*7, ry+2, 2.5);
-      g.fillStyle(C.leafHi, 0.5);
-      for (let i=0; i<4; i++) g.fillCircle(cx-10.5+i*7, ry+1, 1);
-    }
-    // Pagar kayu kanan
-    g.fillStyle(C.wood).fillRect(cx+12, cy-12, 3, 26);
-    g.lineStyle(1.5, C.ink, 1).strokeRect(cx+12, cy-12, 3, 26);
-    g.lineStyle(1, C.woodDark, 0.6).lineBetween(cx-13, cy-6, cx+12, cy-6);
-    g.lineBetween(cx-13, cy+2, cx+12, cy+2);
+    // Pagar kayu kiri & kanan
+    g.fillStyle(C.wood).fillRect(cx-14, cy-16, 3, 32);
+    g.lineStyle(1, C.ink, 0.9).strokeRect(cx-14, cy-16, 3, 32);
+    g.fillStyle(C.wood).fillRect(cx+11, cy-16, 3, 32);
+    g.lineStyle(1, C.ink, 0.9).strokeRect(cx+11, cy-16, 3, 32);
+    // Rel pagar horizontal
+    g.fillStyle(C.woodDark, 0.5).fillRect(cx-14, cy-11, 28, 1.5);
+    g.fillStyle(C.woodDark, 0.5).fillRect(cx-14, cy+6,  28, 1.5);
+
+    // Saluran irigasi antar baris
+    g.fillStyle(0x4878b0, 0.55).fillRect(cx-11, cy-8, 22, 2);
+    g.fillStyle(0x7ab0e8, 0.30).fillRect(cx-11, cy-8, 22, 1);
+    g.fillStyle(0x4878b0, 0.55).fillRect(cx-11, cy+0, 22, 2);
+    g.fillStyle(0x7ab0e8, 0.30).fillRect(cx-11, cy+0, 22, 1);
+
+    // 3 baris tanah sawah dengan tanaman
+    [cy-14, cy-6, cy+2].forEach(ry => {
+      // Tanah subur
+      g.fillStyle(0x7a4f26).fillRect(cx-11, ry, 22, 6);
+      g.fillStyle(0x9e6a3a, 0.3).fillRect(cx-10, ry+1, 20, 2);
+      g.lineStyle(0.5, C.ink, 0.18).strokeRect(cx-11, ry, 22, 6);
+      // 3 tanaman padi per baris
+      for (let i=0; i<3; i++){
+        const px = cx-8 + i*8;
+        const by = ry + 1;
+        // Batang padi
+        g.fillStyle(0x6e8835, 0.85).fillRect(px-0.5, by+1, 1, 4);
+        // Daun kiri & kanan (garis diagonal)
+        g.lineStyle(1.5, C.leaf,   0.85).lineBetween(px, by+2, px-3, by-1);
+        g.lineStyle(1.5, C.leafHi, 0.75).lineBetween(px, by+2, px+3, by-1);
+        // Bulir gabah di pucuk
+        g.fillStyle(0xc8a840, 1).fillCircle(px, by-1, 2);
+        g.fillStyle(0xefd070, 0.55).fillCircle(px-0.5, by-1.5, 0.9);
+      }
+    });
+
+    // Orang-orangan sawah (pojok kiri atas)
+    const sx = cx-8, sy = cy-18;
+    g.fillStyle(C.woodDark).fillRect(sx-0.5, sy, 1, 10);     // tiang vertikal
+    g.fillStyle(C.woodDark).fillRect(sx-5, sy+2, 10, 1);     // palang horizontal
+    g.fillStyle(0xc8a040, 0.7).fillCircle(sx-5, sy+2, 2);    // jerami kiri
+    g.fillStyle(0xc8a040, 0.7).fillCircle(sx+5, sy+2, 2);    // jerami kanan
+    g.fillStyle(0xe0c080, 0.9).fillCircle(sx, sy-1, 3.5);    // kepala
+    g.lineStyle(0.5, C.ink, 0.65).strokeCircle(sx, sy-1, 3.5);
+    // Topi
+    g.fillStyle(0x3d2210).fillTriangle(sx-3, sy-1, sx+3, sy-1, sx, sy-6);
+    g.lineStyle(0.5, C.ink, 0.55).strokePoints(
+      [{x:sx-3,y:sy-1},{x:sx+3,y:sy-1},{x:sx,y:sy-6}], true);
+    // Senyum kecil
+    g.lineStyle(0.8, C.ink, 0.6).lineBetween(sx-1.5, sy+1, sx,   sy+2);
+    g.lineBetween(sx, sy+2, sx+1.5, sy+1);
   }
 
   _drawMarket(g, cx, cy){
@@ -808,7 +861,16 @@ export class Village extends Phaser.Scene {
       const shadow = this.add.ellipse(0, 9, 18, 7, C.shadow, 0.28);
       const sprite = this.add.image(0, 0, `npc_${i % 6}`).setOrigin(0.5, 0.88);
       const c = this.add.container(wx, wy, [shadow, sprite]).setDepth(2.1).setScale(SCALES[i]);
-      this.tweens.add({ targets:sprite, y:-2, duration:800+i*110, yoyo:true, repeat:-1, ease:'Sine.easeInOut' });
+      // Variasi animasi idle: bob / sway / rock per NPC
+      const itype = ['bob','sway','rock','bob','sway','rock','bob'][i];
+      if (itype === 'sway'){
+        this.tweens.add({ targets:sprite, scaleX:{from:1,to:0.93}, duration:1100+i*90,  yoyo:true, repeat:-1, ease:'Sine.easeInOut' });
+        this.tweens.add({ targets:sprite, y:{from:0,to:-1.5},      duration:920+i*80,   yoyo:true, repeat:-1, ease:'Sine.easeInOut' });
+      } else if (itype === 'rock'){
+        this.tweens.add({ targets:sprite, rotation:{from:-0.06,to:0.06}, duration:960+i*115, yoyo:true, repeat:-1, ease:'Sine.easeInOut' });
+      } else {
+        this.tweens.add({ targets:sprite, y:-2, duration:800+i*110, yoyo:true, repeat:-1, ease:'Sine.easeInOut' });
+      }
       this.npcs.push({ container:c, sprite, tx:sx, ty:sy, moveAt:Math.random()*2500 });
     }
   }
@@ -879,6 +941,15 @@ export class Village extends Phaser.Scene {
     this.add.image(0, 0, key).setOrigin(0).setDepth(100);
   }
 
+  makeInteractHint(){
+    this.hintRingGfx = this.add.graphics().setDepth(3.9);
+    this.hintText = this.add.text(0, 0, '[ SPASI ]', {
+      fontFamily:"'Pixelify Sans','Trebuchet MS',sans-serif",
+      fontSize:'7px', color:'#e8c84a',
+      stroke:'#241d2e', strokeThickness:2,
+    }).setOrigin(0.5).setDepth(99).setAlpha(0).setVisible(false);
+  }
+
   bindInput(){
     this.input.keyboard.on('keydown', e => {
       if (this.locked) return;
@@ -920,7 +991,7 @@ export class Village extends Phaser.Scene {
     }
     this.px = nx; this.py = ny;
     this.moving = true;
-    Audio.play('move');
+    Audio.play(+MAP[ny][nx] === 1 ? 'stepPath' : 'stepGrass');
     // Alternatif langkah kiri-kanan per langkah
     this.stepCount++;
     const stepEven = this.stepCount % 2 === 0;
@@ -1078,6 +1149,36 @@ export class Village extends Phaser.Scene {
       rip.g.clear();
       rip.g.lineStyle(1, C.waterHi, (1 - t) * 0.38);
       rip.g.strokeCircle(rip.sx, rip.sy, 3 + t * 14);
+    }
+    // Indikator interaksi: cincin emas berdenyut + teks melayang
+    if (this.hintRingGfx) this.hintRingGfx.clear();
+    if (!isDialogueOpen() && !this.locked && this.hintRingGfx){
+      const nearSpot = SPOTS.find(s => Math.abs(s.x-this.px)<=1 && Math.abs(s.y-this.py)<=1);
+      if (nearSpot){
+        const hx = nearSpot.x*TILE+TILE/2, hy = nearSpot.y*TILE+TILE/2;
+        const pulse = (Math.sin(time * 0.004) + 1) / 2;
+        this.hintRingGfx.lineStyle(2, C.gold, 0.14 + pulse * 0.24);
+        this.hintRingGfx.strokeEllipse(hx, hy+6, 52, 16);
+        this.hintRingGfx.lineStyle(1, C.gold, 0.05 + pulse * 0.10);
+        this.hintRingGfx.strokeEllipse(hx, hy+6, 62, 22);
+        if (!this.hintShowing){
+          this.hintShowing = true;
+          this.hintText.setVisible(true);
+          this.tweens.killTweensOf(this.hintText);
+          this.tweens.add({ targets:this.hintText, alpha:1, duration:250 });
+        }
+        this.hintText.setPosition(hx, hy - 32 + Math.sin(time * 0.003) * 3);
+      } else {
+        if (this.hintShowing){
+          this.hintShowing = false;
+          this.tweens.killTweensOf(this.hintText);
+          this.tweens.add({ targets:this.hintText, alpha:0, duration:180,
+            onComplete:()=>{ if (this.hintText) this.hintText.setVisible(false); } });
+        }
+      }
+    } else if (this.hintShowing){
+      this.hintShowing = false;
+      if (this.hintText) this.hintText.setAlpha(0).setVisible(false);
     }
   }
 }
