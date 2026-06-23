@@ -28,7 +28,9 @@ export function showDialogue(who, text, choices){
   dwho.textContent = who;
   dchoices.innerHTML = '';
   if (darrow) darrow.style.display = 'none';
+  dlg.classList.remove('dlg-open');
   dlg.style.display = 'block';
+  requestAnimationFrame(() => requestAnimationFrame(() => dlg.classList.add('dlg-open')));
   Audio.play('talk');
   startTyping(text);
 }
@@ -80,6 +82,7 @@ export function advanceDialogue(){
 
 export function closeDialogue(){
   dialogueOpen = false; typing = false; clearInterval(typeTimer);
+  dlg.classList.remove('dlg-open');
   dlg.style.display = 'none';
   if (darrow) darrow.style.display = 'none';
   refresh();

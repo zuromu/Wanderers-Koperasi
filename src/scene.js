@@ -52,6 +52,7 @@ export class Village extends Phaser.Scene {
     this.drawGround();
     this.drawWater();
     this.drawWaterFoam();
+    this.drawWaterLilies();
     this.drawTrees();
     this.makeClouds();
     this.drawBuildings();
@@ -133,6 +134,27 @@ export class Village extends Phaser.Scene {
           g.fillStyle(C.foam, 0.32).fillRect(x*TILE, y*TILE+3, 3, TILE-6);
         if (x<COLS-1 && +MAP[y][x+1]!==2)
           g.fillStyle(C.foam, 0.32).fillRect(x*TILE+TILE-3, y*TILE+3, 3, TILE-6);
+      }
+    }
+  }
+
+  /* -------- Teratai di permukaan air -------- */
+  drawWaterLilies(){
+    const g = this.add.graphics().setDepth(1.2);
+    const r = rng(77);
+    for (let y=1; y<ROWS-1; y++){
+      for (let x=1; x<COLS-1; x++){
+        if (+MAP[y][x] !== 2) continue;
+        if (r() > 0.20) continue;
+        const cx = x*TILE + 6 + r()*(TILE-12);
+        const cy = y*TILE + 6 + r()*(TILE-12);
+        const s  = 0.7 + r()*0.5;
+        g.fillStyle(C.leafDark, 0.6).fillEllipse(cx, cy, 14*s, 9*s);
+        g.fillStyle(C.leaf,     0.45).fillEllipse(cx-1*s, cy-1*s, 9*s, 6*s);
+        if (r() < 0.35){
+          g.fillStyle(0xffffff, 0.85).fillCircle(cx, cy, 2.2*s);
+          g.fillStyle(0xffbbcc, 0.9 ).fillCircle(cx, cy, 1.3*s);
+        }
       }
     }
   }

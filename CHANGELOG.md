@@ -3,6 +3,14 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.26.0], Dialogue polish & water decorations
+
+### Ditambahkan
+- Kotak dialog tampil dengan header strip emas (gradasi gold-dark → gold → gold-dark) sebagai nameplate pembicara — memisahkan nama dari teks.
+- Animasi slide-up (`dlgSlideIn`) saat dialog terbuka; kotak muncul smooth dari bawah.
+- Teratai prosedural di ubin air (20% petak air) dengan daun hijau berlapis dan bunga putih-pink kecil (35% teratai punya bunga).
+- Efek hover tombol dialog lebih ekspresif: angkat 2px + bayangan lebih dalam + warna lebih cerah.
+
 ## [0.25.0], NPC sprites & world polish
 
 ### Ditambahkan

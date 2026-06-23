@@ -47,31 +47,42 @@ h1 span{color:var(--gold)}
 .step-label{font-size:10px;color:#9a8a60;text-align:right;margin-top:2px;font-family:'Jersey 10',cursive}
 
 /* Dialog */
+@keyframes dlgSlideIn{
+  from{opacity:0;transform:translateX(-50%) translateY(14px)}
+  to  {opacity:1;transform:translateX(-50%) translateY(0)}}
 #dlg{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);width:92%;
   background:var(--panel);color:var(--ink);
-  border:3px solid var(--ink);
-  box-shadow:inset 0 0 0 1px var(--gold), 0 6px 0 var(--shadow), 0 10px 28px rgba(0,0,0,.5);
-  border-radius:6px;padding:14px 16px;display:none}
-#dlg .who{font-family:'Jersey 10',cursive;font-size:14px;font-weight:bold;color:var(--blue);margin-bottom:4px}
-#dlg .txt{font-size:14px;line-height:1.5;min-height:42px;color:var(--ink)}
-#dlg .choices{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap}
+  border:3px solid var(--gold);
+  box-shadow:0 0 0 2px var(--ink), 0 8px 0 var(--shadow), 0 14px 32px rgba(0,0,0,.55);
+  border-radius:8px;padding:0;display:none;overflow:hidden}
+#dlg.dlg-open{animation:dlgSlideIn .2s cubic-bezier(.22,1,.36,1) both}
+#dlg .who{
+  font-family:'Jersey 10',cursive;font-size:15px;font-weight:bold;
+  color:#231a0e;
+  background:linear-gradient(90deg,var(--gold-dark) 0%,var(--gold) 40%,var(--gold-dark) 100%);
+  padding:8px 16px;
+  text-shadow:0 1px 0 rgba(255,255,255,.22);
+  border-bottom:2px solid var(--shadow)}
+#dlg .txt{font-size:14px;line-height:1.55;min-height:42px;color:var(--ink);padding:12px 16px 4px}
+#dlg .choices{padding:8px 16px 4px;display:flex;gap:8px;flex-wrap:wrap}
 #dlg button{
   cursor:pointer;font-family:'Jersey 10',cursive;font-size:15px;font-weight:bold;
   border:2px solid var(--ink);
-  background:linear-gradient(180deg,#f5c44a 0%,var(--gold) 45%);
-  color:var(--ink);padding:7px 16px;border-radius:4px;
+  background:linear-gradient(180deg,#f5c44a 0%,var(--gold) 50%);
+  color:var(--ink);padding:7px 16px;border-radius:5px;
   box-shadow:2px 2px 0 var(--shadow);
-  transition:transform .08s ease,box-shadow .08s ease}
-#dlg button:hover{transform:translateY(-1px);background:#f5c44a}
+  transition:transform .08s ease,box-shadow .08s ease,background .1s ease}
+#dlg button:hover{transform:translateY(-2px);box-shadow:2px 4px 0 var(--shadow);background:linear-gradient(180deg,#ffd84a 0%,#f5c44a 50%)}
 #dlg button:active{transform:translate(1px,1px);box-shadow:1px 1px 0 var(--shadow)}
-#dlg .hint{font-size:11px;color:#8a7d5a;margin-top:8px}
+#dlg button[style*="not-allowed"]{filter:grayscale(.35);opacity:.55}
+#dlg .hint{font-size:11px;color:#8a7d5a;padding:0 16px 10px}
 
 .controls{color:#9aa0b4;font-size:12px;margin:10px 0 20px;text-align:center;padding:0 8px}
 kbd{background:#2a2e3c;border:1px solid #444;border-radius:4px;padding:1px 6px;font-size:11px;color:#fff}
 
 /* Arrow lanjut yang memantul */
 #darrow{display:none;text-align:center;color:var(--gold);font-size:16px;
-  margin-top:4px;animation:bounce .7s infinite ease-in-out}
+  padding:4px 0 6px;animation:bounce .7s infinite ease-in-out}
 @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
 
 /* Tombol bisukan & bantuan - panel perkamen */
