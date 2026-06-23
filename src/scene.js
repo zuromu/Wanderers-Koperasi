@@ -34,6 +34,7 @@ export class Village extends Phaser.Scene {
     this.pollen     = [];
     this.smoke      = [];
     this.birds      = [];
+    this.ripples    = [];
     this.locked     = true;
 
     this.drawGround();
@@ -47,6 +48,7 @@ export class Village extends Phaser.Scene {
     this.makePollen();
     this.makeSmoke();
     this.makeBirds();
+    this.makeRipples();
     this.makeVignette();
     this.bindInput();
 
@@ -441,6 +443,20 @@ export class Village extends Phaser.Scene {
     }
   }
 
+  /* -------- Lingkaran riak air -------- */
+  makeRipples(){
+    const r = rng(99);
+    // 6 titik tersebar di batas air atas dan bawah
+    const POS = [
+      [100,20],[380,20],[700,20],
+      [100,540],[380,540],[700,540],
+    ];
+    for (const [sx,sy] of POS){
+      const g = this.add.graphics().setDepth(1.3);
+      this.ripples.push({ g, sx, sy, phase:r() });
+    }
+  }
+
   /* -------- Vignette tepi layar -------- */
   makeVignette(){
     const w = COLS*TILE, h = ROWS*TILE, key = 'vignette';
@@ -581,6 +597,13 @@ export class Village extends Phaser.Scene {
       s.obj.x = s.sx + Math.sin(age * 7 + s.phX) * s.drift;
       s.obj.y = s.sy - age * 28;
       s.obj.setAlpha((1 - age) * 0.45);
+    }
+    // Riak lingkaran di atas air
+    for (const rip of this.ripples){
+      const t = (time * 0.00024 + rip.phase) % 1;
+      rip.g.clear();
+      rip.g.lineStyle(1, C.waterHi, (1 - t) * 0.38);
+      rip.g.strokeCircle(rip.sx, rip.sy, 3 + t * 14);
     }
   }
 }
