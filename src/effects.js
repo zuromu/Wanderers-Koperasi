@@ -17,8 +17,8 @@ export function ensureSpark(scene){
 /** Teks angka yang melayang naik lalu memudar (mis. "+Rp50.000"). */
 export function floatText(scene, x, y, text, color='#7fc96b'){
   const t = scene.add.text(x, y, text, {
-    fontFamily:'Trebuchet MS, Verdana, sans-serif',
-    fontSize:'20px', fontStyle:'bold', color,
+    fontFamily:"'Jersey 10','Trebuchet MS',sans-serif",
+    fontSize:'22px', fontStyle:'bold', color,
     stroke:'#14101c', strokeThickness:4,
   }).setOrigin(.5).setDepth(50);
   scene.tweens.add({

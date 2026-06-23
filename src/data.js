@@ -38,10 +38,10 @@ export const MAP = [
  * id dipakai oleh state machine untuk menentukan dialog & efeknya.
  */
 export const SPOTS = [
-  { id:'kepala',    x:3,  y:2,  emoji:'🧑‍🌾', name:'Kepala Desa' },
-  { id:'koperasi',  x:10, y:2,  emoji:'🏦',   name:'Kantor Koperasi' },
-  { id:'bendahara', x:16, y:4,  emoji:'💼',   name:'Bendahara' },
-  { id:'ladang',    x:3,  y:7,  emoji:'🌾',   name:'Ladang' },
-  { id:'pasar',     x:16, y:7,  emoji:'🏪',   name:'Pasar' },
-  { id:'balai',     x:10, y:12, emoji:'🏛️',  name:'Balai Desa (RAT)' },
+  { id:'kepala',    x:3,  y:2,  name:'Kepala Desa' },
+  { id:'koperasi',  x:10, y:2,  name:'Kantor Koperasi' },
+  { id:'bendahara', x:16, y:4,  name:'Bendahara' },
+  { id:'ladang',    x:3,  y:7,  name:'Ladang' },
+  { id:'pasar',     x:16, y:7,  name:'Pasar' },
+  { id:'balai',     x:10, y:12, name:'Balai Desa (RAT)' },
 ];
