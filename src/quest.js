@@ -46,10 +46,9 @@ export function interact(spotId){
           `Status: ANGGOTA aktif. Simpanan Pokok: ${rupiah(S.simpananPokok)}, Simpanan Wajib: ${rupiah(S.simpananWajib)}. Mau setor Simpanan Wajib Rp10.000?`,
           [
             { label:'Setor Rp10.000', cond:S.money>=10000, go:()=>{
-              S.money-=10000; S.simpananWajib+=10000;
-              say('Kantor Koperasi','Simpanan Wajib bertambah. Makin besar simpananmu, makin besar SHU yang kamu terima nanti!',
-                [{ label:'Oke', go:closeDialogue }]);
-              refresh();
+              S.money-=10000; S.simpananWajib+=10000; refresh();
+              say('Kantor Koperasi','Simpanan Wajib bertambah! Makin besar simpananmu, makin besar SHU-mu nanti.',
+                [{ label:'Oke', go:()=> askQuiz('wajib', closeDialogue) }]);
             }},
             { label:'Tutup', go:closeDialogue }
           ]);
@@ -155,7 +154,12 @@ export function interact(spotId){
       } else if (S.stage === 'DONE'){
         say('Balai Desa','RAT tahun ini sudah selesai. Terima kasih sudah belajar koperasi, Wanderer!');
       } else {
-        say('Balai Desa','RAT diadakan untuk anggota setelah siklus usaha selesai.');
+        say('Balai Desa',
+          'Rapat Anggota Tahunan (RAT) adalah rapat tertinggi koperasi. Setiap anggota punya satu suara, apapun besar simpanannya. Ingin pelajari lebih lanjut?',
+          [
+            { label:'Pelajari RAT', go:()=> askQuiz('rat', closeDialogue) },
+            { label:'Tutup', go:closeDialogue },
+          ]);
       }
       break;
   }
