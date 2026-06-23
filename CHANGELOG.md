@@ -3,6 +3,14 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.38.0], Game feel — torch glow, stage banners, puddles, character blink
+
+### Ditambahkan
+- **Cahaya obor dinamis**: saat pemain berada dalam ~80px dari obor, sprite karakter mendapat tint emas hangat (R:255, G turun 55, B turun 138) proporsional ke jarak — efek pencahayaan nyata real-time tanpa shader.
+- **Banner tahap misi**: saat misi berubah fase (LOAN/PLANT/SELL/REPAY/RAT/DONE), banner full-width muncul dengan animasi slide-up + fade, garis emas atas-bawah, dan teks besar emas — terasa seperti cutscene RPG studio.
+- **Genangan jalan**: ~5% tile jalan memiliki genangan kecil semi-transparan (ellips 10-17px, alpha 0.19) dengan highlight putih — detail "dunia hidup" yang ada di game storybook.
+- **Kedipan mata karakter**: setiap 3.2–7.6 detik, karakter pemain menutup mata (texture `char_blink`) selama 105ms lalu kembali ke idle — detail animasi yang biasanya hanya ada di game AAA.
+
 ## [0.37.0], Studio polish — music percussion, ambient chirps, NPC walk bounce, well detail
 
 ### Ditambahkan

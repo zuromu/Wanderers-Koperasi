@@ -125,6 +125,13 @@ export class Village extends Phaser.Scene {
           g.lineStyle(0.7, C.pathEdge, 0.28);
           g.lineBetween(cx2, cy2, cx2+(rs()-0.5)*10, cy2+(rs()-0.5)*10);
         }
+        // Genangan kecil (5% tile, tampak habis hujan)
+        if (rs() < 0.05){
+          const px2 = px+8+rs()*18, py2 = py+10+rs()*18;
+          const pw = 10+rs()*7, ph = 4+rs()*3;
+          g.fillStyle(0x88c4d8, 0.19).fillEllipse(px2, py2, pw, ph);
+          g.fillStyle(0xd0eff8, 0.10).fillEllipse(px2-1, py2-0.5, pw*0.5, ph*0.4);
+        }
       }
     }
   }
@@ -694,15 +701,33 @@ export class Village extends Phaser.Scene {
     this.stepCount = 0;
     // Bob idle
     this.tweens.add({ targets:this.pBody, y:-3, duration:900, yoyo:true, repeat:-1, ease:'Sine.easeInOut' });
+    this.scheduleBlink();
     this.updateMarker();
+  }
+
+  scheduleBlink(){
+    const delay = 3200 + Math.random() * 4400;
+    this.time.delayedCall(delay, () => {
+      if (this.pBody && !this.moving){
+        const prev = this.pBody.texture.key;
+        if (prev === 'char_i'){
+          this.pBody.setTexture('char_blink');
+          this.time.delayedCall(105, () => {
+            if (this.pBody && this.pBody.texture.key === 'char_blink')
+              this.pBody.setTexture('char_i');
+          });
+        }
+      }
+      this.scheduleBlink();
+    });
   }
 
   _makeCharTextures(){
     if (this.textures.exists('char_i')) return;
-    // fi: 0=idle-front, 1=walkL-front, 2=walkR-front, 3=idle-back, 4=walkL-back, 5=walkR-back
-    ['char_i','char_wL','char_wR','char_u','char_uL','char_uR'].forEach((key, fi) => {
+    // fi: 0=idle-front, 1=walkL-front, 2=walkR-front, 3=idle-back, 4=walkL-back, 5=walkR-back, 6=blink
+    ['char_i','char_wL','char_wR','char_u','char_uL','char_uR','char_blink'].forEach((key, fi) => {
       const g = this.add.graphics({ x:0, y:0 });
-      const back  = fi >= 3;
+      const back  = fi >= 3 && fi <= 5;  // fi=6 (blink) tetap tampak depan
       const stepL = fi === 1 || fi === 4;
       const stepR = fi === 2 || fi === 5;
       const walk  = stepL || stepR;
@@ -771,10 +796,13 @@ export class Village extends Phaser.Scene {
         g.fillStyle(0x9e7e5a, 0.3).fillCircle(10, 4, 3.5);
         // Alis
         g.fillStyle(C.hair, 0.85).fillRect(10, 7, 3, 1).fillRect(16, 7, 3, 1);
-        // Mata
-        g.fillStyle(C.ink).fillRect(11, 9, 2, 2).fillRect(16, 9, 2, 2);
-        // Sorotan mata
-        g.fillStyle(0xffffff, 0.75).fillRect(11, 9, 1, 1).fillRect(16, 9, 1, 1);
+        // Mata (tertutup saat blink, fi===6)
+        if (fi === 6){
+          g.fillStyle(C.ink, 0.9).fillRect(10, 10, 4, 1).fillRect(15, 10, 4, 1);
+        } else {
+          g.fillStyle(C.ink).fillRect(11, 9, 2, 2).fillRect(16, 9, 2, 2);
+          g.fillStyle(0xffffff, 0.75).fillRect(11, 9, 1, 1).fillRect(16, 9, 1, 1);
+        }
         // Hidung kecil
         g.fillStyle(C.skinShade, 0.45).fillRect(14, 12, 1, 1);
       }
@@ -1115,6 +1143,23 @@ export class Village extends Phaser.Scene {
     if (gameEl){ gameEl.classList.remove('win-glow'); requestAnimationFrame(()=> gameEl.classList.add('win-glow')); }
   }
 
+  stageBanner(text){
+    if (!text) return;
+    const w = COLS*TILE, cy = ROWS*TILE * 0.34 + 8;
+    const bar  = this.add.rectangle(w/2, cy, w, 48, C.ink, 0.92).setDepth(99.8).setAlpha(0);
+    const lTop = this.add.rectangle(w/2, cy-23, w, 2, C.gold, 0.5).setDepth(99.85).setAlpha(0);
+    const lBot = this.add.rectangle(w/2, cy+23, w, 2, C.gold, 0.5).setDepth(99.85).setAlpha(0);
+    const txt  = this.add.text(w/2, cy, text, {
+      fontFamily:"'Jersey 10',cursive", fontSize:'22px',
+      color:'#e0a52b', stroke:'#14101c', strokeThickness:3,
+    }).setOrigin(0.5).setDepth(99.9).setAlpha(0);
+    const all = [bar, lTop, lBot, txt];
+    this.tweens.add({ targets:all, alpha:1, y:'-=9', duration:280, ease:'Quad.easeOut',
+      onComplete:()=> this.time.delayedCall(1700, ()=>
+        this.tweens.add({ targets:all, alpha:0, duration:360,
+          onComplete:()=> all.forEach(o => o.destroy()) })) });
+  }
+
   update(time){
     // Air beranimasi
     for (const w of this.waterTiles){
@@ -1177,6 +1222,23 @@ export class Village extends Phaser.Scene {
       t.flame.clear();
       t.flame.fillStyle(0xff9911, 0.9).fillCircle(t.sx, t.sy, 2.8 + v*0.7);
       t.flame.fillStyle(0xffee55, 0.85).fillCircle(t.sx, t.sy - 1, 1.6);
+    }
+    // Cahaya hangat obor pada karakter (tint dinamis)
+    if (this.pBody && this.torches.length){
+      let closest = 999;
+      for (const t of this.torches){
+        const dx = this.pc.x - t.sx, dy = this.pc.y - t.sy;
+        const d = Math.sqrt(dx*dx + dy*dy);
+        if (d < closest) closest = d;
+      }
+      if (closest < 80){
+        const w = Math.max(0, 1 - closest / 80);
+        const gv = Math.round(255 - w * 55);
+        const b2 = Math.round(255 - w * 138);
+        this.pBody.setTint((0xff << 16) | (gv << 8) | b2);
+      } else {
+        this.pBody.clearTint();
+      }
     }
     // Riak lingkaran di atas air
     for (const rip of this.ripples){

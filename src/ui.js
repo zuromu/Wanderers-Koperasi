@@ -121,6 +121,15 @@ const STAGE_TOAST = {
   DONE:  'Siklus koperasi selesai — kamu luar biasa!',
 };
 
+const STAGE_BANNER = {
+  LOAN:  '★ Anggota Koperasi!',
+  PLANT: '◆ Modal Cair!',
+  SELL:  '◆ Panen Melimpah!',
+  REPAY: '◆ Waktunya Melunasi',
+  RAT:   '★ Menuju RAT!',
+  DONE:  '★ Siklus Selesai!',
+};
+
 function showToast(msg){
   let t = document.getElementById('toast');
   if (!t){
@@ -158,9 +167,10 @@ export function refresh(){
   }
   lastMoney = S.money;
 
-  // Toast saat tahap misi berubah
+  // Toast + banner sinematik saat tahap misi berubah
   if (S.stage !== lastStage){
     if (STAGE_TOAST[S.stage]) showToast(STAGE_TOAST[S.stage]);
+    if (STAGE_BANNER[S.stage]) sceneRef?.stageBanner?.(STAGE_BANNER[S.stage]);
     lastStage = S.stage;
   }
 
