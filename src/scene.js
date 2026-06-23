@@ -24,6 +24,16 @@ const lerpC = (c1, c2, t) => {
   return (r|0)<<16 | (g|0)<<8 | (b|0);
 };
 
+const NPC_TIPS = [
+  'Koperasi pertama di Indonesia didirikan oleh Raden Aria Wiriatmadja pada 1896 di Purwokerto, untuk membantu pegawai dari jeratan rentenir.',
+  'Ada lebih dari 140.000 koperasi aktif di Indonesia! Bersama kita lebih kuat.',
+  'Tujuh prinsip koperasi internasional: keanggotaan sukarela, pengelolaan demokratis, otonomi, pendidikan, kerja sama antarkoperasi, dan kepedulian komunitas.',
+  'Koperasi Simpan Pinjam (Kospin) menyediakan akses modal yang adil tanpa bunga mencekik seperti rentenir.',
+  'Di RAT, setiap anggota punya SATU suara, tidak peduli besar kecil simpanannya. Inilah demokrasi ekonomi!',
+  'SHU bukan bunga bank — ini bagi hasil keuntungan koperasi. Makin aktif kamu bertransaksi, makin besar SHU-mu.',
+  'Gotong royong adalah jiwa koperasi: dari anggota, oleh anggota, dan untuk kesejahteraan anggota bersama.',
+];
+
 export class Village extends Phaser.Scene {
   constructor(){ super('Village'); }
 
@@ -569,8 +579,10 @@ export class Village extends Phaser.Scene {
 
   tryInteract(){
     const near = SPOTS.find(s => Math.abs(s.x-this.px)<=1 && Math.abs(s.y-this.py)<=1);
-    if (near){ Audio.play('talk'); interact(near.id); }
-    else showDialogue('Wanderer','Tidak ada siapa-siapa di sini. Dekati bangunan bertanda lalu tekan Spasi.');
+    if (near){ Audio.play('talk'); interact(near.id); return; }
+    const nearNpc = this.npcs.find(n => Math.abs(n.tx-this.px)<=1 && Math.abs(n.ty-this.py)<=1);
+    if (nearNpc){ Audio.play('talk'); showDialogue('Warga Desa', NPC_TIPS[Math.floor(Math.random()*NPC_TIPS.length)]); return; }
+    showDialogue('Wanderer','Tidak ada siapa-siapa di sini. Dekati bangunan atau warga, lalu tekan Spasi.');
   }
 
   /* -------- Efek juice -------- */
