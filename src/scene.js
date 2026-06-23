@@ -48,6 +48,7 @@ export class Village extends Phaser.Scene {
     this.npcs       = [];
     this.clouds     = [];
     this.torches    = [];
+    this.fireflies  = [];
     this.locked     = true;
 
     this.drawGround();
@@ -69,6 +70,7 @@ export class Village extends Phaser.Scene {
     this.makeBirds();
     this.makeRipples();
     this.makeNpcs();
+    this.makeFireflies();
     this.makeLeaves();
     this.makeAtmosphere();
     this.makeVignette();
@@ -284,7 +286,7 @@ export class Village extends Phaser.Scene {
     }
   }
 
-  /* -------- Teratai di permukaan air -------- */
+  /* -------- Teratai di permukaan air (lebih detail) -------- */
   drawWaterLilies(){
     const g = this.add.graphics().setDepth(1.2);
     const r = rng(77);
@@ -295,11 +297,22 @@ export class Village extends Phaser.Scene {
         const cx = x*TILE + 6 + r()*(TILE-12);
         const cy = y*TILE + 6 + r()*(TILE-12);
         const s  = 0.7 + r()*0.5;
-        g.fillStyle(C.leafDark, 0.6).fillEllipse(cx, cy, 14*s, 9*s);
-        g.fillStyle(C.leaf,     0.45).fillEllipse(cx-1*s, cy-1*s, 9*s, 6*s);
+        // Bayangan di bawah bantalan
+        g.fillStyle(C.shadow, 0.16).fillEllipse(cx+1, cy+2, 14*s, 9*s);
+        // Bantalan daun utama
+        g.fillStyle(C.leafDark, 0.74).fillEllipse(cx, cy, 14*s, 9*s);
+        // Highlight hijau muda
+        g.fillStyle(C.leaf, 0.38).fillEllipse(cx-1.5*s, cy-s, 9*s, 5.5*s);
+        // Serat / vena daun
+        g.lineStyle(0.7, C.leafHi, 0.22).lineBetween(cx+s*5, cy, cx-s*5, cy);
+        g.lineStyle(0.6, C.leafHi, 0.17).lineBetween(cx+s*4, cy-s*2, cx-s*3, cy-s);
+        g.lineStyle(0.6, C.leafHi, 0.17).lineBetween(cx+s*4, cy+s*2, cx-s*3, cy+s);
+        // Bunga teratai (35%)
         if (r() < 0.35){
-          g.fillStyle(0xffffff, 0.85).fillCircle(cx, cy, 2.2*s);
-          g.fillStyle(0xffbbcc, 0.9 ).fillCircle(cx, cy, 1.3*s);
+          g.fillStyle(0xffe8f0, 0.90).fillCircle(cx, cy, s*2.8);   // mahkota luar
+          g.fillStyle(0xffd8b0, 0.95).fillCircle(cx, cy, s*1.9);   // mahkota dalam
+          g.fillStyle(0xffee55, 1.00).fillCircle(cx, cy, s*1.1);   // kepala sari kuning
+          g.fillStyle(0xffffff, 0.50).fillCircle(cx-0.5*s, cy-0.5*s, 0.5*s); // specular
         }
       }
     }
@@ -925,7 +938,23 @@ export class Village extends Phaser.Scene {
       } else {
         this.tweens.add({ targets:sprite, y:-2, duration:800+i*110, yoyo:true, repeat:-1, ease:'Sine.easeInOut' });
       }
-      this.npcs.push({ container:c, sprite, tx:sx, ty:sy, moveAt:Math.random()*2500 });
+      this.npcs.push({ container:c, sprite, tx:sx, ty:sy, moveAt:Math.random()*2500, bubble:null, bubbleFading:false });
+    }
+  }
+
+  /* -------- Kunang-kunang berkelip di dekat pohon -------- */
+  makeFireflies(){
+    const r = rng(2024);
+    const ANCHORS = [
+      [2,1],[5,1],[12,1],[17,1],[1,3],[1,6],[1,9],[1,11],
+      [18,3],[18,6],[18,9],[18,11],[2,11],[6,11],[13,11],[17,11],
+    ];
+    for (let i=0; i<9; i++){
+      const [tx,ty] = ANCHORS[(r()*ANCHORS.length)|0];
+      const bx = tx*TILE + TILE/2 + (r()-0.5)*TILE*1.6;
+      const by = ty*TILE + TILE/2 + (r()-0.5)*TILE*1.2;
+      const dot = this.add.arc(bx, by, 1.5+r()*0.8, 0, 360, false, 0xffee55, 0).setDepth(5.5);
+      this.fireflies.push({ obj:dot, ox:bx, oy:by, sp:0.35+r()*0.55, ph:r()*Math.PI*2, aph:r()*Math.PI*2 });
     }
   }
 
@@ -1246,6 +1275,35 @@ export class Village extends Phaser.Scene {
       rip.g.clear();
       rip.g.lineStyle(1, C.waterHi, (1 - t) * 0.38);
       rip.g.strokeCircle(rip.sx, rip.sy, 3 + t * 14);
+    }
+    // Kunang-kunang berkelip
+    for (const ff of this.fireflies){
+      ff.obj.x = ff.ox + Math.sin(time * ff.sp * 0.0006 + ff.ph) * 14;
+      ff.obj.y = ff.oy + Math.cos(time * ff.sp * 0.0004 + ff.ph * 1.3) * 10;
+      ff.obj.setAlpha(((Math.sin(time * 0.0022 + ff.aph) + 1) / 2) * 0.60);
+    }
+    // Gelembung pendekatan NPC ("...")
+    if (!this.locked){
+      for (const npc of this.npcs){
+        const near = Math.abs(npc.tx-this.px)<=1 && Math.abs(npc.ty-this.py)<=1;
+        const show = near && !isDialogueOpen();
+        if (show && !npc.bubble && !npc.bubbleFading){
+          npc.bubble = this.add.text(0, -36, '...', {
+            fontFamily:"'Pixelify Sans',sans-serif",
+            fontSize:'9px', color:'#f4ecd8',
+            stroke:'#241d2e', strokeThickness:2,
+            backgroundColor:'rgba(36,29,46,0.72)',
+            padding:{ x:5, y:2 }
+          }).setOrigin(0.5).setDepth(6.8).setAlpha(0);
+          npc.container.add(npc.bubble);
+          this.tweens.add({ targets:npc.bubble, alpha:1, y:-42, duration:240, ease:'Quad.easeOut' });
+        } else if (!show && npc.bubble && !npc.bubbleFading){
+          npc.bubbleFading = true;
+          const b = npc.bubble;
+          this.tweens.add({ targets:b, alpha:0, duration:180,
+            onComplete:()=>{ npc.container.remove(b, true); npc.bubble=null; npc.bubbleFading=false; } });
+        }
+      }
     }
     // Indikator interaksi: cincin emas berdenyut + teks melayang
     if (this.hintRingGfx) this.hintRingGfx.clear();
