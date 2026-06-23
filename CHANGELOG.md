@@ -3,6 +3,16 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.40.0], Studio living world — bird silhouettes, window glows, tile blending, butterflies
+
+### Ditambahkan
+- **Siluet burung kepak sayap**: 8 burung kini menggunakan tekstur siluet V-shape (lineBetween 4 segmen) yang membentuk formasi-V longgar, masing-masing kepak sayap secara asinkron (scaleY 0.55–1.10 per burung) — bukan lagi titik hitam yang meluncur datar.
+- **Cahaya jendela berkedip**: cottage dan balai desa kini memiliki persegi panjang cahaya amber (0xffdd88) yang perlahan berdenyut di dalam kaca jendela (alpha ±0.28 per detik) — mensimulasikan lilin atau orang yang lewat di dalam ruangan.
+- **Transisi tepi petak halus**: zona 6px di perbatasan rumput-jalan kini diberi warna tengah (lerp 50%) dengan alpha 0.35, menghilangkan tepi kotak yang tajam — dunia tampak menyatu dan organik, bukan tile-grid yang terlihat jelas.
+- **Asap cerobong mengembang**: asap cottage kini mulai kecil (scale 0.55) dan membesar hingga 2.95× saat naik, lalu memudar — mirip asap nyata yang mengembang di udara, bukan lingkaran kecil yang bergerak lurus.
+- **Kupu-kupu ambien**: 4 kupu-kupu monarch oranye melayang di area rumput, sayap membuka-menutup (scaleX 0.22–1.0) dengan pola terbang figure-eight berlapis — detail kecil yang membuat dunia terasa penuh kehidupan.
+- **Asap lebih lebat**: jumlah partikel asap naik dari 5 ke 8 dengan radius sedikit lebih besar — cerobong cottage terlihat aktif sepanjang waktu.
+
 ## [0.39.0], Ambient life — fireflies, NPC bubbles, detailed lily pads
 
 ### Ditambahkan

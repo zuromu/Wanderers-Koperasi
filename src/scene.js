@@ -40,16 +40,18 @@ export class Village extends Phaser.Scene {
   create(){
     setSceneRef(this);
     ensureSpark(this);
-    this.waterTiles = [];
-    this.pollen     = [];
-    this.smoke      = [];
-    this.birds      = [];
-    this.ripples    = [];
-    this.npcs       = [];
-    this.clouds     = [];
-    this.torches    = [];
-    this.fireflies  = [];
-    this.locked     = true;
+    this.waterTiles  = [];
+    this.pollen      = [];
+    this.smoke       = [];
+    this.birds       = [];
+    this.ripples     = [];
+    this.npcs        = [];
+    this.clouds      = [];
+    this.torches     = [];
+    this.fireflies   = [];
+    this.windowGlows = [];
+    this.butterflies = [];
+    this.locked      = true;
 
     this.drawGround();
     this.drawGrassTufts();
@@ -61,6 +63,7 @@ export class Village extends Phaser.Scene {
     this.drawTrees();
     this.makeClouds();
     this.drawBuildings();
+    this.makeWindowGlows();
     this.drawPropsDecor();
     this.makeTorches();
     this.makeMarker();
@@ -72,6 +75,7 @@ export class Village extends Phaser.Scene {
     this.makeNpcs();
     this.makeFireflies();
     this.makeLeaves();
+    this.makeButterflies();
     this.makeAtmosphere();
     this.makeVignette();
     this.bindInput();
@@ -133,6 +137,21 @@ export class Village extends Phaser.Scene {
           const pw = 10+rs()*7, ph = 4+rs()*3;
           g.fillStyle(0x88c4d8, 0.19).fillEllipse(px2, py2, pw, ph);
           g.fillStyle(0xd0eff8, 0.10).fillEllipse(px2-1, py2-0.5, pw*0.5, ph*0.4);
+        }
+      }
+    }
+    // Transisi halus antara petak rumput dan jalan (3px feather di tepi)
+    for (let y=0; y<ROWS; y++){
+      for (let x=0; x<COLS; x++){
+        const t = +MAP[y][x];
+        if (t === 2) continue;
+        if (x+1 < COLS && +MAP[y][x+1] !== 2 && +MAP[y][x+1] !== t){
+          const mid = lerpC(t===1?C.path:C.grass, +MAP[y][x+1]===1?C.path:C.grass, 0.5);
+          g.fillStyle(mid, 0.35).fillRect((x+1)*TILE-3, y*TILE+1, 6, TILE-2);
+        }
+        if (y+1 < ROWS && +MAP[y+1][x] !== 2 && +MAP[y+1][x] !== t){
+          const mid = lerpC(t===1?C.path:C.grass, +MAP[y+1][x]===1?C.path:C.grass, 0.5);
+          g.fillStyle(mid, 0.35).fillRect(x*TILE+1, (y+1)*TILE-3, TILE-2, 6);
         }
       }
     }
@@ -839,6 +858,31 @@ export class Village extends Phaser.Scene {
     }
   }
 
+  /* -------- Cahaya jendela berkedip (di atas grafis bangunan statis) -------- */
+  makeWindowGlows(){
+    const r = rng(2288);
+    SPOTS.forEach(s => {
+      const cx = s.x*TILE+TILE/2, cy = s.y*TILE+TILE/2;
+      if (s.id === 'kepala'){
+        // Jendela cottage: fillRect(cx-11, cy-13, 7, 7)
+        const g = this.add.rectangle(cx-7.5, cy-9.5, 5, 5, 0xffdd88).setDepth(3.05).setAlpha(0.4);
+        this.windowGlows.push({ obj:g, phase: r()*Math.PI*2, rate:0.0019+r()*0.0008, base:0.30, amp:0.28 });
+      }
+      if (s.id === 'balai'){
+        // Jendela balai: fillRect(cx+ox, cy-6, 5, 5) untuk ox=-11 dan ox=8
+        [-11, 8].forEach((ox, i) => {
+          const g = this.add.rectangle(cx+ox+2.5, cy-3.5, 3, 3, 0xffdd88).setDepth(3.05).setAlpha(0.35);
+          this.windowGlows.push({ obj:g, phase: r()*Math.PI*2 + i*1.4, rate:0.0017+r()*0.0007, base:0.22, amp:0.22 });
+        });
+      }
+      if (s.id === 'koperasi'){
+        // Kaca pintu: fillRect(cx-3, cy-6, 6, 4)
+        const g = this.add.rectangle(cx, cy-4, 4, 2, 0xddeeff).setDepth(3.05).setAlpha(0.20);
+        this.windowGlows.push({ obj:g, phase: r()*Math.PI*2, rate:0.0013+r()*0.0005, base:0.12, amp:0.14 });
+      }
+    });
+  }
+
   /* -------- Asap cerobong beranimasi -------- */
   makeSmoke(){
     const kepala = SPOTS.find(s => s.id === 'kepala');
@@ -846,18 +890,42 @@ export class Village extends Phaser.Scene {
     const sx = kepala.x * TILE + TILE/2 + 7;
     const sy = kepala.y * TILE + TILE/2 - 26;
     const r = rng(55);
-    for (let i = 0; i < 5; i++){
-      const dot = this.add.circle(sx, sy, 1.8+r()*1.4, 0x9a9aaa, 0.35).setDepth(3.2);
-      this.smoke.push({ obj:dot, sx, sy, phase:r(), phX:r()*Math.PI*2, drift:2+r()*3 });
+    for (let i = 0; i < 8; i++){
+      const dot = this.add.circle(sx, sy, 2.2+r()*1.6, 0x9a9aaa, 0.30).setDepth(3.2);
+      this.smoke.push({ obj:dot, sx, sy, phase:r(), phX:r()*Math.PI*2, drift:2.5+r()*3 });
     }
   }
 
   /* -------- Kawanan burung melintas -------- */
   makeBirds(){
+    if (!this.textures.exists('bird_sil')){
+      const bg = this.add.graphics();
+      bg.lineStyle(1.8, C.ink, 0.70);
+      bg.lineBetween(0, 6, 6, 2);
+      bg.lineBetween(6, 2, 8, 5);
+      bg.lineBetween(8, 5, 10, 2);
+      bg.lineBetween(10, 2, 16, 6);
+      bg.generateTexture('bird_sil', 16, 8);
+      bg.destroy();
+    }
     const r = rng(33);
-    for (let i = 0; i < 5; i++){
-      const dot = this.add.circle(0, 0, 1.5+r()*0.5, C.ink, 0.5).setDepth(5.8);
-      this.birds.push({ obj:dot, xOff:(r()-0.5)*22, baseY:18+r()*34, ph:r()*Math.PI*2 });
+    // Formasi V longgar: 8 burung dengan offset berbasis posisi V
+    const V_OFF = [
+      [0, 0], [-14, 7], [14, 7], [-28, 14], [28, 14],
+      [-20, 22], [20, 22], [0, 28],
+    ];
+    for (let i = 0; i < 8; i++){
+      const sc = 0.72 + r() * 0.38;
+      const img = this.add.image(0, 0, 'bird_sil')
+        .setOrigin(0.5).setDepth(5.8).setAlpha(0.55 + r()*0.2).setScale(sc);
+      this.birds.push({
+        obj:   img,
+        xOff:  V_OFF[i][0] + (r()-0.5)*6,
+        baseY: 22 + r()*28 + V_OFF[i][1],
+        ph:    r()*Math.PI*2,
+        flapPh: r()*Math.PI*2,
+        flapSp: 0.0072 + r()*0.003,
+      });
     }
   }
 
@@ -979,6 +1047,48 @@ export class Village extends Phaser.Scene {
       alpha:{ start:0.58, end:0 },
       frequency:550, quantity:1,
     }).setDepth(4.8);
+  }
+
+  /* -------- Kupu-kupu ambien (4 ekor, terbang melayang di area rumput) -------- */
+  makeButterflies(){
+    if (!this.textures.exists('butterfly')){
+      const bg = this.add.graphics();
+      // Sayap kiri atas (oranye)
+      bg.fillStyle(0xff8822, 0.90).fillEllipse(4, 5, 8, 7);
+      // Sayap kiri bawah (oranye gelap)
+      bg.fillStyle(0xe05510, 0.85).fillEllipse(3, 10, 5, 5);
+      // Sayap kanan atas
+      bg.fillStyle(0xff8822, 0.90).fillEllipse(12, 5, 8, 7);
+      // Sayap kanan bawah
+      bg.fillStyle(0xe05510, 0.85).fillEllipse(13, 10, 5, 5);
+      // Garis vena sayap
+      bg.lineStyle(0.5, 0x331100, 0.4);
+      bg.lineBetween(4, 2, 8, 8); bg.lineBetween(12, 2, 8, 8);
+      // Badan
+      bg.fillStyle(0x331100, 0.9).fillRect(7.5, 2, 1.5, 10);
+      bg.generateTexture('butterfly', 16, 14);
+      bg.destroy();
+    }
+    const r = rng(7701);
+    // Titik jangkar di area rumput (hindari air / bangunan)
+    const ANCHORS = [
+      [3,3],[7,4],[14,3],[4,9],[16,8],[8,10],[11,5],[3,7],
+    ];
+    for (let i=0; i<4; i++){
+      const [ax, ay] = ANCHORS[i];
+      const ox = ax*TILE + (r()-0.5)*TILE*0.8;
+      const oy = ay*TILE + (r()-0.5)*TILE*0.8;
+      const sc = 0.70 + r()*0.22;
+      const img = this.add.image(ox, oy, 'butterfly')
+        .setOrigin(0.5).setDepth(5).setAlpha(0.72 + r()*0.18).setScale(sc);
+      this.butterflies.push({
+        obj: img, ox, oy, sc,
+        sp:   0.38 + r()*0.32,
+        ph:   r()*Math.PI*2,
+        flapPh: r()*Math.PI*2,
+        flapSp: 0.009  + r()*0.005,
+      });
+    }
   }
 
   /* -------- Overlay cahaya direksinoal (matahari kanan atas) -------- */
@@ -1207,18 +1317,34 @@ export class Village extends Phaser.Scene {
       cloud.obj.x += cloud.speed;
       if (cloud.obj.x > COLS*TILE + 120) cloud.obj.x = -120;
     }
-    // Kawanan burung melintas (kanan ke kiri, ulang tiap ~19 dtk)
+    // Kawanan burung melintas (kanan ke kiri, ulang tiap ~19 dtk) — formasi V + kepak sayap
     const birdX = (time * 0.046) % (COLS*TILE + 120) - 60;
     for (const b of this.birds){
       b.obj.x = birdX + b.xOff;
       b.obj.y = b.baseY + Math.sin(time * 0.0009 + b.ph) * 4;
+      const flap = 0.55 + Math.abs(Math.sin(time * b.flapSp + b.flapPh)) * 0.55;
+      b.obj.setScale(b.obj.scaleX, flap * b.obj.scaleX);
     }
-    // Asap cerobong
+    // Asap cerobong — mengembang dan memudar saat naik
     for (const s of this.smoke){
       const age = (time * 0.00042 + s.phase) % 1;
       s.obj.x = s.sx + Math.sin(age * 7 + s.phX) * s.drift;
-      s.obj.y = s.sy - age * 28;
-      s.obj.setAlpha((1 - age) * 0.45);
+      s.obj.y = s.sy - age * 30;
+      s.obj.setAlpha((1 - age) * 0.42);
+      s.obj.setScale(0.55 + age * 2.4);
+    }
+    // Cahaya jendela berkedip (simulasi lilin / orang lewat)
+    for (const wg of this.windowGlows){
+      wg.obj.setAlpha(wg.base + Math.sin(time * wg.rate + wg.phase) * wg.amp);
+    }
+    // Kupu-kupu melayang
+    for (const bf of this.butterflies){
+      bf.obj.x = bf.ox + Math.sin(time * bf.sp * 0.0006 + bf.ph) * 28
+               + Math.sin(time * bf.sp * 0.0014 + bf.ph * 0.7) * 10;
+      bf.obj.y = bf.oy + Math.cos(time * bf.sp * 0.0004 + bf.ph) * 14
+               + Math.cos(time * bf.sp * 0.0011 + bf.ph * 1.3) * 6;
+      const fw = 0.22 + Math.abs(Math.sin(time * bf.flapSp + bf.flapPh)) * 0.78;
+      bf.obj.setScale(fw * bf.sc, bf.sc);
     }
     // Warga desa bergerak
     for (const npc of this.npcs){
