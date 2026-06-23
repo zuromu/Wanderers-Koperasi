@@ -14,6 +14,7 @@ const STEPS = [
   { spot:'bendahara', cap:'Meminjam modal usaha dari koperasi (bukan rentenir!).' },
   { spot:'ladang',    cap:'Membeli bibit dan mulai bertani.' },
   { spot:'pasar',     cap:'Menjual hasil panen untuk meraih untung.' },
+  { spot:'koperasi',  cap:'Setor Simpanan Wajib — tabungan rutin anggota koperasi!' },
   { spot:'bendahara', cap:'Melunasi pinjaman koperasi dengan bertanggung jawab.' },
   { spot:'balai',     cap:'Menghadiri RAT & menerima SHU, untung bersama!' },
 ];
@@ -53,7 +54,7 @@ export async function runDemo(scene){
     interact(st.spot);
     // selesaikan rangkaian dialog untuk langkah ini
     let guard = 0;
-    while (isDialogueOpen() && guard++ < 16){
+    while (isDialogueOpen() && guard++ < 22){
       advanceDialogue();        // selesaikan efek ketik / tutup dialog informatif
       await wait(520);
       clickFirst();             // pilih tombol utama / jawaban benar
