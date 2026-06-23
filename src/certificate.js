@@ -33,7 +33,7 @@ export function showRecap(){
   const rows = CONCEPTS.map(c => `<li>${mark(c.key)} ${c.label}</li>`).join('');
   el.innerHTML = `
     <div class="title-card recap-card">
-      <h2>📋 Rapor Literasi Koperasi</h2>
+      <h2>Rapor Literasi Koperasi</h2>
       <div class="grade">${g.grade}</div>
       <p class="tag" style="margin:2px 0 6px">${S.playerName}, <b>${g.title}</b><br>
          Skor kuis: ${S.quizCorrect}/${S.quizTotal} (${Math.round(g.pct*100)}%)</p>
@@ -41,7 +41,7 @@ export function showRecap(){
       <p class="tag" style="font-size:13px;opacity:.85">Total kekayaan akhir: <b>${rupiah(S.money)}</b>
          &middot; SHU diterima: <b>${rupiah(S.shu)}</b></p>
       <div class="title-btns">
-        <button class="primary" id="btnCert">⬇ Unduh Sertifikat</button>
+        <button class="primary" id="btnCert">Unduh Sertifikat</button>
         <button id="btnReplay">Main Lagi</button>
       </div>
     </div>`;
@@ -70,7 +70,7 @@ export function downloadCertificate(){
     x.fillText(t, W/2, y);
   };
 
-  center('🧑‍🌾  🏦  🌾', 130, '40px serif', '#1c1926');
+  center('~ Wanderer\'s Koperasi Quest ~', 110, 'italic 18px Georgia, serif', '#a9781b');
   center('SERTIFIKAT LITERASI KOPERASI', 200, 'bold 40px Georgia, serif', '#1c1926');
   center('Diberikan dengan bangga kepada', 260, '20px Georgia, serif', '#5b5160');
   center(S.playerName, 330, 'bold 56px Georgia, serif', '#c47f1e');

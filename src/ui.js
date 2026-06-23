@@ -97,7 +97,7 @@ export function refresh(){
   document.getElementById('member').textContent   = S.isMember ? 'Anggota ✓' : 'Calon Anggota';
 
   const q = questInfo();
-  document.getElementById('qtitle').textContent = '📜 ' + q.title;
+  document.getElementById('qtitle').textContent = q.title;
   document.getElementById('qobj').textContent   = q.objective;
 
   // Efek juice saat saldo berubah
@@ -112,12 +112,12 @@ export function refresh(){
 /** Layar kemenangan + konfeti + rapor/sertifikat. */
 export function winScreen(){
   if (sceneRef && sceneRef.celebrate) sceneRef.celebrate();
-  showDialogue('🎉 Tamat',
+  showDialogue('Tamat!',
     `Kamu telah menyelesaikan siklus koperasi: jadi anggota (Simpanan Pokok), menabung ` +
     `(Simpanan Wajib), pinjam modal, berusaha tani, melunasi pinjaman, dan menerima SHU di RAT. ` +
     `Total uang akhir: ${rupiah(S.money)}. Inilah koperasi, dari, oleh, untuk anggota!`,
     [
-      { label:'📋 Lihat Rapor & Sertifikat', go:()=>{ closeDialogue(); showRecap(); } },
+      { label:'Lihat Rapor & Sertifikat', go:()=>{ closeDialogue(); showRecap(); } },
       { label:'Jelajahi bebas', go: closeDialogue },
     ]);
 }

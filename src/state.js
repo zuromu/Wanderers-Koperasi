@@ -56,27 +56,27 @@ export function questInfo(){
   switch (S.stage){
     case 'INTRO':
       return { title:'Selamat Datang, Wanderer',
-               objective:'Temui 🧑‍🌾 Kepala Desa di kiri atas.', target:'kepala' };
+               objective:'Temui Kepala Desa di kiri atas.', target:'kepala' };
     case 'JOIN':
       return { title:'Jadi Anggota Koperasi',
-               objective:'Pergi ke 🏦 Kantor Koperasi, bayar Simpanan Pokok (Rp50.000).', target:'koperasi' };
+               objective:'Pergi ke Kantor Koperasi, bayar Simpanan Pokok (Rp50.000).', target:'koperasi' };
     case 'LOAN':
       return { title:'Pinjam Modal Usaha',
-               objective:'Temui 💼 Bendahara, pinjam modal Rp75.000 untuk beli bibit.', target:'bendahara' };
+               objective:'Temui Bendahara, pinjam modal Rp75.000 untuk beli bibit.', target:'bendahara' };
     case 'PLANT':
       return { title:'Mulai Bertani',
-               objective:'Ke 🌾 Ladang, beli & tanam bibit (Rp60.000).', target:'ladang' };
+               objective:'Ke Ladang, beli & tanam bibit (Rp60.000).', target:'ladang' };
     case 'SELL':
       return { title:'Jual Hasil Panen',
-               objective:'Bawa panen ke 🏪 Pasar dan jual untuk untung.', target:'pasar' };
+               objective:'Bawa panen ke Pasar dan jual untuk untung.', target:'pasar' };
     case 'REPAY':
       return { title:'Lunasi Pinjaman',
-               objective:'Kembali ke 💼 Bendahara, lunasi pinjaman koperasi.', target:'bendahara' };
+               objective:'Kembali ke Bendahara, lunasi pinjaman koperasi.', target:'bendahara' };
     case 'RAT':
       return { title:'Rapat Anggota Tahunan',
-               objective:'Hadiri 🏛️ RAT di Balai Desa untuk terima SHU.', target:'balai' };
+               objective:'Hadiri RAT di Balai Desa untuk terima SHU.', target:'balai' };
     case 'DONE':
-      return { title:'Misi Selesai! 🎉',
+      return { title:'Misi Selesai!',
                objective:'Kamu paham siklus koperasi. Jelajahi bebas!', target:null };
     default:
       return { title:'Misi', objective:'...', target:null };

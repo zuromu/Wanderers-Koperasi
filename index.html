@@ -7,10 +7,15 @@
 <meta name="theme-color" content="#e0a52b" />
 <title>Wanderer's Koperasi Quest</title>
 
-<!-- Open Graph / social preview -->
+<!-- Open Graph -->
 <meta property="og:title" content="Wanderer's Koperasi Quest" />
 <meta property="og:description" content="RPG edukasi keuangan: belajar koperasi Indonesia lewat petualangan." />
 <meta property="og:type" content="website" />
+
+<!-- Google Fonts: Jersey 10 (display/HUD) + Pixelify Sans (body/dialog) -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Jersey+10&family=Pixelify+Sans:wght@400;700&display=swap" rel="stylesheet" />
 
 <link rel="stylesheet" href="src/styles.css" />
 <script src="https://cdn.jsdelivr.net/npm/phaser@3.80.1/dist/phaser.min.js"></script>
@@ -22,11 +27,41 @@
   <div id="wrap">
     <div id="game"></div>
 
+    <!-- HUD: ikon SVG menggantikan emoji -->
     <div id="hud">
-      <div class="chip">💰 <span id="money">Rp0</span></div>
-      <div class="chip">🏦 <small>Simpanan</small> <span id="simpanan">Rp0</span></div>
-      <div class="chip">🌾 <small>Panen</small> <span id="harvest">0</span></div>
-      <div class="chip" id="memberChip">👤 <span id="member">Calon Anggota</span></div>
+      <div class="chip">
+        <svg class="hud-icon" viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="7" cy="7" r="5.5" fill="#e0a52b" stroke="#241d2e" stroke-width="1.5"/>
+          <circle cx="7" cy="7" r="2.5" fill="none" stroke="#241d2e" stroke-width="1"/>
+        </svg>
+        <span id="money">Rp0</span>
+      </div>
+      <div class="chip">
+        <svg class="hud-icon" viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="7,1.5 1,6 13,6" fill="#9b9aa6" stroke="#241d2e" stroke-width="1.2" stroke-linejoin="round"/>
+          <rect x="1.5" y="6" width="11" height="6.5" fill="#9b9aa6" stroke="#241d2e" stroke-width="1.2"/>
+          <rect x="3" y="7.5" width="2" height="4" fill="#241d2e" opacity="0.5"/>
+          <rect x="6" y="7.5" width="2" height="4" fill="#241d2e" opacity="0.5"/>
+          <rect x="9" y="7.5" width="2" height="4" fill="#241d2e" opacity="0.5"/>
+        </svg>
+        <small>Simpanan</small> <span id="simpanan">Rp0</span>
+      </div>
+      <div class="chip">
+        <svg class="hud-icon" viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg">
+          <line x1="7" y1="13" x2="7" y2="2" stroke="#241d2e" stroke-width="1.5"/>
+          <ellipse cx="4.5" cy="6" rx="2" ry="3" fill="#e0a52b" stroke="#241d2e" stroke-width="1" transform="rotate(-25 4.5 6)"/>
+          <ellipse cx="9.5" cy="6" rx="2" ry="3" fill="#e0a52b" stroke="#241d2e" stroke-width="1" transform="rotate(25 9.5 6)"/>
+          <ellipse cx="7" cy="3.5" rx="1.5" ry="2.5" fill="#e0a52b" stroke="#241d2e" stroke-width="1"/>
+        </svg>
+        <small>Panen</small> <span id="harvest">0</span>
+      </div>
+      <div class="chip" id="memberChip">
+        <svg class="hud-icon" viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="7" cy="4.5" r="2.8" fill="#f0c08a" stroke="#241d2e" stroke-width="1.2"/>
+          <path d="M1.5,13 Q2,9 7,9 Q12,9 12.5,13" fill="#3f9c9c" stroke="#241d2e" stroke-width="1.2"/>
+        </svg>
+        <span id="member">Calon Anggota</span>
+      </div>
     </div>
 
     <div id="quest">
@@ -38,31 +73,31 @@
       <div class="who" id="dwho"></div>
       <div class="txt" id="dtxt"></div>
       <div class="choices" id="dchoices"></div>
-      <div id="darrow">▼</div>
+      <div id="darrow">&#x25BC;</div>
       <div class="hint">Tekan <kbd>Spasi</kbd> untuk lanjut</div>
     </div>
 
-    <button id="mute" title="Bisukan / nyalakan suara">🔊</button>
-    <button id="help" title="Bantuan & istilah koperasi (H)">❔</button>
+    <button id="mute" title="Bisukan / nyalakan suara">&#9835;</button>
+    <button id="help" title="Bantuan &amp; istilah koperasi (H)">?</button>
 
-    <!-- Petunjuk awal (onboarding) -->
-    <div id="hint">Gunakan <kbd>← ↑ ↓ →</kbd> / <kbd>WASD</kbd> untuk berjalan ke 🧑‍🌾 Kepala Desa, lalu tekan <kbd>Spasi</kbd>.</div>
+    <!-- Petunjuk awal -->
+    <div id="hint">Gunakan <kbd>&#x2190; &#x2191; &#x2193; &#x2192;</kbd> / <kbd>WASD</kbd> untuk berjalan ke Kepala Desa, lalu tekan <kbd>Spasi</kbd>.</div>
 
     <!-- Kontrol sentuh (mobile) -->
     <div id="touch">
       <div id="dpad">
-        <button data-dir="up">▲</button>
-        <button data-dir="left">◀</button>
-        <button data-dir="act" id="dAct">✦</button>
-        <button data-dir="right">▶</button>
-        <button data-dir="down">▼</button>
+        <button data-dir="up">&#x25B2;</button>
+        <button data-dir="left">&#x25C4;</button>
+        <button data-dir="act" id="dAct">&#x2726;</button>
+        <button data-dir="right">&#x25BA;</button>
+        <button data-dir="down">&#x25BC;</button>
       </div>
     </div>
 
-    <!-- Glosarium / bantuan -->
+    <!-- Glosarium -->
     <div id="helpOverlay">
       <div class="title-card help-card">
-        <h2>❔ Istilah Koperasi</h2>
+        <h2>Istilah Koperasi</h2>
         <ul class="help-list">
           <li><b>Koperasi</b>, badan usaha dari, oleh, dan untuk anggota.</li>
           <li><b>Simpanan Pokok</b>, dibayar <i>sekali</i> saat menjadi anggota.</li>
@@ -79,13 +114,28 @@
     <!-- Layar judul -->
     <div id="title">
       <div class="title-card">
-        <div class="title-emoji">🧑‍🌾 🏦 🌾</div>
+        <!-- Lambang: gandum + lingkaran koperasi + gedung -->
+        <svg class="title-emblem" viewBox="0 0 110 60" xmlns="http://www.w3.org/2000/svg" width="110" height="60" aria-hidden="true">
+          <line x1="24" y1="52" x2="24" y2="10" stroke="#e0a52b" stroke-width="2"/>
+          <ellipse cx="19" cy="22" rx="4" ry="7.5" fill="#e0a52b" stroke="#241d2e" stroke-width="1" transform="rotate(-20 19 22)"/>
+          <ellipse cx="29" cy="22" rx="4" ry="7.5" fill="#e0a52b" stroke="#241d2e" stroke-width="1" transform="rotate(20 29 22)"/>
+          <ellipse cx="24" cy="13" rx="3.5" ry="6" fill="#e0a52b" stroke="#241d2e" stroke-width="1"/>
+          <circle cx="55" cy="36" r="14" fill="none" stroke="#e0a52b" stroke-width="2.5"/>
+          <circle cx="55" cy="27" r="5" fill="#e0a52b"/>
+          <circle cx="46" cy="42" r="4" fill="#e0a52b" opacity="0.75"/>
+          <circle cx="64" cy="42" r="4" fill="#e0a52b" opacity="0.75"/>
+          <rect x="78" y="30" width="22" height="20" fill="none" stroke="#e0a52b" stroke-width="2"/>
+          <polygon points="89,14 76,30 102,30" fill="none" stroke="#e0a52b" stroke-width="2" stroke-linejoin="round"/>
+          <rect x="84" y="36" width="5" height="14" fill="#e0a52b" opacity="0.5"/>
+          <line x1="32" y1="44" x2="41" y2="44" stroke="#e0a52b" stroke-width="1.5" opacity="0.5"/>
+          <line x1="69" y1="44" x2="78" y2="44" stroke="#e0a52b" stroke-width="1.5" opacity="0.5"/>
+        </svg>
         <h2>Wanderer's <span>Koperasi Quest</span></h2>
         <p class="tag">Bangun desamu, jalankan koperasimu, menabung, meminjam,<br>bertani, dan berbagi hasil bersama.</p>
         <input id="nameInput" type="text" maxlength="20" placeholder="Tulis namamu (untuk sertifikat)" />
         <div class="title-btns">
-          <button id="btnPlay" class="primary">▶ Main</button>
-          <button id="btnDemo">▶▶ Demo Otomatis</button>
+          <button id="btnPlay" class="primary">&#x25BA; Main</button>
+          <button id="btnDemo">&#x25BA;&#x25BA; Demo Otomatis</button>
           <button id="btnAbout">Tentang</button>
         </div>
         <p class="title-hint">Gerak: panah / WASD &middot; Aksi: Spasi</p>
@@ -96,7 +146,7 @@
     <div id="about">
       <div class="title-card">
         <h2>Tentang</h2>
-        <p class="tag">RPG edukasi yang mengajarkan cara kerja koperasi Indonesia -
+        <p class="tag">RPG edukasi yang mengajarkan cara kerja koperasi Indonesia,
         Simpanan Pokok &amp; Wajib, pinjam modal, RAT, dan SHU, lewat petualangan.</p>
         <p class="tag" style="opacity:.7;font-size:13px">Dibuat dengan Phaser 3. Grafik &amp; audio
         dihasilkan secara prosedural, tanpa aset berbayar.</p>
@@ -106,7 +156,7 @@
   </div>
 
   <div class="controls">
-    Gerak: <kbd>← ↑ ↓ →</kbd> atau <kbd>W A S D</kbd> &nbsp;|&nbsp; Bicara / Aksi: <kbd>Spasi</kbd>
+    Gerak: <kbd>&#x2190; &#x2191; &#x2193; &#x2192;</kbd> atau <kbd>W A S D</kbd> &nbsp;|&nbsp; Bicara / Aksi: <kbd>Spasi</kbd>
   </div>
 
   <script type="module" src="src/main.js"></script>

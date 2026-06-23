@@ -1,6 +1,6 @@
 /**
- * main.js, Titik masuk: konfigurasi & boot Phaser, plus glue untuk layar judul,
- * tombol bisukan, dan memulai musik pada interaksi pertama.
+ * main.js, Titik masuk: konfigurasi & boot Phaser (setelah font siap),
+ * plus glue untuk layar judul, tombol bisukan, dan kontrol sentuh.
  */
 
 import { W, H } from './data.js';
@@ -22,11 +22,17 @@ const config = {
   scene: [Village],
 };
 
-const game = new Phaser.Game(config);
-
-/* ---------- Layar judul / tentang / bisukan ---------- */
+let game = null;
 const $ = id => document.getElementById(id);
+const scene = () => game?.scene?.getScene('Village');
 
+/* Boot Phaser setelah font siap agar teks Phaser memakai font yang benar */
+document.fonts.ready.then(() => {
+  game = new Phaser.Game(config);
+  window.WKQ = { get game(){ return game; }, S, questInfo, interact, refresh, resetState, Audio, advanceDialogue, closeDialogue };
+});
+
+/* ---------- Layar judul / tentang ---------- */
 function captureName(){
   const v = $('nameInput')?.value.trim();
   if (v) S.playerName = v.slice(0, 20);
@@ -37,9 +43,8 @@ function startGame(){
   Audio.startMusic();
   Audio.play('select');
   const t = $('title'); if (t) t.style.display = 'none';
-  const h = $('hint'); if (h) h.style.display = 'block';
-  const v = game.scene.getScene('Village');
-  if (v && v.unlock) v.unlock();
+  const h = $('hint');  if (h) h.style.display = 'block';
+  scene()?.unlock?.();
 }
 
 function startDemo(){
@@ -47,22 +52,22 @@ function startDemo(){
   Audio.startMusic();
   Audio.play('select');
   $('title').style.display = 'none';
-  const v = game.scene.getScene('Village');
+  const v = scene();
   if (v) runDemo(v);
 }
 
 $('btnPlay')?.addEventListener('click', startGame);
 $('btnDemo')?.addEventListener('click', startDemo);
 $('btnAbout')?.addEventListener('click', ()=>{ $('title').style.display='none'; $('about').style.display='flex'; Audio.play('select'); });
-$('btnBack')?.addEventListener('click', ()=>{ $('about').style.display='none'; $('title').style.display='flex'; Audio.play('select'); });
+$('btnBack')?.addEventListener('click',  ()=>{ $('about').style.display='none'; $('title').style.display='flex'; Audio.play('select'); });
 
+/* ---------- Bisukan ---------- */
 $('mute')?.addEventListener('click', ()=>{
   const m = Audio.toggleMute();
-  $('mute').textContent = m ? '🔇' : '🔊';
+  $('mute').innerHTML = m ? '&#x2715;' : '&#9835;';
 });
 
 /* ---------- Kontrol sentuh ---------- */
-const scene = () => game.scene.getScene('Village');
 function hideHint(){ const h = $('hint'); if (h) h.style.display = 'none'; }
 
 document.querySelectorAll('#dpad button').forEach(btn => {
@@ -88,6 +93,3 @@ window.addEventListener('keydown', (e)=>{
   if (e.code === 'KeyH') toggleHelp();
   hideHint();
 });
-
-// Handle debug opsional (berguna untuk pengetesan di konsol browser).
-window.WKQ = { game, S, questInfo, interact, refresh, resetState, Audio, advanceDialogue, closeDialogue };
