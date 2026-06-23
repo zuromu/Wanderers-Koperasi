@@ -3,6 +3,15 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.36.0], Living world — field redesign, vault building, NPC variety, interaction hints
+
+### Ditambahkan
+- **Ladang sawah realistis**: menggantikan 3 baris titik hijau dengan baris tanah subur, saluran irigasi biru antar baris, tanaman padi bergambar (batang + daun miring + bulir gabah), pagar dua sisi, dan orang-orangan sawah dengan topi — tampilan studio indie yang sesungguhnya.
+- **Gedung kas brankas**: Bendahara kini digambarkan sebagai gedung batu dengan pedimen, entablatur, pintu brankas melengkung (baut + lubang kunci + bayangan tebal), dan koin emas di dasar — jauh lebih tepat secara naratif daripada peti harta.
+- **Variasi idle NPC**: 7 NPC kini memiliki 3 tipe animasi diam — *bob* (naik-turun), *sway* (napas/skala bernapas), dan *rock* (goyang rotasi ±3°) — masing-masing terlihat lebih hidup dan berbeda kepribadian.
+- **Suara langkah bertile**: berjalan di jalan batu berbunyi `stepPath` (ketukan nyaring) sedangkan di rumput berbunyi `stepGrass` (pukulan lembut sinus) — detail audio yang hanya ada di game studio besar.
+- **Indikator interaksi proksimiti**: saat pemain berada dalam 1 ubin dari bangunan, cincin emas berdenyut muncul di bawah bangunan dan label `[ SPASI ]` melayang-layang di atasnya — sinyal interaktivitas yang segera terbaca tanpa HUD.
+
 ## [0.35.0], World richness — water shimmer, roof shingles, ambient occlusion
 
 ### Ditambahkan

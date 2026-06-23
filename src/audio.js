@@ -41,7 +41,9 @@ function chord(freqs, dur, type='triangle', vol=0.2){
 
 /** Pustaka SFX berdasarkan jenis kejadian. */
 export const SFX = {
-  move:    ()=> blip(220, 0.06, 'square', 0.12),
+  move:      ()=> blip(220, 0.06, 'square', 0.12),
+  stepPath:  ()=> blip(264, 0.05, 'square', 0.11),
+  stepGrass: ()=> blip(176, 0.08, 'sine',   0.07),
   talk:    ()=> blip(520, 0.05, 'square', 0.10),
   type:    ()=> blip(680, 0.02, 'square', 0.05),
   select:  ()=> blip(440, 0.08, 'square', 0.18, 660),
