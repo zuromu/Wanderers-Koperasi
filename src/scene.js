@@ -33,6 +33,7 @@ export class Village extends Phaser.Scene {
     this.waterTiles = [];
     this.pollen     = [];
     this.smoke      = [];
+    this.birds      = [];
     this.locked     = true;
 
     this.drawGround();
@@ -45,6 +46,7 @@ export class Village extends Phaser.Scene {
     this.makePlayer();
     this.makePollen();
     this.makeSmoke();
+    this.makeBirds();
     this.makeVignette();
     this.bindInput();
 
@@ -430,6 +432,15 @@ export class Village extends Phaser.Scene {
     }
   }
 
+  /* -------- Kawanan burung melintas -------- */
+  makeBirds(){
+    const r = rng(33);
+    for (let i = 0; i < 5; i++){
+      const dot = this.add.circle(0, 0, 1.5+r()*0.5, C.ink, 0.5).setDepth(5.8);
+      this.birds.push({ obj:dot, xOff:(r()-0.5)*22, baseY:18+r()*34, ph:r()*Math.PI*2 });
+    }
+  }
+
   /* -------- Vignette tepi layar -------- */
   makeVignette(){
     const w = COLS*TILE, h = ROWS*TILE, key = 'vignette';
@@ -558,6 +569,12 @@ export class Village extends Phaser.Scene {
     // Bayangan awan bergerak
     this.cloudShadow.x += 0.18;
     if (this.cloudShadow.x > COLS*TILE + 90) this.cloudShadow.x = -90;
+    // Kawanan burung melintas (kanan ke kiri, ulang tiap ~19 dtk)
+    const birdX = (time * 0.046) % (COLS*TILE + 120) - 60;
+    for (const b of this.birds){
+      b.obj.x = birdX + b.xOff;
+      b.obj.y = b.baseY + Math.sin(time * 0.0009 + b.ph) * 4;
+    }
     // Asap cerobong
     for (const s of this.smoke){
       const age = (time * 0.00042 + s.phase) % 1;

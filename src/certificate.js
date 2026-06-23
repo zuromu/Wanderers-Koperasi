@@ -15,10 +15,10 @@ const CONCEPTS = [
 ];
 
 function mark(key){
-  if (!key) return '✓';
-  if (S.quizResult[key] === true) return '✅';
-  if (S.quizResult[key] === false) return '⚠️';
-  return '✓';
+  if (!key) return '<span style="color:#3a8a4f">&#10003;</span>';
+  if (S.quizResult[key] === true)  return '<span style="color:#3a8a4f">&#10003;</span>';
+  if (S.quizResult[key] === false) return '<span style="color:#c0432f">&#9888;</span>';
+  return '<span style="color:#9a8a60">&#183;</span>';
 }
 
 /** Tampilkan overlay rapor. */
@@ -59,11 +59,31 @@ export function downloadCertificate(){
   cv.width = W; cv.height = H;
   const x = cv.getContext('2d');
 
-  // latar
-  x.fillStyle = '#fbf4e4'; x.fillRect(0, 0, W, H);
-  // bingkai
+  // Latar gradasi hangat
+  const bg = x.createRadialGradient(W/2, H/2, H*0.08, W/2, H/2, H*0.8);
+  bg.addColorStop(0, '#fffef7'); bg.addColorStop(1, '#f4e8cc');
+  x.fillStyle = bg; x.fillRect(0, 0, W, H);
+
+  // Watermark lambang koperasi (sangat pudar)
+  x.globalAlpha = 0.055; x.strokeStyle = '#b07828'; x.lineWidth = 22;
+  x.beginPath(); x.arc(W/2, H/2, 170, 0, Math.PI*2); x.stroke();
+  x.lineWidth = 14;
+  [[W/2, H/2-86],[W/2-74, H/2+44],[W/2+74, H/2+44]].forEach(([cx,cy]) => {
+    x.beginPath(); x.arc(cx, cy, 52, 0, Math.PI*2); x.stroke();
+  });
+  x.globalAlpha = 1;
+
+  // Bingkai utama emas
   x.strokeStyle = '#e8a33d'; x.lineWidth = 10; x.strokeRect(24, 24, W-48, H-48);
+  // Garis dalam tinta
   x.strokeStyle = '#1c1926'; x.lineWidth = 2; x.strokeRect(40, 40, W-80, H-80);
+  // Hiasan sudut (berlian emas)
+  x.fillStyle = '#e8a33d';
+  [[40,40],[W-40,40],[40,H-40],[W-40,H-40]].forEach(([cx,cy]) => {
+    x.beginPath();
+    x.moveTo(cx, cy-13); x.lineTo(cx+13, cy); x.lineTo(cx, cy+13); x.lineTo(cx-13, cy);
+    x.closePath(); x.fill();
+  });
 
   const center = (t, y, font, color) => {
     x.fillStyle = color; x.font = font; x.textAlign = 'center';
