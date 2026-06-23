@@ -46,13 +46,14 @@ export class Village extends Phaser.Scene {
     this.birds      = [];
     this.ripples    = [];
     this.npcs       = [];
+    this.clouds     = [];
     this.locked     = true;
 
     this.drawGround();
     this.drawWater();
     this.drawWaterFoam();
     this.drawTrees();
-    this.makeCloudShadow();
+    this.makeClouds();
     this.drawBuildings();
     this.makeMarker();
     this.makePlayer();
@@ -91,6 +92,17 @@ export class Village extends Phaser.Scene {
             g.fillCircle(dx, dy, flower ? 1.9 : 1.3);
           }
         }
+      }
+    }
+    // Garis sendi batu paving di ubin jalan
+    for (let y=0; y<ROWS; y++){
+      for (let x=0; x<COLS; x++){
+        if (+MAP[y][x] !== 1) continue;
+        const px = x*TILE, py = y*TILE;
+        g.lineStyle(1, C.pathEdge, 0.2);
+        g.lineBetween(px+TILE/2, py+2,     px+TILE/2, py+TILE-2);
+        g.lineBetween(px+2,     py+TILE/2, px+TILE-2, py+TILE/2);
+        g.fillStyle(C.pathEdge, 0.14).fillRect(px+TILE/2-2, py+TILE/2-2, 4, 4);
       }
     }
   }
@@ -156,9 +168,15 @@ export class Village extends Phaser.Scene {
     });
   }
 
-  /* -------- Bayangan awan bergerak -------- */
-  makeCloudShadow(){
-    this.cloudShadow = this.add.ellipse(-90, ROWS*TILE*0.28, 200, 65, C.shadow, 0.07).setDepth(1.5);
+  /* -------- Bayangan awan bergerak (3 awan) -------- */
+  makeClouds(){
+    const defs = [
+      { x:-90,           y:ROWS*TILE*0.28, w:200, h:65, a:0.07, s:0.18 },
+      { x:COLS*TILE*0.7, y:ROWS*TILE*0.52, w:150, h:45, a:0.05, s:0.13 },
+      { x:COLS*TILE*0.3, y:ROWS*TILE*0.14, w:240, h:70, a:0.06, s:0.15 },
+    ];
+    for (const d of defs)
+      this.clouds.push({ obj:this.add.ellipse(d.x, d.y, d.w, d.h, C.shadow, d.a).setDepth(1.5), speed:d.s });
   }
 
   /* -------- Bangunan prosedural (gaya pixel-art bergaris tinta) -------- */
@@ -469,19 +487,50 @@ export class Village extends Phaser.Scene {
     }
   }
 
+  /* -------- Tekstur sprite warga desa (1 kali generate, 6 varian) -------- */
+  makeNpcTextures(){
+    if (this.textures.exists('npc_0')) return;
+    const OUTFITS = [C.tunic, C.roofRed, C.roofBlue, C.roofGreen, C.gold, C.coral];
+    const HATS    = [C.goldDark, C.stoneDark, C.woodDark, C.roofTeal, C.hair, C.roofGreen];
+    OUTFITS.forEach((outfit, i) => {
+      const g = this.add.graphics();
+      // Sepatu
+      g.fillStyle(C.woodDark).fillRect(4, 26, 5, 3).fillRect(11, 26, 5, 3);
+      // Kaki (celana)
+      g.fillStyle(C.pants).fillRect(5, 18, 4, 9).fillRect(11, 18, 4, 9);
+      g.lineStyle(1, C.ink, 1).strokeRect(5, 18, 4, 9).strokeRect(11, 18, 4, 9);
+      // Badan
+      g.fillStyle(outfit).fillRoundedRect(4, 10, 12, 10, 2);
+      g.fillStyle(0xffffff, 0.1).fillRect(4, 10, 12, 3);
+      g.lineStyle(1.5, C.ink, 1).strokeRoundedRect(4, 10, 12, 10, 2);
+      // Kepala
+      g.fillStyle(C.skin).fillCircle(10, 6, 5.5);
+      g.lineStyle(1.5, C.ink, 1).strokeCircle(10, 6, 5.5);
+      // Topi
+      g.fillStyle(HATS[i]).fillRoundedRect(5, 0, 10, 6, 2);
+      g.lineStyle(1, C.ink, 0.85).strokeRoundedRect(5, 0, 10, 6, 2);
+      // Mata kecil
+      g.fillStyle(C.ink).fillRect(8, 5, 1.5, 1.5).fillRect(11.5, 5, 1.5, 1.5);
+      g.generateTexture(`npc_${i}`, 20, 30);
+      g.destroy();
+    });
+  }
+
   /* -------- Warga desa yang berkeliaran -------- */
   makeNpcs(){
-    const COLORS = [C.tunic, C.roofRed, C.roofBlue, C.roofGreen, C.gold, C.coral];
+    this.makeNpcTextures();
     const walkable = [];
     for (let y=1; y<ROWS-1; y++)
       for (let x=1; x<COLS-1; x++)
         if (+MAP[y][x] !== 2) walkable.push([x,y]);
     for (let i=0; i<7; i++){
       const [sx,sy] = walkable[Math.floor(Math.random()*walkable.length)];
-      const col = COLORS[i % COLORS.length];
-      const body = this.add.circle(sx*TILE+TILE/2, sy*TILE+TILE/2, 4, col, 0.7).setDepth(2.1);
-      const head = this.add.circle(sx*TILE+TILE/2, sy*TILE+TILE/2-6, 3, C.skin, 0.75).setDepth(2.15);
-      this.npcs.push({ body, head, tx:sx, ty:sy, moveAt:Math.random()*2500 });
+      const wx = sx*TILE+TILE/2, wy = sy*TILE+TILE/2;
+      const shadow = this.add.ellipse(0, 9, 18, 7, C.shadow, 0.28);
+      const sprite = this.add.image(0, 0, `npc_${i % 6}`).setOrigin(0.5, 0.88);
+      const c = this.add.container(wx, wy, [shadow, sprite]).setDepth(2.1);
+      this.tweens.add({ targets:sprite, y:-2, duration:800+i*110, yoyo:true, repeat:-1, ease:'Sine.easeInOut' });
+      this.npcs.push({ container:c, sprite, tx:sx, ty:sy, moveAt:Math.random()*2500 });
     }
   }
 
@@ -617,8 +666,10 @@ export class Village extends Phaser.Scene {
       if (p.ox > COLS*TILE + 20) p.ox = -20;
     }
     // Bayangan awan bergerak
-    this.cloudShadow.x += 0.18;
-    if (this.cloudShadow.x > COLS*TILE + 90) this.cloudShadow.x = -90;
+    for (const cloud of this.clouds){
+      cloud.obj.x += cloud.speed;
+      if (cloud.obj.x > COLS*TILE + 120) cloud.obj.x = -120;
+    }
     // Kawanan burung melintas (kanan ke kiri, ulang tiap ~19 dtk)
     const birdX = (time * 0.046) % (COLS*TILE + 120) - 60;
     for (const b of this.birds){
@@ -641,8 +692,9 @@ export class Village extends Phaser.Scene {
         if (nx>=1 && ny>=1 && nx<COLS-1 && ny<ROWS-1 && +MAP[ny][nx]!==2){
           npc.tx = nx; npc.ty = ny;
           const wx = nx*TILE+TILE/2, wy = ny*TILE+TILE/2;
-          this.tweens.add({ targets:npc.body, x:wx, y:wy, duration:550, ease:'Linear' });
-          this.tweens.add({ targets:npc.head, x:wx, y:wy-6, duration:550, ease:'Linear' });
+          if (dx < 0) npc.sprite.setFlipX(true);
+          else if (dx > 0) npc.sprite.setFlipX(false);
+          this.tweens.add({ targets:npc.container, x:wx, y:wy, duration:550, ease:'Linear' });
         }
         npc.moveAt = time + 1600 + Math.random()*2200;
       }
