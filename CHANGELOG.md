@@ -3,6 +3,18 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.2.0] — Education & proof-of-learning
+
+### Ditambahkan
+- Kuis mikro per-konsep (Simpanan Pokok, Modal, SHU) dengan opsi teracak,
+  umpan balik benar/salah, dan pencatatan skor.
+- Nilai literasi (A–D) + gelar (Anggota Teladan / Kader Koperasi / dst).
+- Pilihan pinjam modal: KOPERASI vs RENTENIR (menampilkan selisih biaya).
+- Rincian perhitungan SHU (jasa modal + jasa usaha) saat RAT.
+- Layar Rapor akhir + Sertifikat Literasi Koperasi yang bisa diunduh (PNG).
+- Input nama pemain di layar judul (untuk sertifikat).
+- Mode Demo Otomatis (~60 dtk) untuk juri: memutar seluruh siklus tanpa input.
+
 ## [0.1.0] — MVP
 
 ### Ditambahkan

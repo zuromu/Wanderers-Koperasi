@@ -6,6 +6,7 @@
 import { S, questInfo } from './state.js';
 import { rupiah } from './data.js';
 import * as Audio from './audio.js';
+import { showRecap } from './certificate.js';
 
 let sceneRef = null;
 export function setSceneRef(scene){ sceneRef = scene; }
@@ -108,12 +109,15 @@ export function refresh(){
   if (sceneRef && sceneRef.updateMarker) sceneRef.updateMarker();
 }
 
-/** Layar kemenangan + konfeti. */
+/** Layar kemenangan + konfeti + rapor/sertifikat. */
 export function winScreen(){
   if (sceneRef && sceneRef.celebrate) sceneRef.celebrate();
   showDialogue('🎉 Tamat',
     `Kamu telah menyelesaikan siklus koperasi: jadi anggota (Simpanan Pokok), menabung ` +
     `(Simpanan Wajib), pinjam modal, berusaha tani, melunasi pinjaman, dan menerima SHU di RAT. ` +
     `Total uang akhir: ${rupiah(S.money)}. Inilah koperasi — dari, oleh, untuk anggota!`,
-    [{ label:'Main lagi (bebas)', go: closeDialogue }]);
+    [
+      { label:'📋 Lihat Rapor & Sertifikat', go:()=>{ closeDialogue(); showRecap(); } },
+      { label:'Jelajahi bebas', go: closeDialogue },
+    ]);
 }

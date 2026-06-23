@@ -10,6 +10,7 @@
 import { S, questInfo } from './state.js';
 import { rupiah } from './data.js';
 import { showDialogue, closeDialogue, advance, refresh, winScreen } from './ui.js';
+import { askQuiz } from './quiz.js';
 
 export function interact(spotId){
   const say = (who, text, choices) => showDialogue(who, text, choices);
@@ -36,7 +37,7 @@ export function interact(spotId){
             { label:'Bayar Rp50.000', cond:S.money>=50000, go:()=>{
               S.money-=50000; S.simpananPokok=50000; S.isMember=true; S.stage='LOAN';
               say('Kantor Koperasi','Selamat! Kamu resmi ANGGOTA koperasi. Simpanan Pokok tercatat sebagai milikmu di koperasi.',
-                [{ label:'Mantap!', go:advance }]);
+                [{ label:'Mantap!', go:()=> askQuiz('pokok', advance) }]);
             }},
             { label:'Nanti dulu', go:closeDialogue }
           ]);
@@ -61,12 +62,19 @@ export function interact(spotId){
     case 'bendahara':
       if (S.stage === 'LOAN'){
         say('Bendahara',
-          'Sebagai anggota, kamu boleh PINJAM MODAL dari koperasi. Aku pinjamkan Rp75.000 untuk usaha tanimu. Wajib dikembalikan setelah panen ya.',
-          [{ label:'Pinjam Rp75.000', go:()=>{
-            S.money+=75000; S.loan=75000; S.stage='PLANT';
-            say('Bendahara','Dana cair! Pakai untuk beli bibit di Ladang. Ingat: pinjaman koperasi itu amanah bersama.',
-              [{ label:'Siap!', go:advance }]);
-          }}]);
+          'Kamu butuh modal Rp75.000 untuk bertani. Ada dua pilihan:\n\n🏦 KOPERASI: kembalikan Rp75.000 saja (jasa ringan, untung balik ke anggota).\n💸 RENTENIR: terima Rp75.000 tapi kembalikan Rp97.500 (bunga 30%!).\n\nPilih yang mana?',
+          [
+            { label:'Pinjam dari Koperasi (balik Rp75.000)', go:()=>{
+              S.money+=75000; S.loan=75000; S.loanType='koperasi'; S.stage='PLANT';
+              say('Bendahara','Pilihan bijak! Dana koperasi cair. Pinjaman koperasi itu amanah bersama — untungnya pun kembali ke kita.',
+                [{ label:'Siap!', go:()=> askQuiz('modal', advance) }]);
+            }},
+            { label:'Pinjam dari Rentenir (balik Rp97.500)', go:()=>{
+              S.money+=75000; S.loan=97500; S.loanType='rentenir'; S.stage='PLANT';
+              say('Bendahara','Hati-hati... rentenir mencekik dengan bunga tinggi. Kamu harus balikkan Rp97.500 — Rp22.500 lebih mahal! Lain kali, pilih koperasi.',
+                [{ label:'Aduh...', go:()=> askQuiz('modal', advance) }]);
+            }},
+          ]);
       } else if (S.stage === 'REPAY'){
         if (S.money >= S.loan){
           say('Bendahara',
@@ -130,13 +138,20 @@ export function interact(spotId){
     /* ----- Balai Desa: RAT & pembagian SHU ----- */
     case 'balai':
       if (S.stage === 'RAT'){
-        // SHU = Sisa Hasil Usaha, dibagi proporsional dgn simpanan + jasa (disederhanakan)
-        S.shu = Math.round((S.simpananPokok + S.simpananWajib) * 0.4 + S.rounds * 8000);
+        // SHU = jasa modal (dari simpanan) + jasa usaha (dari transaksi/keaktifan)
+        const jasaModal = Math.round((S.simpananPokok + S.simpananWajib) * 0.4);
+        const jasaUsaha = S.rounds * 8000;
+        S.shu = jasaModal + jasaUsaha;
         S.money += S.shu;
         S.stage = 'DONE';
         say('Balai Desa (RAT)',
-          `Selamat datang di RAPAT ANGGOTA TAHUNAN! Koperasi untung tahun ini. Sebagai anggota, kamu dapat SHU (Sisa Hasil Usaha): ${rupiah(S.shu)} — dihitung dari simpanan & kontribusimu. Inilah inti koperasi: untung dinikmati bersama!`,
-          [{ label:'Terima SHU 🎉', go:()=>{ advance(); winScreen(); } }]);
+          `RAPAT ANGGOTA TAHUNAN — koperasi untung tahun ini! SHU-mu dihitung adil:\n\n` +
+          `• Jasa Modal (40% dari simpananmu ${rupiah(S.simpananPokok + S.simpananWajib)}) = ${rupiah(jasaModal)}\n` +
+          `• Jasa Usaha (keaktifanmu, ${S.rounds}× panen) = ${rupiah(jasaUsaha)}\n` +
+          `——————————————\n` +
+          `TOTAL SHU = ${rupiah(S.shu)}\n\n` +
+          `Inilah inti koperasi: makin aktif & banyak menabung, makin besar bagianmu. Untung dinikmati bersama!`,
+          [{ label:'Terima SHU 🎉', go:()=> askQuiz('shu', ()=>{ advance(); winScreen(); }) }]);
       } else if (S.stage === 'DONE'){
         say('Balai Desa','RAT tahun ini sudah selesai. Terima kasih sudah belajar koperasi, Wanderer!');
       } else {

@@ -18,14 +18,33 @@ export const S = {
   shu: 0,               // Sisa Hasil Usaha yang diterima
   rounds: 0,            // berapa kali siklus tanam-panen
   stage: 'INTRO',       // tahap misi aktif — dikendalikan switch/case di bawah
+  // --- literasi & meta ---
+  playerName: 'Wanderer',
+  quizCorrect: 0,       // jawaban kuis benar (percobaan pertama)
+  quizTotal: 0,         // jumlah kuis yang sudah ditanyakan
+  quizAsked: {},        // set kunci kuis yang sudah ditanyakan
+  quizResult: {},       // hasil tiap kuis: key -> true/false
+  loanType: null,       // 'koperasi' | 'rentenir'
+  demo: false,          // mode demo otomatis (untuk juri)
 };
 
 /** Kembalikan state awal (dipakai saat "main lagi"). */
 export function resetState(){
+  const name = S.playerName, demo = S.demo;
   Object.assign(S, {
     money:100000, isMember:false, simpananPokok:0, simpananWajib:0,
     loan:0, seeds:0, harvest:0, shu:0, rounds:0, stage:'INTRO',
+    playerName:name, quizCorrect:0, quizTotal:0, quizAsked:{}, quizResult:{}, loanType:null, demo,
   });
+}
+
+/** Nilai literasi koperasi berdasarkan kuis. */
+export function literacyGrade(){
+  const pct = S.quizTotal ? S.quizCorrect / S.quizTotal : 0;
+  if (pct >= 0.9) return { grade:'A', title:'Anggota Teladan', pct };
+  if (pct >= 0.7) return { grade:'B', title:'Kader Koperasi', pct };
+  if (pct >= 0.5) return { grade:'C', title:'Anggota Aktif', pct };
+  return { grade:'D', title:'Calon Anggota', pct };
 }
 
 /**
