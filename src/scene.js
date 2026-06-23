@@ -67,6 +67,7 @@ export class Village extends Phaser.Scene {
     this.makeRipples();
     this.makeNpcs();
     this.makeLeaves();
+    this.makeAtmosphere();
     this.makeVignette();
     this.bindInput();
 
@@ -99,15 +100,19 @@ export class Village extends Phaser.Scene {
         }
       }
     }
-    // Garis sendi batu paving di ubin jalan
+    // Batu paving individual per petak jalan (2×2 per tile)
+    const rs = rng(9182);
     for (let y=0; y<ROWS; y++){
       for (let x=0; x<COLS; x++){
         if (+MAP[y][x] !== 1) continue;
         const px = x*TILE, py = y*TILE;
-        g.lineStyle(1, C.pathEdge, 0.2);
-        g.lineBetween(px+TILE/2, py+2,     px+TILE/2, py+TILE-2);
-        g.lineBetween(px+2,     py+TILE/2, px+TILE-2, py+TILE/2);
-        g.fillStyle(C.pathEdge, 0.14).fillRect(px+TILE/2-2, py+TILE/2-2, 4, 4);
+        [[2,2],[21,2],[2,21],[21,21]].forEach(([ox,oy]) => {
+          const jx = (rs()-0.5)*3, jy = (rs()-0.5)*3;
+          const lt  = 0.08 + rs()*0.22;
+          g.fillStyle(lerpC(C.path, C.pathShade, lt)).fillRoundedRect(px+ox+jx, py+oy+jy, 16, 16, 3);
+          g.lineStyle(1, C.pathEdge, 0.32).strokeRoundedRect(px+ox+jx, py+oy+jy, 16, 16, 3);
+          g.fillStyle(0xf8e8b4, 0.13).fillRect(px+ox+jx+1, py+oy+jy+1, 7, 2);
+        });
       }
     }
   }
@@ -179,6 +184,12 @@ export class Village extends Phaser.Scene {
         g.fillStyle(C.leaf,     0.60).fillCircle(cx-2*s, cy-2*s, 3.5*s);
         g.fillStyle(C.leafHi,   0.42).fillCircle(cx-3*s, cy-3.5*s, 2*s);
         g.lineStyle(1, C.ink, 0.18).strokeCircle(cx, cy, 5.5*s);
+        // Buah beri kecil (kadang-kadang)
+        if (r() < 0.35){
+          const bc = [C.coral, C.roofRed, 0xff9944][(r()*3)|0];
+          for (let b=0; b<3; b++)
+            g.fillStyle(bc, 0.88).fillCircle(cx+(r()-0.5)*5, cy+(r()-0.5)*4, 1.7);
+        }
       }
     }
   }
@@ -218,20 +229,19 @@ export class Village extends Phaser.Scene {
       const cx = tx*TILE + TILE/2 + (r()-0.5)*4;
       const cy = ty*TILE + TILE/2;
       const s  = 0.88 + r()*0.24;
-      // Bayangan pohon
-      g.fillStyle(C.shadow, 0.11).fillEllipse(cx, cy+13, 26*s, 9*s);
-      // Batang
-      g.fillStyle(C.woodDark).fillRect(cx-2.5*s, cy+2, 5*s, 13);
-      g.lineStyle(1, C.ink, 0.75).strokeRect(cx-2.5*s, cy+2, 5*s, 13);
-      // Daun bawah
-      g.fillStyle(C.leaf).fillCircle(cx, cy-4, 11*s);
-      g.lineStyle(1.5, C.ink, 0.55).strokeCircle(cx, cy-4, 11*s);
-      // Sisi gelap daun
-      g.fillStyle(C.leafDark, 0.38).fillCircle(cx+2*s, cy+1, 6*s);
-      // Daun atas (lebih terang)
-      g.fillStyle(C.leafHi, 0.8).fillCircle(cx-1, cy-10*s, 7*s);
-      // Kilatan cahaya
-      g.fillStyle(0xffffff, 0.09).fillCircle(cx-3*s, cy-12*s, 3*s);
+      // Bayangan pohon (offset sedikit ke kiri = sumber cahaya dari kanan atas)
+      g.fillStyle(C.shadow, 0.13).fillEllipse(cx-3, cy+15, 28*s, 9*s);
+      // Batang dengan serat cahaya
+      g.fillStyle(C.woodDark).fillRect(cx-2.5*s, cy+2, 5*s, 14);
+      g.fillStyle(C.wood, 0.45).fillRect(cx-1.5*s, cy+3, 1.5*s, 12);
+      g.lineStyle(1, C.ink, 0.8).strokeRect(cx-2.5*s, cy+2, 5*s, 14);
+      // 5 lapisan daun
+      g.fillStyle(C.leafDark, 0.60).fillCircle(cx+1, cy,    12*s);     // bayangan bawah
+      g.fillStyle(C.leaf,     0.90).fillCircle(cx,   cy-3,  11*s);     // massa utama
+      g.fillStyle(C.leafHi,   0.68).fillCircle(cx-2*s, cy-7*s, 7.5*s); // kluster cerah
+      g.fillStyle(C.leafHi,   0.42).fillCircle(cx+4*s, cy-4*s, 5*s);   // sisi
+      g.fillStyle(0xd8f8b0,   0.24).fillCircle(cx-3*s, cy-10*s, 3.5*s);// specular
+      g.lineStyle(1.5, C.ink, 0.55).strokeCircle(cx, cy-3, 11*s);
     });
   }
 
@@ -252,7 +262,8 @@ export class Village extends Phaser.Scene {
     SPOTS.forEach(s => {
       const cx = s.x*TILE + TILE/2;
       const cy = s.y*TILE + TILE/2;
-      g.fillStyle(C.shadow, 0.18).fillEllipse(cx, cy+15, 38, 11);
+      // Bayangan searah cahaya (offset kiri-bawah dari sumber kanan-atas)
+      g.fillStyle(C.shadow, 0.15).fillEllipse(cx-4, cy+17, 42, 10);
       switch(s.id){
         case 'kepala':    this._drawCottage(g, cx, cy);   break;
         case 'koperasi':  this._drawKoperasi(g, cx, cy);  break;
@@ -270,9 +281,14 @@ export class Village extends Phaser.Scene {
         padding:{ x:4, y:2 },
       }).setOrigin(.5).setDepth(4).setAlpha(.95);
       if (s.id === 'koperasi'){
-        this.add.rectangle(cx, cy-30, 2, 18, C.ink).setDepth(3.8).setOrigin(0.5, 1);
-        const flag = this.add.rectangle(cx, cy-43, 13, 8, C.roofRed).setDepth(3.8).setOrigin(0, 0.5);
-        this.tweens.add({ targets:flag, scaleX:{ from:1, to:0.65 }, duration:680, yoyo:true, repeat:-1, ease:'Sine.easeInOut' });
+        this.add.rectangle(cx, cy-30, 2, 20, C.ink).setDepth(3.8).setOrigin(0.5, 1);
+        // Bendera merah-putih
+        const fg = this.add.graphics().setDepth(3.8);
+        fg.fillStyle(C.roofRed, 1).fillRect(0, -4, 14, 4);
+        fg.fillStyle(0xf0ede0,  1).fillRect(0,  0, 14, 4);
+        fg.lineStyle(0.5, C.ink, 0.5).strokeRect(0, -4, 14, 8);
+        fg.x = cx; fg.y = cy-45;
+        this.tweens.add({ targets:fg, scaleX:{ from:1, to:0.6 }, duration:700, yoyo:true, repeat:-1, ease:'Sine.easeInOut' });
       }
     });
   }
@@ -296,11 +312,13 @@ export class Village extends Phaser.Scene {
     g.fillStyle(C.woodDark).fillRoundedRect(cx-4, cy-4, 8, 13, 1);
     g.lineStyle(1.5, C.ink, 1).strokeRoundedRect(cx-4, cy-4, 8, 13, 1);
     g.fillStyle(C.gold).fillCircle(cx+3, cy+3, 1.5);
-    // Jendela
-    g.fillStyle(C.waterHi, 0.75).fillRect(cx-10, cy-12, 5, 5);
-    g.lineStyle(1, C.ink, 1).strokeRect(cx-10, cy-12, 5, 5);
-    g.lineStyle(1, C.ink, 0.5).lineBetween(cx-7.5, cy-12, cx-7.5, cy-7);
-    g.lineBetween(cx-10, cy-9.5, cx-5, cy-9.5);
+    // Jendela dengan cahaya interior hangat
+    g.fillStyle(0xffcc66, 0.28).fillRect(cx-12, cy-14, 9, 9);     // aura cahaya
+    g.fillStyle(0xffe8a8, 0.90).fillRect(cx-11, cy-13, 7, 7);     // kaca hangat
+    g.fillStyle(0xffaa33, 0.28).fillRect(cx-11, cy-13, 3, 3);     // sudut terang
+    g.lineStyle(1, C.ink, 1).strokeRect(cx-11, cy-13, 7, 7);
+    g.lineStyle(0.8, C.ink, 0.35).lineBetween(cx-7.5, cy-13, cx-7.5, cy-6);
+    g.lineBetween(cx-11, cy-9.5, cx-4, cy-9.5);
   }
 
   _drawKoperasi(g, cx, cy){
@@ -324,8 +342,13 @@ export class Village extends Phaser.Scene {
     g.fillStyle(C.stone).fillTriangle(cx-16, cy-20, cx+16, cy-20, cx, cy-30);
     g.lineStyle(2, C.ink, 1);
     g.strokePoints([{x:cx-16,y:cy-20},{x:cx+16,y:cy-20},{x:cx,y:cy-30}], true);
-    // Pintu masuk
-    g.fillStyle(C.shadow, 0.45).fillRoundedRect(cx-4, cy-7, 8, 15, 1);
+    // Papan nama di atas pintu
+    g.fillStyle(C.goldDark, 0.85).fillRect(cx-7, cy-10, 14, 4);
+    g.lineStyle(1, C.ink, 0.7).strokeRect(cx-7, cy-10, 14, 4);
+    g.fillStyle(C.gold, 0.55).fillRect(cx-6, cy-9.5, 12, 1.5);
+    // Pintu masuk dengan kaca atas
+    g.fillStyle(C.shadow, 0.45).fillRoundedRect(cx-4, cy-6, 8, 14, 1);
+    g.fillStyle(0xffe8a8, 0.35).fillRect(cx-3, cy-6, 6, 4);
   }
 
   _drawTreasury(g, cx, cy){
@@ -381,6 +404,11 @@ export class Village extends Phaser.Scene {
     g.lineStyle(2, C.ink, 1);
     g.strokePoints([{x:cx-15,y:cy-2},{x:cx+15,y:cy-2},{x:cx,y:cy-15}], true);
     g.fillStyle(0x6cc4c4, 0.35).fillTriangle(cx-13, cy-2, cx+13, cy-2, cx, cy-13);
+    // Rumbai scallop di bawah kanopi
+    [-12,-8,-4,0,4,8,12].forEach((ox,i) => {
+      g.fillStyle(i%2===0 ? C.roofTeal : 0x2d7a7a, 0.92).fillCircle(cx+ox, cy-1, 3.2);
+      g.lineStyle(0.5, C.ink, 0.4).strokeCircle(cx+ox, cy-1, 3.2);
+    });
     // Barang dagangan di counter
     [C.coral, C.success, C.gold].forEach((gc, i) => {
       g.fillStyle(gc).fillCircle(cx-7+i*7, cy, 3);
@@ -412,6 +440,13 @@ export class Village extends Phaser.Scene {
     g.fillStyle(C.stone).fillTriangle(cx-17, cy-22, cx+17, cy-22, cx, cy-34);
     g.lineStyle(2, C.ink, 1);
     g.strokePoints([{x:cx-17,y:cy-22},{x:cx+17,y:cy-22},{x:cx,y:cy-34}], true);
+    // Jendela kiri & kanan dari pintu
+    [-11, 8].forEach(ox => {
+      g.fillStyle(0xffcc66, 0.22).fillRect(cx+ox-1, cy-7, 7, 7);
+      g.fillStyle(0xffe8a8, 0.80).fillRect(cx+ox,   cy-6, 5, 5);
+      g.lineStyle(1, C.ink, 0.9).strokeRect(cx+ox, cy-6, 5, 5);
+      g.lineStyle(0.6, C.ink, 0.3).lineBetween(cx+ox+2.5, cy-6, cx+ox+2.5, cy-1);
+    });
     // Pintu
     g.fillStyle(C.shadow, 0.4).fillRoundedRect(cx-5, cy-8, 10, 18, 1);
   }
@@ -570,23 +605,32 @@ export class Village extends Phaser.Scene {
     const HATS    = [C.goldDark, C.stoneDark, C.woodDark, C.roofTeal, C.hair, C.roofGreen];
     OUTFITS.forEach((outfit, i) => {
       const g = this.add.graphics();
-      // Sepatu
-      g.fillStyle(C.woodDark).fillRect(4, 26, 5, 3).fillRect(11, 26, 5, 3);
+      // Sepatu dengan ujung sedikit lebih tebal
+      g.fillStyle(C.ink).fillRoundedRect(4, 25, 6, 4, 1).fillRoundedRect(11, 25, 6, 4, 1);
+      g.fillStyle(C.woodDark).fillRect(4, 25, 5, 3).fillRect(11, 25, 5, 3);
       // Kaki (celana)
-      g.fillStyle(C.pants).fillRect(5, 18, 4, 9).fillRect(11, 18, 4, 9);
-      g.lineStyle(1, C.ink, 1).strokeRect(5, 18, 4, 9).strokeRect(11, 18, 4, 9);
-      // Badan
-      g.fillStyle(outfit).fillRoundedRect(4, 10, 12, 10, 2);
-      g.fillStyle(0xffffff, 0.1).fillRect(4, 10, 12, 3);
-      g.lineStyle(1.5, C.ink, 1).strokeRoundedRect(4, 10, 12, 10, 2);
+      g.fillStyle(C.pants).fillRect(5, 17, 4, 9).fillRect(11, 17, 4, 9);
+      g.lineStyle(1, C.ink, 1).strokeRect(5, 17, 4, 9).strokeRect(11, 17, 4, 9);
+      // Ikat pinggang
+      g.fillStyle(C.woodDark, 0.7).fillRect(4, 18, 12, 2);
+      g.fillStyle(C.gold, 0.9).fillRect(9, 17.5, 2, 3);
+      // Badan dengan highlight pundak
+      g.fillStyle(outfit).fillRoundedRect(4, 9, 12, 10, 2);
+      g.fillStyle(0xffffff, 0.15).fillRect(4, 9, 12, 3);
+      g.lineStyle(1.5, C.ink, 1).strokeRoundedRect(4, 9, 12, 10, 2);
+      // Rambut di bawah topi
+      g.fillStyle(C.hair).fillRoundedRect(5, 4, 10, 5, 2);
       // Kepala
-      g.fillStyle(C.skin).fillCircle(10, 6, 5.5);
-      g.lineStyle(1.5, C.ink, 1).strokeCircle(10, 6, 5.5);
-      // Topi
-      g.fillStyle(HATS[i]).fillRoundedRect(5, 0, 10, 6, 2);
-      g.lineStyle(1, C.ink, 0.85).strokeRoundedRect(5, 0, 10, 6, 2);
-      // Mata kecil
-      g.fillStyle(C.ink).fillRect(8, 5, 1.5, 1.5).fillRect(11.5, 5, 1.5, 1.5);
+      g.fillStyle(C.skin).fillCircle(10, 5.5, 5.5);
+      g.fillStyle(C.skinShade, 0.3).fillCircle(11.5, 7, 3.5);
+      g.lineStyle(1.5, C.ink, 1).strokeCircle(10, 5.5, 5.5);
+      // Topi dengan pinggiran
+      g.fillStyle(HATS[i]).fillRoundedRect(4, -1, 12, 7, 2);
+      g.fillStyle(HATS[i]).fillRoundedRect(3, 5, 14, 2.5, 1);
+      g.lineStyle(1, C.ink, 0.9).strokeRoundedRect(4, -1, 12, 7, 2);
+      // Mata dengan sorotan
+      g.fillStyle(C.ink).fillRect(7.5, 5, 2, 2).fillRect(11.5, 5, 2, 2);
+      g.fillStyle(0xffffff, 0.7).fillRect(8, 5, 1, 1).fillRect(12, 5, 1, 1);
       g.generateTexture(`npc_${i}`, 20, 30);
       g.destroy();
     });
@@ -633,6 +677,28 @@ export class Village extends Phaser.Scene {
       alpha:{ start:0.58, end:0 },
       frequency:550, quantity:1,
     }).setDepth(4.8);
+  }
+
+  /* -------- Overlay cahaya direksinoal (matahari kanan atas) -------- */
+  makeAtmosphere(){
+    const w = COLS*TILE, h = ROWS*TILE, key = 'atmo';
+    if (!this.textures.exists(key)){
+      const cv = this.textures.createCanvas(key, w, h);
+      const ctx = cv.getContext();
+      // Cahaya matahari hangat dari kanan atas
+      const gSun = ctx.createRadialGradient(w*0.88, h*0.06, 0, w*0.88, h*0.06, w*0.85);
+      gSun.addColorStop(0,   'rgba(255,210,90,0.11)');
+      gSun.addColorStop(0.5, 'rgba(255,190,70,0.04)');
+      gSun.addColorStop(1,   'rgba(255,190,70,0)');
+      ctx.fillStyle = gSun; ctx.fillRect(0, 0, w, h);
+      // Bayangan sejuk dari kiri bawah
+      const gCool = ctx.createRadialGradient(0, h, 0, 0, h, w*0.58);
+      gCool.addColorStop(0,   'rgba(70,90,200,0.07)');
+      gCool.addColorStop(1,   'rgba(70,90,200,0)');
+      ctx.fillStyle = gCool; ctx.fillRect(0, 0, w, h);
+      cv.refresh();
+    }
+    this.add.image(0, 0, key).setOrigin(0).setDepth(99.5);
   }
 
   /* -------- Vignette tepi layar -------- */
