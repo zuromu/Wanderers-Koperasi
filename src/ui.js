@@ -92,6 +92,29 @@ export function advance(){ closeDialogue(); }
 
 /* ---------------- HUD & papan misi ---------------- */
 let lastMoney = S.money;
+let lastStage = S.stage;
+
+const STAGE_TOAST = {
+  JOIN:  'Selamat datang! Kunjungi Kantor Koperasi.',
+  LOAN:  'Simpanan diterima! Saatnya pinjam modal.',
+  PLANT: 'Modal cair! Kunjungi Ladang untuk bertani.',
+  SELL:  'Panen siap! Jual di Pasar.',
+  REPAY: 'Untung terkumpul! Lunasi pinjaman ke Bendahara.',
+  RAT:   'Pinjaman lunas! Hadiri RAT di Balai Desa.',
+  DONE:  'Siklus koperasi selesai — kamu luar biasa!',
+};
+
+function showToast(msg){
+  let t = document.getElementById('toast');
+  if (!t){
+    t = document.createElement('div');
+    t.id = 'toast';
+    document.getElementById('wrap').appendChild(t);
+  }
+  t.textContent = msg;
+  t.classList.remove('toast-in');
+  requestAnimationFrame(()=> requestAnimationFrame(()=> t.classList.add('toast-in')));
+}
 
 export function refresh(){
   document.getElementById('money').textContent    = rupiah(S.money);
@@ -110,8 +133,19 @@ export function refresh(){
   // Efek juice saat saldo berubah
   if (sceneRef && sceneRef.moneyFx && S.money !== lastMoney){
     sceneRef.moneyFx(S.money - lastMoney);
+    const moneyChip = document.getElementById('money')?.closest?.('.chip');
+    if (moneyChip){
+      moneyChip.classList.remove('chip-pulse');
+      requestAnimationFrame(()=> moneyChip.classList.add('chip-pulse'));
+    }
   }
   lastMoney = S.money;
+
+  // Toast saat tahap misi berubah
+  if (S.stage !== lastStage){
+    if (STAGE_TOAST[S.stage]) showToast(STAGE_TOAST[S.stage]);
+    lastStage = S.stage;
+  }
 
   if (sceneRef && sceneRef.updateMarker) sceneRef.updateMarker();
 }

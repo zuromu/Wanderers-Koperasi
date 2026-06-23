@@ -47,6 +47,7 @@ export class Village extends Phaser.Scene {
     this.ripples    = [];
     this.npcs       = [];
     this.clouds     = [];
+    this.torches    = [];
     this.locked     = true;
 
     this.drawGround();
@@ -57,6 +58,7 @@ export class Village extends Phaser.Scene {
     this.drawTrees();
     this.makeClouds();
     this.drawBuildings();
+    this.makeTorches();
     this.makeMarker();
     this.makePlayer();
     this.makePollen();
@@ -388,6 +390,23 @@ export class Village extends Phaser.Scene {
     g.strokePoints([{x:cx-17,y:cy-22},{x:cx+17,y:cy-22},{x:cx,y:cy-34}], true);
     // Pintu
     g.fillStyle(C.shadow, 0.4).fillRoundedRect(cx-5, cy-8, 10, 18, 1);
+  }
+
+  /* -------- Obor / lentera dekoratif di dekat bangunan -------- */
+  makeTorches(){
+    const rn = rng(444);
+    const T  = TILE;
+    const addT = (sx, sy) => this.torches.push({
+      glow:  this.add.graphics().setDepth(3.4),
+      flame: this.add.graphics().setDepth(3.5),
+      sx, sy, phase: rn()*Math.PI*2,
+    });
+    SPOTS.forEach(s => {
+      const cx = s.x*T + T/2, cy = s.y*T + T/2;
+      if (s.id === 'balai')    { addT(cx-T*0.85, cy+T*0.1); addT(cx+T*0.85, cy+T*0.1); }
+      if (s.id === 'pasar')    { addT(cx-T*1.0,  cy);        addT(cx+T*1.0,  cy); }
+      if (s.id === 'koperasi') { addT(cx-T*0.85, cy-T*0.4); }
+    });
   }
 
   /* -------- Penanda tujuan -------- */
@@ -734,6 +753,18 @@ export class Village extends Phaser.Scene {
         }
         npc.moveAt = time + 1600 + Math.random()*2200;
       }
+    }
+    // Obor berkedip
+    for (const t of this.torches){
+      const v = (Math.sin(time * 0.0038 + t.phase) + 1) / 2;
+      t.glow.clear();
+      t.glow.fillStyle(C.gold, 0.07 + v*0.07);
+      t.glow.fillCircle(t.sx, t.sy, 18 + v*8);
+      t.glow.fillStyle(0xff8822, 0.10 + v*0.08);
+      t.glow.fillCircle(t.sx, t.sy, 9 + v*4);
+      t.flame.clear();
+      t.flame.fillStyle(0xff9911, 0.9).fillCircle(t.sx, t.sy, 2.8 + v*0.7);
+      t.flame.fillStyle(0xffee55, 0.85).fillCircle(t.sx, t.sy - 1, 1.6);
     }
     // Riak lingkaran di atas air
     for (const rip of this.ripples){

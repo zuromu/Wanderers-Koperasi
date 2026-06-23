@@ -3,6 +3,13 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.28.0], Torch lights, HUD pulse, quest stage toasts
+
+### Ditambahkan
+- 5 obor berkedip di dekat Balai Desa, Pasar, dan Kantor Koperasi: lingkaran cahaya emas + bintik nyala oranye/kuning beranimasi di `update()`.
+- Chip HUD uang menyala sebentar (glowing box-shadow) setiap kali saldo berubah (`chipPulse` animation).
+- Toast pemberitahuan muncul di atas layar saat tahap misi berganti (JOIN → LOAN → PLANT → dst.), slide-in + fade-out dalam 2,6 detik.
+
 ## [0.27.0], 4-directional player, title particles, world bushes
 
 ### Ditambahkan
