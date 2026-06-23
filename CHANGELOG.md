@@ -3,6 +3,13 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.39.0], Ambient life — fireflies, NPC bubbles, detailed lily pads
+
+### Ditambahkan
+- **Kunang-kunang**: 9 titik kuning kecil melayang di dekat pohon-pohon tepi peta, kecerahannya berdenyut perlahan (0–60% alpha, 2.2 dtk/siklus) sambil mendeskripsikan jalur elips kecil — dunia terasa hidup bahkan di malam hari.
+- **Gelembung pendekatan NPC**: saat pemain berada dalam 1 ubin dari warga desa, gelembung "..." muncul di atas mereka (fade-in 240ms, slide dari y=-36 ke y=-42) — tanda RPG klasik bahwa ada sesuatu untuk dikatakan.
+- **Teratai lebih detail**: bayangan di bawah bantalan, highlight hijau muda, serat/vena daun (3 garis), dan bunga 3-lapis (mahkota luar merah muda + dalam oranye + kepala sari kuning + specular) menggantikan dua elips datar sebelumnya.
+
 ## [0.38.0], Game feel — torch glow, stage banners, puddles, character blink
 
 ### Ditambahkan
