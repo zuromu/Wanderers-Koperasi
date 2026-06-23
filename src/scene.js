@@ -18,10 +18,10 @@ function rng(seed){
     t = (t + Math.imul(t ^ (t>>>7), 61|t)) ^ t; return ((t ^ (t>>>14))>>>0) / 4294967296; };
 }
 const lerpC = (c1, c2, t) => {
-  const o = Phaser.Display.Color.Interpolate.ColorWithColor(
-    Phaser.Display.Color.IntegerToColor(c1),
-    Phaser.Display.Color.IntegerToColor(c2), 100, t*100);
-  return Phaser.Display.Color.GetColor(o.r, o.g, o.b);
+  const r = ((c1>>16)&0xFF) + (((c2>>16)&0xFF) - ((c1>>16)&0xFF)) * t;
+  const g = ((c1>>8) &0xFF) + (((c2>>8) &0xFF) - ((c1>>8) &0xFF)) * t;
+  const b = (c1      &0xFF) + ((c2      &0xFF) - (c1      &0xFF)) * t;
+  return (r|0)<<16 | (g|0)<<8 | (b|0);
 };
 
 export class Village extends Phaser.Scene {
