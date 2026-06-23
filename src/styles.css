@@ -16,8 +16,12 @@ h1 span{color:var(--gold)}
 .sub{color:#9aa0b4;font-size:13px;margin-bottom:8px;text-align:center;padding:0 8px}
 
 #wrap{position:relative;width:800px;max-width:100vw}
+@keyframes winGlow{
+  0%,100%{box-shadow:0 8px 32px rgba(0,0,0,.6)}
+  40%{box-shadow:0 8px 32px rgba(0,0,0,.6), 0 0 64px rgba(224,165,43,.65), 0 0 120px rgba(224,165,43,.25)}}
 #game{border:3px solid var(--gold);border-radius:8px;overflow:hidden;background:#000;
   box-shadow:0 8px 32px rgba(0,0,0,.6)}
+#game.win-glow{animation:winGlow 1.6s ease-out}
 
 /* HUD - panel perkamen */
 #hud{position:absolute;top:8px;left:8px;right:8px;display:flex;gap:8px;

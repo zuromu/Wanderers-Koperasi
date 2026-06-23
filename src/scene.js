@@ -141,6 +141,27 @@ export class Village extends Phaser.Scene {
     }
   }
 
+  _drawWell(g, cx, cy){
+    // Tiang penyangga kiri & kanan
+    g.fillStyle(C.wood).fillRect(cx-11, cy-14, 3, 18).fillRect(cx+8, cy-14, 3, 18);
+    g.lineStyle(1.5, C.ink, 1).strokeRect(cx-11, cy-14, 3, 18).strokeRect(cx+8, cy-14, 3, 18);
+    // Palang kayu atas
+    g.fillStyle(C.woodDark).fillRect(cx-13, cy-14, 26, 5);
+    g.lineStyle(1.5, C.ink, 1).strokeRect(cx-13, cy-14, 26, 5);
+    g.fillStyle(0x9e6e3c, 0.3).fillRect(cx-12, cy-13, 24, 2);
+    // Bibir sumur (batu)
+    g.fillStyle(C.stone).fillRoundedRect(cx-10, cy+2, 20, 12, 3);
+    g.lineStyle(1.5, C.ink, 1).strokeRoundedRect(cx-10, cy+2, 20, 12, 3);
+    g.fillStyle(0xb8b7c4, 0.4).fillRect(cx-9, cy+3, 18, 4);
+    // Lubang gelap + kilatan air
+    g.fillStyle(C.shadow, 0.7).fillEllipse(cx, cy+9, 13, 7);
+    g.fillStyle(C.waterHi, 0.28).fillEllipse(cx-1, cy+10, 6, 3);
+    // Tali + ember kecil
+    g.lineStyle(1, C.ink, 0.65).lineBetween(cx, cy-9, cx, cy+3);
+    g.fillStyle(C.wood).fillRoundedRect(cx-3.5, cy-2, 7, 6, 1);
+    g.lineStyle(1, C.ink, 0.8).strokeRoundedRect(cx-3.5, cy-2, 7, 6, 1);
+  }
+
   /* -------- Semak / tanaman dekoratif di rumput -------- */
   drawBushes(){
     const g = this.add.graphics().setDepth(1.8);
@@ -238,11 +259,13 @@ export class Village extends Phaser.Scene {
         case 'ladang':    this._drawField(g, cx, cy);     break;
         case 'pasar':     this._drawMarket(g, cx, cy);    break;
         case 'balai':     this._drawHall(g, cx, cy);      break;
+        case 'well':      this._drawWell(g, cx, cy);      break;
       }
+      const labelBg = s.deco ? '#9b9aa6' : '#e0a52b';
       this.add.text(cx, cy+19, s.name, {
         fontFamily:"'Pixelify Sans', 'Trebuchet MS', sans-serif",
         fontSize:'8px', fontStyle:'bold',
-        color:'#241d2e', backgroundColor:'#e0a52b',
+        color:'#241d2e', backgroundColor:labelBg,
         padding:{ x:4, y:2 },
       }).setOrigin(.5).setDepth(4).setAlpha(.95);
       if (s.id === 'koperasi'){
@@ -704,7 +727,9 @@ export class Village extends Phaser.Scene {
 
   celebrate(){
     confetti(this, this.pc.x, this.pc.y - 20);
-    flash(this, 0xffffff, 0.4); shake(this, 0.01, 220); Audio.play('fanfare');
+    flash(this, 0xffdd66, 0.38); shake(this, 0.01, 220); Audio.play('fanfare');
+    const gameEl = document.getElementById('game');
+    if (gameEl){ gameEl.classList.remove('win-glow'); requestAnimationFrame(()=> gameEl.classList.add('win-glow')); }
   }
 
   update(time){

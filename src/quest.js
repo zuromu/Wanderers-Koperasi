@@ -169,6 +169,13 @@ export function interact(spotId){
       }
       break;
 
+    /* ----- Sumur Desa: flavor / gotong royong ----- */
+    case 'well':
+      say('Sumur Desa',
+        'Sumur ini jantung desa — warga bergotong royong membangunnya bersama.' +
+        ' Air bersih untuk semua, tanpa terkecuali. Inilah semangat koperasi: dari kita, oleh kita, untuk kita!');
+      break;
+
     /* ----- Balai Desa: RAT & pembagian SHU ----- */
     case 'balai':
       if (S.stage === 'RAT'){

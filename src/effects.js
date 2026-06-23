@@ -41,8 +41,10 @@ export function burst(scene, x, y, tint=C.gold, count=22){
 
 /** Konfeti warna-warni (kemenangan / SHU). */
 export function confetti(scene, x, y){
-  [C.gold, C.coral, C.success, C.waterHi, C.ink].forEach((col,i)=>
-    scene.time.delayedCall(i*90, ()=> burst(scene, x, y, col, 18)));
+  const COLS = [C.gold, C.coral, C.success, C.waterHi, 0xffffff, C.goldDark];
+  COLS.forEach((col,i)=> scene.time.delayedCall(i*85, ()=> burst(scene, x, y, col, 24)));
+  // Ledakan besar emas setelah burst awal selesai
+  scene.time.delayedCall(520, ()=> burst(scene, x, y-50, C.gold, 40));
 }
 
 /** Getar layar. */

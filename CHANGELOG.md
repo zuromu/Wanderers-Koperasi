@@ -3,6 +3,14 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.29.0], Village well, enhanced confetti, win border glow
+
+### Ditambahkan
+- **Sumur Desa** di (10,11): bangunan dekoratif prosedural (tiang kayu, bibir batu, lubang gelap + kilatan air, ember) yang bisa diajak bicara untuk pesan gotong royong. Label abu-abu membedakannya dari lokasi misi.
+- **Konfeti diperkuat**: 6 warna × 24 partikel + ledakan emas besar 40 partikel 520 ms setelah burst awal.
+- **Glow tepi layar**: `#game` mendapat animasi `winGlow` (lingkaran cahaya emas ke luar) saat `celebrate()` dipanggil.
+- Flash kemenangan berubah warna dari putih ke kuning emas.
+
 ## [0.28.0], Torch lights, HUD pulse, quest stage toasts
 
 ### Ditambahkan

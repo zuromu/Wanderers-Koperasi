@@ -44,4 +44,5 @@ export const SPOTS = [
   { id:'ladang',    x:3,  y:7,  name:'Ladang' },
   { id:'pasar',     x:16, y:7,  name:'Pasar' },
   { id:'balai',     x:10, y:12, name:'Balai Desa (RAT)' },
+  { id:'well',      x:10, y:11, name:'Sumur Desa', deco:true },
 ];
