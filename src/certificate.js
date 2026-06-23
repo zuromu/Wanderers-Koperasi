@@ -42,6 +42,7 @@ export function showRecap(){
          &middot; SHU diterima: <b>${rupiah(S.shu)}</b></p>
       <div class="title-btns">
         <button class="primary" id="btnCert">Unduh Sertifikat</button>
+        <button id="btnShare">Bagikan</button>
         <button id="btnReplay">Main Lagi</button>
       </div>
     </div>`;
@@ -49,6 +50,18 @@ export function showRecap(){
   Audio.play('select');
   document.getElementById('btnCert').onclick = () => { Audio.play('coin'); downloadCertificate(); };
   document.getElementById('btnReplay').onclick = () => { Audio.play('select'); location.reload(); };
+  const shareBtn = document.getElementById('btnShare');
+  shareBtn.onclick = async () => {
+    Audio.play('select');
+    const shareText = `Nilai ${g.grade} (${g.title}) di Wanderer's Koperasi Quest!\nLiterasi koperasi: ${S.quizCorrect}/${S.quizTotal} — belajar Simpanan, SHU, RAT, dan lebih. Coba juga: ${location.origin}`;
+    if (navigator.share){
+      try { await navigator.share({ title:"Wanderer's Koperasi Quest", text:shareText }); } catch(e){}
+    } else {
+      await navigator.clipboard.writeText(shareText).catch(()=>{});
+      shareBtn.textContent = 'Disalin!';
+      setTimeout(()=>{ shareBtn.textContent = 'Bagikan'; }, 2200);
+    }
+  };
 }
 
 /** Buat sertifikat PNG dan unduh. */
