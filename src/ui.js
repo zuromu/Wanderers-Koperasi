@@ -94,7 +94,7 @@ export function refresh(){
   document.getElementById('money').textContent    = rupiah(S.money);
   document.getElementById('simpanan').textContent = rupiah(S.simpananPokok + S.simpananWajib);
   document.getElementById('harvest').textContent  = S.harvest;
-  document.getElementById('member').textContent   = S.isMember ? 'Anggota ✓' : 'Calon Anggota';
+  document.getElementById('member').textContent   = S.isMember ? 'Anggota' : 'Calon Anggota';
 
   const q = questInfo();
   document.getElementById('qtitle').textContent = q.title;
