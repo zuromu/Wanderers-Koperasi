@@ -475,7 +475,7 @@ export class Village extends Phaser.Scene {
   bindInput(){
     this.input.keyboard.on('keydown', e => {
       if (this.locked) return;
-      if (isDialogueOpen()){ if (e.code === 'Space') advanceDialogue(); return; }
+      if (isDialogueOpen()){ if (e.code==='Space' || e.code==='Enter') advanceDialogue(); return; }
       if (this.moving) return;
       let nx = this.px, ny = this.py;
       if      (e.code==='ArrowLeft'  || e.code==='KeyA') nx--;
@@ -559,8 +559,8 @@ export class Village extends Phaser.Scene {
       floatText(this, x, y, '+Rp'+delta.toLocaleString('id-ID'), '#7fc96b');
       burst(this, x, y, C.gold, 16); Audio.play('coin'); shake(this, 0.004, 100);
     } else if (delta < 0){
-      floatText(this, x, y, 'Rp'+delta.toLocaleString('id-ID'), '#d96c6c');
-      Audio.play('pay');
+      floatText(this, x, y, '-Rp'+(-delta).toLocaleString('id-ID'), '#d96c6c');
+      shake(this, 0.003, 90); Audio.play('pay');
     }
   }
 
