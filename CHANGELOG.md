@@ -3,6 +3,28 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.22.0], Demo step counter
+
+### Ditambahkan
+- Keterangan demo kini menampilkan nomor langkah `[1/8]` di depan teks tiap tahap.
+
+## [0.21.0], About screen & demo caption update
+
+### Diperbarui
+- Layar Tentang: tambah bullet warga NPC, pilihan modal koperasi vs rentenir; gabung glosarium ke bullet demo.
+- Caption akhir demo menginformasikan interaksi warga dan tombol H glosarium.
+
+## [0.20.0], Villager NPC dialogues
+
+### Ditambahkan
+- Menekan Spasi dekat warga memunculkan dialog 'Warga Desa' dengan fakta koperasi acak (7 topik: sejarah, skala, prinsip ICA, Kospin, RAT, SHU, gotong royong).
+
+## [0.19.0], Wandering villager NPCs
+
+### Ditambahkan
+- 7 warga desa bergerak prosedural (lingkaran tunik berwarna + kepala skin) di kedalaman 2.1/2.15.
+- Tiap warga berpindah petak secara acak setiap 1.6–3.8 detik, tidak memasuki air.
+
 ## [0.18.0], CHANGELOG catch-up
 
 ### Diperbarui

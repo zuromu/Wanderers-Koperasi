@@ -47,8 +47,9 @@ export async function runDemo(scene){
   scene.unlock();
   const cap = ensureCaption();
 
-  for (const st of STEPS){
-    cap.textContent = '' + st.cap;
+  for (let idx = 0; idx < STEPS.length; idx++){
+    const st = STEPS[idx];
+    cap.textContent = `[${idx+1}/${STEPS.length}] ${st.cap}`;
     if (scene.teleport) await scene.teleport(st.spot);
     await wait(650);
     interact(st.spot);
