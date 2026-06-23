@@ -1,0 +1,114 @@
+<div align="center">
+
+![Wanderer's Koperasi Quest](docs/cover.svg)
+
+# 🎮 Wanderer's Koperasi Quest
+
+**RPG Edukasi Keuangan** — mengajarkan konsep koperasi Indonesia lewat petualangan.
+
+[![Literasi Koperasi](https://img.shields.io/badge/Literasi-Koperasi-e0a52b)](#)
+[![Phaser](https://img.shields.io/badge/Phaser-3.80-3a8a4f)](https://phaser.io)
+[![Status](https://img.shields.io/badge/status-MVP-c0432f)](#)
+
+Belajar koperasi sambil bermain — tanpa install, langsung di browser.
+
+</div>
+
+---
+
+## ✨ Tentang
+
+Generasi muda menganggap koperasi kuno dan tidak relevan; edukasi konvensional
+(seminar, buku) gagal menarik perhatian. **Wanderer's Koperasi Quest** mengubah
+materi ekonomi yang berat menjadi *narrative-driven RPG* berbasis browser yang
+bisa langsung dimainkan siapa saja — tanpa install, dengan ritme masing-masing.
+
+Pemain berperan sebagai **Wanderer** (pengembara) yang membantu sebuah desa
+bangkit melalui koperasi, sambil **mengalami langsung** siklus koperasi yang utuh.
+
+## 🎯 Konsep koperasi yang diajarkan
+
+| Tahap di game | Konsep |
+|---|---|
+| Daftar ke Kepala Desa | Apa itu koperasi — *dari, oleh, untuk anggota* |
+| Bayar di Kantor Koperasi | **Simpanan Pokok** & **Simpanan Wajib** |
+| Pinjam ke Bendahara | **Pinjaman modal** anggota |
+| Tani di Ladang → jual di Pasar | Usaha produktif & arus kas |
+| Lunasi pinjaman | Tanggung jawab anggota |
+| Hadiri **RAT** di Balai Desa | **Rapat Anggota Tahunan** & pembagian **SHU** |
+
+## ▶️ Cara bermain
+
+**Kontrol:** Panah `← ↑ ↓ →` atau `W A S D` untuk bergerak · `Spasi` untuk bicara / aksi.
+Ikuti penanda emas di peta dan kotak misi di kanan atas.
+
+## 🚀 Menjalankan secara lokal
+
+Proyek memakai ES Modules, jadi jalankan lewat server (bukan `file://`):
+
+```bash
+npm install && npm run dev      # buka URL yang muncul
+# atau tanpa Node:
+python3 -m http.server 8123     # lalu buka http://localhost:8123
+```
+
+## ☁️ Deploy ke Vercel (direkomendasikan)
+
+Situs ini 100% statis — Vercel mengenalinya otomatis.
+
+1. Push repo ini ke GitHub.
+2. Buka [vercel.com/new](https://vercel.com/new), pilih repo **Wanderers-Koperasi**.
+3. Framework Preset: **Other** · Build Command: *(kosongkan)* · Output Directory: *(kosongkan / `.`)*.
+4. **Deploy.** URL publik langsung jadi — cantumkan di slide demo.
+
+Lewat CLI:
+
+```bash
+npm i -g vercel && vercel --prod
+```
+
+<details>
+<summary>Alternatif: GitHub Pages</summary>
+
+```bash
+git add . && git commit -m "Wanderer's Koperasi Quest MVP"
+git push -u origin main
+```
+Lalu **Settings → Pages → Source: `main` / root → Save**.
+</details>
+
+## 🧱 Arsitektur
+
+```
+index.html        # kerangka + memuat Phaser (CDN) & src/main.js
+src/
+  styles.css      # gaya tampilan
+  data.js         # data dunia: peta & lokasi (tanpa logika)
+  state.js        # state pemain + state machine misi  ← switch/case
+  quest.js        # logika koperasi (interaksi)        ← switch/case
+  ui.js           # dialog, HUD, papan misi
+  scene.js        # scene Phaser (render, gerak, input)
+  main.js         # boot Phaser
+docs/cover.svg    # banner
+```
+
+> **Catatan teknis (sesuai proposal):** inti permainan memakai **state machine
+> `switch/case`** — `questInfo()` menentukan misi aktif, `interact()` mengevaluasi
+> state pemain di tiap lokasi. Arsitektur ini bersih, mudah dirawat, dan mudah
+> ditambah skenario baru. Lihat [`CONTRIBUTING.md`](CONTRIBUTING.md) untuk panduan.
+
+## 🗺️ Roadmap
+
+- [ ] Aset visual rapi (tileset & sprite) menggantikan emoji
+- [ ] Kuis singkat tiap quest untuk mengukur pemahaman
+- [ ] Sistem level, badge, & sertifikat literasi koperasi
+- [ ] Mode "Pengurus": simulasi tata kelola koperasi desa
+- [ ] Penyimpanan progres (localStorage) & papan skor
+
+## 👥 Tim
+
+**zuromu** — [github.com/zuromu](https://github.com/zuromu)
+
+## 📄 Lisensi
+
+Karya orisinil — All Rights Reserved. Lihat [`LICENSE`](LICENSE) untuk ketentuan lengkap.

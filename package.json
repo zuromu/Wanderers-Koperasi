@@ -1,0 +1,17 @@
+{
+  "name": "wanderers-koperasi-quest",
+  "version": "0.1.0",
+  "private": true,
+  "description": "RPG edukasi keuangan Gen-Z yang mengajarkan konsep koperasi Indonesia (Simpanan Pokok, Pinjam Modal, RAT, SHU) lewat petualangan berbasis browser.",
+  "keywords": ["koperasi", "edukasi", "game", "rpg", "phaser", "gen-z", "literasi-keuangan"],
+  "license": "SEE LICENSE IN LICENSE",
+  "type": "module",
+  "scripts": {
+    "dev": "serve .",
+    "start": "serve .",
+    "serve": "serve ."
+  },
+  "devDependencies": {
+    "serve": "^14.2.1"
+  }
+}

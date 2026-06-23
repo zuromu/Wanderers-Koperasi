@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="RPG edukasi keuangan Gen-Z yang mengajarkan konsep koperasi Indonesia — Simpanan Pokok, Pinjam Modal, RAT, dan SHU — lewat petualangan." />
+<meta name="theme-color" content="#e0a52b" />
+<title>Wanderer's Koperasi Quest</title>
+
+<!-- Open Graph / social preview -->
+<meta property="og:title" content="Wanderer's Koperasi Quest" />
+<meta property="og:description" content="RPG edukasi keuangan: belajar koperasi Indonesia lewat petualangan." />
+<meta property="og:type" content="website" />
+
+<link rel="stylesheet" href="src/styles.css" />
+<script src="https://cdn.jsdelivr.net/npm/phaser@3.80.1/dist/phaser.min.js"></script>
+</head>
+<body>
+  <h1>Wanderer's <span>Koperasi Quest</span></h1>
+  <div class="sub">RPG Edukasi Keuangan &middot; Belajar Koperasi Lewat Petualangan</div>
+
+  <div id="wrap">
+    <div id="game"></div>
+
+    <div id="hud">
+      <div class="chip">💰 <span id="money">Rp0</span></div>
+      <div class="chip">🏦 <small>Simpanan</small> <span id="simpanan">Rp0</span></div>
+      <div class="chip">🌾 <small>Panen</small> <span id="harvest">0</span></div>
+      <div class="chip" id="memberChip">👤 <span id="member">Calon Anggota</span></div>
+    </div>
+
+    <div id="quest">
+      <b id="qtitle">Misi</b>
+      <div class="obj" id="qobj">...</div>
+    </div>
+
+    <div id="dlg">
+      <div class="who" id="dwho"></div>
+      <div class="txt" id="dtxt"></div>
+      <div class="choices" id="dchoices"></div>
+      <div class="hint">Tekan <kbd>Spasi</kbd> untuk lanjut</div>
+    </div>
+  </div>
+
+  <div class="controls">
+    Gerak: <kbd>← ↑ ↓ →</kbd> atau <kbd>W A S D</kbd> &nbsp;|&nbsp; Bicara / Aksi: <kbd>Spasi</kbd>
+  </div>
+
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>
