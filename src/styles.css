@@ -84,3 +84,27 @@ kbd{background:#2a2e3c;border:1px solid #444;border-radius:4px;padding:1px 6px;f
 .title-card button:hover{transform:translateY(-2px)}
 .title-card button:active{transform:scale(.96)}
 .title-hint{color:#8a90a4;font-size:12px;margin:16px 0 0}
+
+/* Input nama di layar judul */
+#nameInput{display:block;width:100%;margin:0 auto 16px;padding:10px 14px;
+  font-size:15px;border-radius:10px;border:1px solid rgba(232,163,61,.5);
+  background:rgba(10,8,16,.5);color:#fff;text-align:center;outline:none}
+#nameInput::placeholder{color:#8a90a4}
+#nameInput:focus{border-color:var(--gold)}
+
+/* Caption mode demo */
+#caption{display:none;position:absolute;left:50%;bottom:54px;transform:translateX(-50%);
+  z-index:25;max-width:90%;text-align:center;padding:10px 18px;border-radius:12px;
+  background:rgba(20,17,30,.9);color:#fff;font-size:15px;font-weight:bold;
+  border:1px solid var(--gold);backdrop-filter:blur(6px);box-shadow:0 6px 20px rgba(0,0,0,.5)}
+
+/* Rapor / sertifikat */
+#recap{position:absolute;inset:0;z-index:45;display:none;align-items:center;
+  justify-content:center;border-radius:8px;
+  background:radial-gradient(circle at 50% 35%, rgba(28,25,38,.85), rgba(10,8,16,.96))}
+.recap-card{max-width:440px}
+.recap-card .grade{font-size:64px;font-weight:bold;color:var(--gold);line-height:1;
+  margin:4px 0;text-shadow:0 4px 10px rgba(0,0,0,.5)}
+.recap-list{list-style:none;padding:0;margin:14px 0;text-align:left;
+  color:#e8ecf5;font-size:14px;line-height:1.9}
+.recap-list li{border-bottom:1px solid rgba(255,255,255,.08);padding:2px 4px}

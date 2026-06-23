@@ -180,6 +180,20 @@ export class Village extends Phaser.Scene {
 
   unlock(){ this.locked = false; }
 
+  /** Pindahkan pemain ke samping sebuah spot (untuk mode demo).
+   *  Resolusi promise via timer (bukan onComplete tween) agar urutan demo tetap
+   *  jalan walau loop animasi di-throttle; tween tetap memberi gerak halus. */
+  teleport(spotId){
+    const s = SPOTS.find(x => x.id === spotId);
+    if (!s) return Promise.resolve();
+    this.px = s.x;
+    this.py = Math.min(ROWS-1, s.y + 1);
+    if (+MAP[this.py][this.px] === 2) this.py = s.y; // hindari air
+    const tx = this.px*TILE+TILE/2, ty = this.py*TILE+TILE/2;
+    this.tweens.add({ targets:this.pc, x:tx, y:ty, duration:500, ease:'Quad.easeInOut' });
+    return new Promise(res => setTimeout(() => { this.pc.setPosition(tx, ty); res(); }, 560));
+  }
+
   updateMarker(){
     if (!this.ring) return;
     const q = questInfo();
