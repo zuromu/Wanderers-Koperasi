@@ -3,6 +3,40 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.18.0], CHANGELOG catch-up
+
+### Diperbarui
+- Changelog mencakup semua perubahan dari wave 14 sampai 17.
+
+## [0.17.0], Grade in HUD & koperasi DONE dialogue
+
+### Ditambahkan
+- Panel misi menampilkan nilai literasi (A/B/C/D) di judul saat misi selesai.
+- Kunjungan ke Kantor Koperasi setelah misi selesai menampilkan ringkasan simpanan dan SHU, dengan opsi setor Simpanan Wajib lanjutan.
+
+## [0.16.0], Footprint trail & controls hint
+
+### Ditambahkan
+- Jejak kaki (ellipse gelap, α=0.22) muncul di posisi lama pemain setiap langkah dan memudar dalam 440 ms.
+- Hint kontrol memperlihatkan `Enter` sebagai alternatif `Spasi`, dan `H` untuk membuka Glosarium.
+
+## [0.15.0], UX polish
+
+### Ditambahkan
+- Lambang koperasi di layar judul berdenyut dengan cahaya emas halus (emblemGlow, 3.8 detik).
+- Tombol `Enter` kini memajukan dialog seperti `Spasi`.
+- Efek getar kecil saat uang dikeluarkan (membeli/membayar).
+
+### Diperbaiki
+- Format uang negatif: dari `Rp-50.000` menjadi `-Rp50.000`.
+
+## [0.14.0], Water ripples & entrance animations
+
+### Ditambahkan
+- 6 lingkaran riak memudar di batas air atas dan bawah (siklus 4.2 dtk, `strokeCircle`).
+- Animasi CSS `overlayIn` (fade) pada layar judul dan layar rapor.
+- Animasi CSS `cardIn` (fade + geser ke atas 18 px) pada kartu judul dan kartu rapor.
+
 ## [0.13.0], Rentenir warning & post-game NPC
 
 ### Ditambahkan
