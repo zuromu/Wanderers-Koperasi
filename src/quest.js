@@ -11,6 +11,7 @@ import { S, questInfo } from './state.js';
 import { rupiah } from './data.js';
 import { showDialogue, closeDialogue, advance, refresh, winScreen } from './ui.js';
 import { askQuiz } from './quiz.js';
+import { showRecap } from './certificate.js';
 import * as Audio from './audio.js';
 
 export function interact(spotId){
@@ -44,6 +45,7 @@ export function interact(spotId){
               say('Kantor Koperasi','Simpanan Wajib bertambah! Anggota koperasi yang setia.',
                 [{ label:'Oke', go:closeDialogue }]);
             }},
+            { label:'Lihat Rapor & Sertifikat', go:()=>{ closeDialogue(); showRecap(); } },
             { label:'Tutup', go:closeDialogue },
           ]);
       } else if (S.stage === 'JOIN'){
