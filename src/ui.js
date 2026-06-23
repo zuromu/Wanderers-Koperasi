@@ -1,65 +1,94 @@
 /**
- * ui.js — Lapisan tampilan: kotak dialog (DOM overlay) + HUD + papan misi.
- * Dipisah dari logika game agar mudah diganti/ditingkatkan tampilannya.
+ * ui.js — Lapisan tampilan DOM: kotak dialog (dengan efek ketik), HUD, papan
+ * misi. Juga menyalurkan efek "juice" ke scene saat uang berubah.
  */
 
 import { S, questInfo } from './state.js';
 import { rupiah } from './data.js';
+import * as Audio from './audio.js';
 
-/* Referensi scene Phaser, didaftarkan oleh scene saat create(). */
 let sceneRef = null;
 export function setSceneRef(scene){ sceneRef = scene; }
 
-/* ---------------- Dialog ---------------- */
+/* ---------------- Dialog (dengan efek ketik) ---------------- */
 let dialogueOpen = false, pendingClose = null;
+let typing = false, typeTimer = null, fullText = '', pendingChoices = null;
+
 const dlg = document.getElementById('dlg');
 const dwho = document.getElementById('dwho');
 const dtxt = document.getElementById('dtxt');
 const dchoices = document.getElementById('dchoices');
+const darrow = document.getElementById('darrow');
 
 export const isDialogueOpen = () => dialogueOpen;
 
-/**
- * Tampilkan dialog.
- * @param {string} who   nama pembicara
- * @param {string} text  isi dialog
- * @param {Array<{label:string, go?:Function, cond?:boolean}>} [choices]
- *        Bila kosong: tekan Spasi untuk menutup. `cond:false` => tombol nonaktif.
- */
 export function showDialogue(who, text, choices){
-  dialogueOpen = true; pendingClose = null;
-  dwho.textContent = who; dtxt.textContent = text;
+  dialogueOpen = true; pendingClose = null; pendingChoices = choices || null;
+  dwho.textContent = who;
   dchoices.innerHTML = '';
+  if (darrow) darrow.style.display = 'none';
+  dlg.style.display = 'block';
+  Audio.play('talk');
+  startTyping(text);
+}
 
+function startTyping(text){
+  fullText = text; typing = true;
+  dtxt.textContent = '';
+  let i = 0;
+  clearInterval(typeTimer);
+  typeTimer = setInterval(() => {
+    dtxt.textContent = fullText.slice(0, ++i);
+    if (i % 2 === 0) Audio.play('type');
+    if (i >= fullText.length){ clearInterval(typeTimer); finishTyping(); }
+  }, 16);
+}
+
+function finishTyping(){
+  typing = false; clearInterval(typeTimer);
+  dtxt.textContent = fullText;
+  renderChoices(pendingChoices);
+}
+
+function renderChoices(choices){
+  dchoices.innerHTML = '';
   if (choices && choices.length){
     choices.forEach(ch => {
       const b = document.createElement('button');
-      if (ch.cond === false){                 // syarat tak terpenuhi -> nonaktif
+      if (ch.cond === false){
         b.textContent = ch.label + ' (saldo kurang)';
         b.style.opacity = .5; b.style.cursor = 'not-allowed';
       } else {
         b.textContent = ch.label;
-        b.onclick = () => { if (ch.go) ch.go(); };
+        b.onclick = () => { Audio.play('select'); if (ch.go) ch.go(); };
       }
       dchoices.appendChild(b);
     });
+    if (darrow) darrow.style.display = 'none';
   } else {
-    pendingClose = true;                       // dialog informatif -> Spasi menutup
+    pendingClose = true;
+    if (darrow) darrow.style.display = 'block';
   }
-  dlg.style.display = 'block';
 }
 
-/** Dipanggil saat Spasi ditekan ketika dialog terbuka. */
-export function advanceDialogue(){ if (pendingClose) closeDialogue(); }
+/** Spasi saat dialog terbuka: lewati efek ketik, lalu tutup bila informatif. */
+export function advanceDialogue(){
+  if (typing){ finishTyping(); return; }
+  if (pendingClose) closeDialogue();
+}
 
 export function closeDialogue(){
-  dialogueOpen = false; dlg.style.display = 'none'; refresh();
+  dialogueOpen = false; typing = false; clearInterval(typeTimer);
+  dlg.style.display = 'none';
+  if (darrow) darrow.style.display = 'none';
+  refresh();
 }
 
-/** Alias semantik: tutup dialog lalu lanjut. */
 export function advance(){ closeDialogue(); }
 
 /* ---------------- HUD & papan misi ---------------- */
+let lastMoney = S.money;
+
 export function refresh(){
   document.getElementById('money').textContent    = rupiah(S.money);
   document.getElementById('simpanan').textContent = rupiah(S.simpananPokok + S.simpananWajib);
@@ -70,11 +99,18 @@ export function refresh(){
   document.getElementById('qtitle').textContent = '📜 ' + q.title;
   document.getElementById('qobj').textContent   = q.objective;
 
+  // Efek juice saat saldo berubah
+  if (sceneRef && sceneRef.moneyFx && S.money !== lastMoney){
+    sceneRef.moneyFx(S.money - lastMoney);
+  }
+  lastMoney = S.money;
+
   if (sceneRef && sceneRef.updateMarker) sceneRef.updateMarker();
 }
 
-/** Layar kemenangan setelah menerima SHU di RAT. */
+/** Layar kemenangan + konfeti. */
 export function winScreen(){
+  if (sceneRef && sceneRef.celebrate) sceneRef.celebrate();
   showDialogue('🎉 Tamat',
     `Kamu telah menyelesaikan siklus koperasi: jadi anggota (Simpanan Pokok), menabung ` +
     `(Simpanan Wajib), pinjam modal, berusaha tani, melunasi pinjaman, dan menerima SHU di RAT. ` +
