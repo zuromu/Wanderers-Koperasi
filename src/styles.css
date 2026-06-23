@@ -42,6 +42,9 @@ h1 span{color:var(--gold)}
 #quest b{color:var(--blue)}
 #quest .obj{margin-top:6px;color:#3a4a63;font-size:12px}
 #qtitle{font-size:13px;color:var(--ink)}
+.step-bar{height:4px;background:rgba(36,29,46,0.12);border-radius:2px;margin-top:7px;overflow:hidden}
+.step-fill{height:100%;background:var(--gold);border-radius:2px;transition:width .5s ease;width:0%}
+.step-label{font-size:10px;color:#9a8a60;text-align:right;margin-top:2px;font-family:'Jersey 10',cursive}
 
 /* Dialog */
 #dlg{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);width:92%;

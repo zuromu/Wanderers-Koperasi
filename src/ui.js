@@ -99,6 +99,10 @@ export function refresh(){
   const q = questInfo();
   document.getElementById('qtitle').textContent = q.title;
   document.getElementById('qobj').textContent   = q.objective;
+  const fill  = document.getElementById('qstep-fill');
+  const label = document.getElementById('qstep-label');
+  if (fill)  fill.style.width  = q.step ? (q.step / q.total * 100).toFixed(1) + '%' : '0%';
+  if (label) label.textContent = q.step ? q.step + ' / ' + q.total : '';
 
   // Efek juice saat saldo berubah
   if (sceneRef && sceneRef.moneyFx && S.money !== lastMoney){

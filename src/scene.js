@@ -32,6 +32,7 @@ export class Village extends Phaser.Scene {
     ensureSpark(this);
     this.waterTiles = [];
     this.pollen     = [];
+    this.smoke      = [];
     this.locked     = true;
 
     this.drawGround();
@@ -43,6 +44,7 @@ export class Village extends Phaser.Scene {
     this.makeMarker();
     this.makePlayer();
     this.makePollen();
+    this.makeSmoke();
     this.makeVignette();
     this.bindInput();
 
@@ -415,6 +417,19 @@ export class Village extends Phaser.Scene {
     }
   }
 
+  /* -------- Asap cerobong beranimasi -------- */
+  makeSmoke(){
+    const kepala = SPOTS.find(s => s.id === 'kepala');
+    if (!kepala) return;
+    const sx = kepala.x * TILE + TILE/2 + 7;
+    const sy = kepala.y * TILE + TILE/2 - 26;
+    const r = rng(55);
+    for (let i = 0; i < 5; i++){
+      const dot = this.add.circle(sx, sy, 1.8+r()*1.4, 0x9a9aaa, 0.35).setDepth(3.2);
+      this.smoke.push({ obj:dot, sx, sy, phase:r(), phX:r()*Math.PI*2, drift:2+r()*3 });
+    }
+  }
+
   /* -------- Vignette tepi layar -------- */
   makeVignette(){
     const w = COLS*TILE, h = ROWS*TILE, key = 'vignette';
@@ -543,5 +558,12 @@ export class Village extends Phaser.Scene {
     // Bayangan awan bergerak
     this.cloudShadow.x += 0.18;
     if (this.cloudShadow.x > COLS*TILE + 90) this.cloudShadow.x = -90;
+    // Asap cerobong
+    for (const s of this.smoke){
+      const age = (time * 0.00042 + s.phase) % 1;
+      s.obj.x = s.sx + Math.sin(age * 7 + s.phX) * s.drift;
+      s.obj.y = s.sy - age * 28;
+      s.obj.setAlpha((1 - age) * 0.45);
+    }
   }
 }

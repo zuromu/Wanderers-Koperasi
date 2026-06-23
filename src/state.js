@@ -53,32 +53,33 @@ export function literacyGrade(){
  * `target` = id spot yang harus dituju (untuk penanda emas di peta).
  */
 export function questInfo(){
+  const T = 7;
   switch (S.stage){
     case 'INTRO':
       return { title:'Selamat Datang, Wanderer',
-               objective:'Temui Kepala Desa di kiri atas.', target:'kepala' };
+               objective:'Temui Kepala Desa di kiri atas.', target:'kepala', step:1, total:T };
     case 'JOIN':
       return { title:'Jadi Anggota Koperasi',
-               objective:'Pergi ke Kantor Koperasi, bayar Simpanan Pokok (Rp50.000).', target:'koperasi' };
+               objective:'Pergi ke Kantor Koperasi, bayar Simpanan Pokok (Rp50.000).', target:'koperasi', step:2, total:T };
     case 'LOAN':
       return { title:'Pinjam Modal Usaha',
-               objective:'Temui Bendahara, pinjam modal Rp75.000 untuk beli bibit.', target:'bendahara' };
+               objective:'Temui Bendahara, pinjam modal Rp75.000 untuk beli bibit.', target:'bendahara', step:3, total:T };
     case 'PLANT':
       return { title:'Mulai Bertani',
-               objective:'Ke Ladang, beli & tanam bibit (Rp60.000).', target:'ladang' };
+               objective:'Ke Ladang, beli & tanam bibit (Rp60.000).', target:'ladang', step:4, total:T };
     case 'SELL':
       return { title:'Jual Hasil Panen',
-               objective:'Bawa panen ke Pasar dan jual untuk untung.', target:'pasar' };
+               objective:'Bawa panen ke Pasar dan jual untuk untung.', target:'pasar', step:5, total:T };
     case 'REPAY':
       return { title:'Lunasi Pinjaman',
-               objective:'Kembali ke Bendahara, lunasi pinjaman koperasi.', target:'bendahara' };
+               objective:'Kembali ke Bendahara, lunasi pinjaman koperasi.', target:'bendahara', step:6, total:T };
     case 'RAT':
       return { title:'Rapat Anggota Tahunan',
-               objective:'Hadiri RAT di Balai Desa untuk terima SHU.', target:'balai' };
+               objective:'Hadiri RAT di Balai Desa untuk terima SHU.', target:'balai', step:7, total:T };
     case 'DONE':
       return { title:'Misi Selesai!',
-               objective:'Kamu paham siklus koperasi. Jelajahi bebas!', target:null };
+               objective:'Kamu paham siklus koperasi. Jelajahi bebas!', target:null, step:T, total:T };
     default:
-      return { title:'Misi', objective:'...', target:null };
+      return { title:'Misi', objective:'...', target:null, step:0, total:T };
   }
 }
