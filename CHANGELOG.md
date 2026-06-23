@@ -3,6 +3,14 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.3.0] — Accessibility & reach
+
+### Ditambahkan
+- Kontrol sentuh (D-pad + tombol aksi) untuk bermain di ponsel.
+- Glosarium/bantuan istilah koperasi (tombol ❔ atau tombol H).
+- Petunjuk awal (onboarding) saat pertama bermain.
+- Penyesuaian tata letak responsif untuk layar sempit.
+
 ## [0.2.0] — Education & proof-of-learning
 
 ### Ditambahkan

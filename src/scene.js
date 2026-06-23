@@ -180,6 +180,24 @@ export class Village extends Phaser.Scene {
 
   unlock(){ this.locked = false; }
 
+  /** Satu langkah ke arah tertentu (dipakai tombol sentuh). */
+  stepDir(dir){
+    if (this.locked || this.moving || isDialogueOpen()) return;
+    let nx = this.px, ny = this.py;
+    if      (dir==='left')  nx--;
+    else if (dir==='right') nx++;
+    else if (dir==='up')    ny--;
+    else if (dir==='down')  ny++;
+    this.moveTo(nx, ny);
+  }
+
+  /** Tombol aksi sentuh: lanjut dialog atau berinteraksi. */
+  action(){
+    if (this.locked) return;
+    if (isDialogueOpen()) advanceDialogue();
+    else this.tryInteract();
+  }
+
   /** Pindahkan pemain ke samping sebuah spot (untuk mode demo).
    *  Resolusi promise via timer (bukan onComplete tween) agar urutan demo tetap
    *  jalan walau loop animasi di-throttle; tween tetap memberi gerak halus. */

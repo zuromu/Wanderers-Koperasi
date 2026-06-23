@@ -37,6 +37,7 @@ function startGame(){
   Audio.startMusic();
   Audio.play('select');
   const t = $('title'); if (t) t.style.display = 'none';
+  const h = $('hint'); if (h) h.style.display = 'block';
   const v = game.scene.getScene('Village');
   if (v && v.unlock) v.unlock();
 }
@@ -58,6 +59,34 @@ $('btnBack')?.addEventListener('click', ()=>{ $('about').style.display='none'; $
 $('mute')?.addEventListener('click', ()=>{
   const m = Audio.toggleMute();
   $('mute').textContent = m ? '🔇' : '🔊';
+});
+
+/* ---------- Kontrol sentuh ---------- */
+const scene = () => game.scene.getScene('Village');
+function hideHint(){ const h = $('hint'); if (h) h.style.display = 'none'; }
+
+document.querySelectorAll('#dpad button').forEach(btn => {
+  const dir = btn.getAttribute('data-dir');
+  const press = (e) => {
+    e.preventDefault();
+    const v = scene(); if (!v) return;
+    if (dir === 'act') v.action(); else { v.stepDir(dir); hideHint(); }
+  };
+  btn.addEventListener('pointerdown', press);
+});
+
+/* ---------- Bantuan / glosarium ---------- */
+function toggleHelp(force){
+  const o = $('helpOverlay'); if (!o) return;
+  const show = force ?? (o.style.display !== 'flex');
+  o.style.display = show ? 'flex' : 'none';
+  Audio.play('select');
+}
+$('help')?.addEventListener('click', ()=> toggleHelp(true));
+$('btnHelpClose')?.addEventListener('click', ()=> toggleHelp(false));
+window.addEventListener('keydown', (e)=>{
+  if (e.code === 'KeyH') toggleHelp();
+  hideHint();
 });
 
 // Handle debug opsional (berguna untuk pengetesan di konsol browser).
