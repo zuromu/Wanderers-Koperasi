@@ -3,6 +3,22 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.31.0], Studio art pass — cobblestones, atmospheric lighting, richer detail
+
+### Ditambahkan
+- **Cobblestone paths**: setiap petak jalan kini menampilkan 4 batu paving individual bervariasi warna dan posisi, menggantikan garis silang tipis. Tampilan jalan jauh lebih hidup.
+- **Cahaya jendela hangat**: bangunan (Kepala Desa, Balai Desa) kini memiliki jendela bercahaya kuning-amber yang mensimulasikan interior yang hangat.
+- **Overlay atmosfer direksinoal**: gradien cahaya matahari halus dari kanan atas (kuning-oranye) + bayangan sejuk dari kiri bawah (biru) memberikan kedalaman warna seperti studio AAA.
+- **Foliage 5 lapis**: pohon kini memiliki 5 layer warna (bayangan bawah → massa utama → kluster cerah → sisi → specular highlight), jauh lebih kaya dari sebelumnya.
+- **Scalloped market canopy**: kanopi Pasar mendapat rumbai scallop teal bergantian di ujung bawah.
+- **Bendera merah-putih**: tiang Kantor Koperasi kini mengibarkan bendera merah-putih 2 warna.
+- **NPC sprites diperkaya**: rambut muncul di bawah topi, ikat pinggang dengan gesper emas, mata dengan sorotan cahaya putih, sepatu lebih detail.
+- **Buah beri semak**: semak dekoratif (~35%) kini memiliki kluster beri merah/oranye kecil.
+- **Papan nama koperasi**: tanda kecil emas di atas pintu Kantor Koperasi.
+- **Jendela Balai Desa**: dua jendela bercahaya hangat di sisi pintu.
+- **Bayangan bangunan searah cahaya**: offset ke kiri-bawah sesuai sumber cahaya dari kanan atas.
+- **CSS premium**: background body gradient gelap + glow emas pada judul, chip HUD mendapat inner highlight, kbd style lebih terdefinisi.
+
 ## [0.30.0], Falling leaves, NPC size variety, double-frame border
 
 ### Ditambahkan
