@@ -3,6 +3,17 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.24.0], Recap access & glossary expansion
+
+### Ditambahkan
+- Tombol "Lihat Rapor & Sertifikat" di dialog Kantor Koperasi saat misi selesai (DONE) — pemain bisa membuka rapor kapan saja tanpa memuat ulang.
+- Istilah "Rentenir" ditambahkan ke Glosarium (tombol H) dengan definisi singkat.
+
+## [0.23.0], Loan-type badge on certificate
+
+### Ditambahkan
+- Rapor dan Sertifikat PNG kini menampilkan lencana warna-warni pilihan pinjaman: hijau "Koperasi (pilihan bijak!)" atau merah "Rentenir (rugi Rp22.500 bunga)".
+
 ## [0.22.0], Demo step counter
 
 ### Ditambahkan
