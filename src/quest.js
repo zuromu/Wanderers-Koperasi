@@ -11,6 +11,7 @@ import { S, questInfo } from './state.js';
 import { rupiah } from './data.js';
 import { showDialogue, closeDialogue, advance, refresh, winScreen } from './ui.js';
 import { askQuiz } from './quiz.js';
+import * as Audio from './audio.js';
 
 export function interact(spotId){
   const say = (who, text, choices) => showDialogue(who, text, choices);
@@ -22,7 +23,7 @@ export function interact(spotId){
       if (S.stage === 'INTRO'){
         say('Kepala Desa',
           'Halo, pengembara! Desa kita ingin bangkit lewat KOPERASI, usaha bersama dari, oleh, dan untuk anggota. Mau bergabung dan bantu desa?',
-          [{ label:'Ya, saya mau!', go:()=>{ S.stage='JOIN'; advance(); } }]);
+          [{ label:'Ya, saya mau!', go:()=>{ S.stage='JOIN'; Audio.play('advance'); advance(); } }]);
       } else {
         say('Kepala Desa', 'Terus semangat, Wanderer. Ikuti misimu di pojok kanan!');
       }
@@ -35,7 +36,7 @@ export function interact(spotId){
           'Untuk jadi ANGGOTA, kamu bayar SIMPANAN POKOK satu kali: Rp50.000. Ini modal awal bersama koperasi. Bayar sekarang?',
           [
             { label:'Bayar Rp50.000', cond:S.money>=50000, go:()=>{
-              S.money-=50000; S.simpananPokok=50000; S.isMember=true; S.stage='LOAN';
+              S.money-=50000; S.simpananPokok=50000; S.isMember=true; S.stage='LOAN'; Audio.play('advance');
               say('Kantor Koperasi','Selamat! Kamu resmi ANGGOTA koperasi. Simpanan Pokok tercatat sebagai milikmu di koperasi.',
                 [{ label:'Mantap!', go:()=> askQuiz('pokok', advance) }]);
             }},
@@ -64,12 +65,12 @@ export function interact(spotId){
           'Kamu butuh modal Rp75.000 untuk bertani. Ada dua pilihan:\n\nKOPERASI: kembalikan Rp75.000 saja (jasa ringan, untung balik ke anggota).\nRENTENIR: terima Rp75.000 tapi kembalikan Rp97.500 (bunga 30%!).\n\nPilih yang mana?',
           [
             { label:'Pinjam dari Koperasi (balik Rp75.000)', go:()=>{
-              S.money+=75000; S.loan=75000; S.loanType='koperasi'; S.stage='PLANT';
+              S.money+=75000; S.loan=75000; S.loanType='koperasi'; S.stage='PLANT'; Audio.play('advance');
               say('Bendahara','Pilihan bijak! Dana koperasi cair. Pinjaman koperasi itu amanah bersama, untungnya pun kembali ke kita.',
                 [{ label:'Siap!', go:()=> askQuiz('modal', advance) }]);
             }},
             { label:'Pinjam dari Rentenir (balik Rp97.500)', go:()=>{
-              S.money+=75000; S.loan=97500; S.loanType='rentenir'; S.stage='PLANT';
+              S.money+=75000; S.loan=97500; S.loanType='rentenir'; S.stage='PLANT'; Audio.play('advance');
               say('Bendahara','Hati-hati... rentenir mencekik dengan bunga tinggi. Kamu harus balikkan Rp97.500, Rp22.500 lebih mahal! Lain kali, pilih koperasi.',
                 [{ label:'Aduh...', go:()=> askQuiz('modal', advance) }]);
             }},
@@ -79,7 +80,7 @@ export function interact(spotId){
           say('Bendahara',
             `Saatnya lunasi pinjaman: ${rupiah(S.loan)}. Saldomu ${rupiah(S.money)}. Lunasi sekarang?`,
             [{ label:`Lunasi ${rupiah(S.loan)}`, go:()=>{
-              S.money-=S.loan; S.loan=0; S.stage='RAT';
+              S.money-=S.loan; S.loan=0; S.stage='RAT'; Audio.play('advance');
               say('Bendahara','Lunas! Kamu anggota yang bertanggung jawab. Sekarang hadiri RAT di Balai Desa.',
                 [{ label:'Menuju RAT', go:advance }]);
             }}]);
@@ -97,7 +98,7 @@ export function interact(spotId){
         say('Ladang',
           'Beli bibit Rp60.000 lalu tanam. Setelah ditanam, panen langsung tumbuh (versi demo dipercepat).',
           [{ label:'Beli & Tanam (Rp60.000)', cond:S.money>=60000, go:()=>{
-            S.money-=60000; S.seeds=0; S.harvest=10; S.rounds++; S.stage='SELL';
+            S.money-=60000; S.seeds=0; S.harvest=10; S.rounds++; S.stage='SELL'; Audio.play('advance');
             say('Ladang','Panen melimpah! Kamu dapat 10 hasil panen. Bawa ke Pasar untuk dijual.',
               [{ label:'Ke Pasar', go:advance }]);
           }}]);
@@ -125,7 +126,7 @@ export function interact(spotId){
           `Pembeli siap! ${S.harvest} panen × Rp15.000 = ${rupiah(earn)}. Jual semua?`,
           [{ label:`Jual (${rupiah(earn)})`, go:()=>{
             S.money += earn; S.harvest = 0;
-            if (S.stage === 'SELL') S.stage = 'REPAY';
+            if (S.stage === 'SELL'){ S.stage = 'REPAY'; Audio.play('advance'); }
             say('Pasar','Laku semua! Untungmu bisa dipakai melunasi pinjaman koperasi.',
               [{ label:'Lanjut', go:advance }]);
           }}]);

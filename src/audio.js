@@ -50,21 +50,25 @@ export const SFX = {
   error:   ()=> blip(200, 0.25, 'sawtooth', 0.2, 90),
   success: ()=> chord([523,659,784,1046], 0.25, 'triangle', 0.22),
   fanfare: ()=> { chord([523,659,784],0.3,'triangle',0.22); setTimeout(()=>chord([784,988,1175,1568],0.5,'triangle',0.24),300); },
+  advance: ()=> { blip(659,0.12,'triangle',0.15); setTimeout(()=>blip(784,0.14,'triangle',0.14),120); setTimeout(()=>blip(1046,0.2,'triangle',0.16),240); },
 };
 
 export function play(name){ const fn = SFX[name]; if (fn) fn(); }
 
 /* ---------------- Musik latar (loop pentatonik lembut) ---------------- */
-const MELODY = [523,587,659,784,880,784,659,587,523,440,392,440]; // C pentatonic-ish
-const BASS   = [131,131,165,165,196,196,165,131];
+const MELODY  = [523,587,659,784,880,784,659,587,523,440,392,440]; // C pentatonic
+const HARMONY = [659,784,880,1046,1046,880,784,659,659,523,523,659]; // third/fifth above
+const BASS    = [131,131,165,165,196,196,165,131];
 let mi = 0, bi = 0;
 
 export function startMusic(){
   if (!ensure() || musicTimer) return;
-  const step = 360; // ms per langkah
+  const step = 360;
   musicTimer = setInterval(()=>{
     if (muted) return;
-    blip(MELODY[mi % MELODY.length], 0.32, 'square', 0.05);
+    const idx = mi % MELODY.length;
+    blip(MELODY[idx],  0.32, 'square',   0.05);
+    blip(HARMONY[idx], 0.30, 'triangle', 0.025); // tierce harmoni, lebih pelan
     mi++;
     if (mi % 2 === 0){ blip(BASS[bi % BASS.length], 0.5, 'triangle', 0.06); bi++; }
   }, step);
