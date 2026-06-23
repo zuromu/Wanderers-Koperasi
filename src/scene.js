@@ -5,7 +5,7 @@
  */
 
 import { TILE, COLS, ROWS, MAP, SPOTS } from './data.js';
-import { questInfo } from './state.js';
+import { S, questInfo } from './state.js';
 import { interact } from './quest.js';
 import { isDialogueOpen, advanceDialogue, refresh, setSceneRef, showDialogue } from './ui.js';
 import { C } from './palette.js';
@@ -571,6 +571,7 @@ export class Village extends Phaser.Scene {
     c.add([this.pShadow, this.pBody]);
     this.pc = c;
     this.moving = false;
+    this.stepCount = 0;
     // Bob idle
     this.tweens.add({ targets:this.pBody, y:-3, duration:900, yoyo:true, repeat:-1, ease:'Sine.easeInOut' });
     this.updateMarker();
@@ -578,48 +579,84 @@ export class Village extends Phaser.Scene {
 
   _makeCharTextures(){
     if (this.textures.exists('char_i')) return;
-    // fi: 0=idle-front, 1=walk-front, 2=idle-back, 3=walk-back
-    ['char_i', 'char_w', 'char_u', 'char_wu'].forEach((key, fi) => {
+    // fi: 0=idle-front, 1=walkL-front, 2=walkR-front, 3=idle-back, 4=walkL-back, 5=walkR-back
+    ['char_i','char_wL','char_wR','char_u','char_uL','char_uR'].forEach((key, fi) => {
       const g = this.add.graphics({ x:0, y:0 });
-      const walk = fi === 1 || fi === 3;
-      const back = fi === 2 || fi === 3;
-      const ll = walk ? 6 : 8,  rl = walk ? 17 : 15;
-      const ls = walk ? 5 : 7,  rs = walk ? 16 : 14;
+      const back  = fi >= 3;
+      const stepL = fi === 1 || fi === 4;
+      const stepR = fi === 2 || fi === 5;
+      const walk  = stepL || stepR;
 
-      // Sepatu
-      g.fillStyle(C.woodDark).fillRect(ls, 37, 7, 4).fillRect(rs, 37, 7, 4);
+      // Posisi kaki berdasarkan langkah
+      const llx = walk ? 6 : 8,  rlx = walk ? 17 : 15;
+      const lly = stepL ? 25 : (stepR ? 29 : 27);   // kaki kiri Y (lebih tinggi = maju)
+      const rly = stepR ? 25 : (stepL ? 29 : 27);   // kaki kanan Y
+      const llh = stepL ? 13 : (stepR ? 9  : 11);   // tinggi kaki kiri
+      const rlh = stepR ? 13 : (stepL ? 9  : 11);   // tinggi kaki kanan
+      const lsx = walk ? 5 : 7, rsx = walk ? 16 : 14;
+      const lsy = stepL ? 36 : (stepR ? 38 : 37);
+      const rsy = stepR ? 36 : (stepL ? 38 : 37);
+
+      // Sepatu dengan ujung tebal
+      g.fillStyle(C.ink).fillRoundedRect(lsx-1, lsy, 9, 5, 1).fillRoundedRect(rsx-1, rsy, 9, 5, 1);
+      g.fillStyle(C.woodDark).fillRect(lsx, lsy, 7, 4).fillRect(rsx, rsy, 7, 4);
 
       // Kaki (celana)
-      g.fillStyle(C.pants).fillRect(ll, 27, 5, 11).fillRect(rl, 27, 5, 11);
-      g.lineStyle(1.5, C.ink, 1).strokeRect(ll, 27, 5, 11).strokeRect(rl, 27, 5, 11);
+      g.fillStyle(C.pants).fillRect(llx, lly, 5, llh).fillRect(rlx, rly, 5, rlh);
+      g.lineStyle(1.5, C.ink, 1).strokeRect(llx, lly, 5, llh).strokeRect(rlx, rly, 5, rlh);
+      // Lipatan celana
+      g.fillStyle(C.ink, 0.1).fillRect(llx+1, lly+llh-3, 3, 2).fillRect(rlx+1, rly+rlh-3, 3, 2);
 
-      // Badan (tunik)
+      // Ikat pinggang
+      g.fillStyle(C.woodDark, 0.65).fillRect(7, 27, 14, 2);
+      g.fillStyle(C.gold, 0.85).fillRect(12, 26.5, 4, 3);
+
+      // Badan (tunik) dengan bayangan sisi
       g.fillStyle(C.tunic).fillRoundedRect(7, 16, 14, 13, 2);
-      if (!back){ g.fillStyle(C.tunicHi, 0.45).fillRect(8, 17, 12, 3); }
-      else       { g.fillStyle(C.woodDark, 0.1).fillRect(8, 17, 12, 3); }
+      if (!back){
+        g.fillStyle(C.tunicHi, 0.50).fillRect(8, 17, 12, 3);         // highlight pundak
+        g.fillStyle(C.ink, 0.08).fillRect(15, 17, 5, 12);            // bayangan sisi kanan
+        // Kerah V
+        g.fillStyle(C.skin, 0.7).fillTriangle(12,16, 16,16, 14,20);
+      } else {
+        g.fillStyle(C.woodDark, 0.12).fillRect(8, 17, 12, 3);
+      }
       g.lineStyle(1.5, C.ink, 1).strokeRoundedRect(7, 16, 14, 13, 2);
 
-      // Lengan
-      g.fillStyle(C.tunic)
-        .fillRoundedRect(3, 17, 5, 9, 1).fillRoundedRect(20, 17, 5, 9, 1);
-      g.lineStyle(1.5, C.ink, 1)
-        .strokeRoundedRect(3, 17, 5, 9, 1).strokeRoundedRect(20, 17, 5, 9, 1);
+      // Lengan dengan manset
+      const aLx = stepL ? 2 : (stepR ? 4 : 3);  // lengan kiri sedikit bergerak
+      const aRx = stepR ? 21 : (stepL ? 19 : 20);
+      g.fillStyle(C.tunic).fillRoundedRect(aLx, 17, 5, 9, 1).fillRoundedRect(aRx, 17, 5, 9, 1);
+      g.lineStyle(1.5, C.ink, 1).strokeRoundedRect(aLx, 17, 5, 9, 1).strokeRoundedRect(aRx, 17, 5, 9, 1);
+      // Manset lengan
+      g.fillStyle(C.ink, 0.18).fillRect(aLx+1, 24, 3, 2).fillRect(aRx+1, 24, 3, 2);
 
       // Leher
       g.fillStyle(C.skin).fillRect(11, 14, 6, 4);
 
-      // Kepala
+      // Kepala dengan bayangan sisi
       g.fillStyle(C.skin).fillCircle(14, 9, 8);
+      g.fillStyle(C.skinShade, 0.30).fillCircle(17, 11, 5);
       g.lineStyle(2, C.ink, 1).strokeCircle(14, 9, 8);
 
       if (back){
-        // Belakang kepala: rambut penuh menutupi wajah
-        g.fillStyle(C.hair).fillCircle(14, 9, 7.5).fillRoundedRect(6, 4, 16, 8, 3);
-        g.fillStyle(0x6e4e3a, 0.4).fillCircle(17, 6, 3.5);
+        // Belakang: rambut penuh + highlight
+        g.fillStyle(C.hair).fillCircle(14, 9, 7.5).fillRoundedRect(6, 3, 16, 9, 3);
+        g.fillStyle(0x6e4e3a, 0.35).fillCircle(17, 6, 3.5);
+        g.fillStyle(0x9e7e5a, 0.25).fillCircle(10, 5, 3);
       } else {
-        // Depan: rambut + mata
+        // Depan: rambut, mata, alis
         g.fillStyle(C.hair).fillRoundedRect(6, 1, 16, 9, 4);
-        g.fillStyle(C.ink).fillRect(11, 8, 2, 2).fillRect(16, 8, 2, 2);
+        // Highlight rambut
+        g.fillStyle(0x9e7e5a, 0.3).fillCircle(10, 4, 3.5);
+        // Alis
+        g.fillStyle(C.hair, 0.85).fillRect(10, 7, 3, 1).fillRect(16, 7, 3, 1);
+        // Mata
+        g.fillStyle(C.ink).fillRect(11, 9, 2, 2).fillRect(16, 9, 2, 2);
+        // Sorotan mata
+        g.fillStyle(0xffffff, 0.75).fillRect(11, 9, 1, 1).fillRect(16, 9, 1, 1);
+        // Hidung kecil
+        g.fillStyle(C.skinShade, 0.45).fillRect(14, 12, 1, 1);
       }
 
       g.generateTexture(key, 28, 42);
@@ -824,16 +861,32 @@ export class Village extends Phaser.Scene {
     if      (nx < this.px){ this.pBody.setFlipX(true);  this.pFacing = -1; }
     else if (nx > this.px){ this.pBody.setFlipX(false); this.pFacing =  1; }
     else { this.pBody.setFlipX(false); }
-    // Jejak kaki memudar di posisi lama
+    // Jejak kaki + debu memudar di posisi lama
     const fpx = this.px*TILE+TILE/2, fpy = this.py*TILE+TILE/2+9;
+    const oldTile = +MAP[this.py][this.px];
     const fp = this.add.ellipse(fpx, fpy, 7, 4, C.shadow, 0.22).setDepth(0.4);
     this.tweens.add({ targets:fp, alpha:0, duration:440, ease:'Quad.easeOut', onComplete:()=> fp.destroy() });
+    // Partikel debu jejak kaki
+    if (this.textures.exists('spark')){
+      const dustCol = oldTile === 1 ? C.pathShade : C.grassHi;
+      const dp = this.add.particles(fpx, fpy-4, 'spark', {
+        speed:{ min:10, max:28 }, angle:{ min:220, max:320 },
+        lifespan:190, scale:{ start:0.15, end:0 },
+        tint:[dustCol, C.foam], quantity:3, emitting:false,
+      }).setDepth(0.8);
+      dp.explode(3, fpx, fpy-4);
+      this.time.delayedCall(260, ()=> dp.destroy());
+    }
     this.px = nx; this.py = ny;
     this.moving = true;
     Audio.play('move');
-    this.pBody.setTexture(isBack ? 'char_wu' : 'char_w');
-    this.tweens.add({ targets:this.pBody,   scaleX:1.18, scaleY:0.82, duration:70, yoyo:true, ease:'Quad.easeOut' });
-    this.tweens.add({ targets:this.pShadow, scaleX:1.3,  duration:70, yoyo:true });
+    // Alternatif langkah kiri-kanan per langkah
+    this.stepCount++;
+    const stepEven = this.stepCount % 2 === 0;
+    const walkTex = isBack ? (stepEven ? 'char_uL' : 'char_uR') : (stepEven ? 'char_wL' : 'char_wR');
+    this.pBody.setTexture(walkTex);
+    this.tweens.add({ targets:this.pBody,   scaleY:0.88, duration:65, yoyo:true, ease:'Quad.easeOut' });
+    this.tweens.add({ targets:this.pShadow, scaleX:1.3,  duration:65, yoyo:true });
     const idleTex = isBack ? 'char_u' : 'char_i';
     this.tweens.add({
       targets:this.pc, x:nx*TILE+TILE/2, y:ny*TILE+TILE/2, duration:130, ease:'Quad.easeInOut',
@@ -841,7 +894,17 @@ export class Village extends Phaser.Scene {
     });
   }
 
-  unlock(){ this.locked = false; }
+  unlock(){
+    this.locked = false;
+    if (S.playerName && this.pc){
+      const nt = this.add.text(0, -28, S.playerName, {
+        fontFamily:"'Pixelify Sans',sans-serif",
+        fontSize:'9px', color:'#f4ecd8',
+        stroke:'#241d2e', strokeThickness:2,
+      }).setOrigin(0.5).setDepth(6.5);
+      this.pc.add(nt);
+    }
+  }
 
   stepDir(dir){
     if (this.locked || this.moving || isDialogueOpen()) return;
