@@ -108,3 +108,51 @@ kbd{background:#2a2e3c;border:1px solid #444;border-radius:4px;padding:1px 6px;f
 .recap-list{list-style:none;padding:0;margin:14px 0;text-align:left;
   color:#e8ecf5;font-size:14px;line-height:1.9}
 .recap-list li{border-bottom:1px solid rgba(255,255,255,.08);padding:2px 4px}
+
+/* Tombol bantuan (kiri tombol bisukan) */
+#help{position:absolute;top:8px;right:54px;z-index:30;cursor:pointer;
+  width:38px;height:38px;border-radius:12px;border:1px solid var(--gold);
+  background:rgba(20,22,32,.85);color:#fff;font-size:18px;line-height:1;
+  backdrop-filter:blur(6px);box-shadow:0 4px 14px rgba(0,0,0,.35)}
+#help:hover{background:rgba(40,44,60,.9)}
+
+/* Petunjuk awal */
+#hint{display:none;position:absolute;left:50%;bottom:14px;transform:translateX(-50%);
+  z-index:24;max-width:90%;text-align:center;padding:9px 16px;border-radius:12px;
+  background:rgba(20,17,30,.9);color:#fff;font-size:13px;border:1px solid var(--blue);
+  backdrop-filter:blur(6px)}
+
+/* Glosarium */
+#helpOverlay{position:absolute;inset:0;z-index:46;display:none;align-items:center;
+  justify-content:center;border-radius:8px;
+  background:radial-gradient(circle at 50% 35%, rgba(28,25,38,.85), rgba(10,8,16,.96))}
+.help-card{max-width:440px}
+.help-list{list-style:none;padding:0;margin:12px 0;text-align:left;
+  color:#e8ecf5;font-size:14px;line-height:1.7}
+.help-list li{padding:5px 4px;border-bottom:1px solid rgba(255,255,255,.07)}
+.help-list b{color:var(--gold)}
+
+/* Kontrol sentuh — hanya pada perangkat sentuh */
+#touch{display:none}
+@media (hover:none) and (pointer:coarse){ #touch{display:block} }
+#dpad{position:absolute;right:14px;bottom:14px;z-index:26;
+  display:grid;grid-template-columns:repeat(3,46px);grid-template-rows:repeat(3,46px);
+  gap:6px;justify-items:center;align-items:center}
+#dpad button{width:46px;height:46px;border-radius:12px;font-size:18px;
+  border:1px solid var(--gold);background:rgba(20,22,32,.8);color:#fff;
+  backdrop-filter:blur(6px);touch-action:none;user-select:none}
+#dpad button:active{background:var(--gold);color:#231a0e}
+#dpad button[data-dir="up"]{grid-column:2;grid-row:1}
+#dpad button[data-dir="left"]{grid-column:1;grid-row:2}
+#dpad button[data-dir="act"]{grid-column:2;grid-row:2;border-radius:50%;background:var(--gold);color:#231a0e;font-weight:bold}
+#dpad button[data-dir="right"]{grid-column:3;grid-row:2}
+#dpad button[data-dir="down"]{grid-column:2;grid-row:3}
+
+/* Penyesuaian layar sempit */
+@media (max-width:560px){
+  h1{font-size:18px}
+  .chip{font-size:11px;padding:4px 9px}
+  #quest{width:180px;font-size:11px}
+  .title-card h2{font-size:24px}
+  .title-card .tag{font-size:13px}
+}
