@@ -31,6 +31,9 @@ export function showRecap(){
     document.getElementById('wrap').appendChild(el);
   }
   const rows = CONCEPTS.map(c => `<li>${mark(c.key)} ${c.label}</li>`).join('');
+  const loanNote = S.loanType === 'rentenir'
+    ? ` &middot; <span style="color:#c0432f">Rentenir (rugi Rp22.500 bunga)</span>`
+    : (S.loanType === 'koperasi' ? ` &middot; <span style="color:#3a8a4f">Koperasi (pilihan bijak!)</span>` : '');
   el.innerHTML = `
     <div class="title-card recap-card">
       <h2>Rapor Literasi Koperasi</h2>
@@ -39,7 +42,7 @@ export function showRecap(){
          Skor kuis: ${S.quizCorrect}/${S.quizTotal} (${Math.round(g.pct*100)}%)</p>
       <ul class="recap-list">${rows}</ul>
       <p class="tag" style="font-size:13px;opacity:.85">Total kekayaan akhir: <b>${rupiah(S.money)}</b>
-         &middot; SHU diterima: <b>${rupiah(S.shu)}</b></p>
+         &middot; SHU diterima: <b>${rupiah(S.shu)}</b>${loanNote}</p>
       <div class="title-btns">
         <button class="primary" id="btnCert">Unduh Sertifikat</button>
         <button id="btnShare">Bagikan</button>
@@ -114,6 +117,11 @@ export function downloadCertificate(){
   center(`atas keberhasilan menyelesaikan siklus koperasi dan meraih predikat`, 410, '20px Georgia, serif', '#5b5160');
   center(`${g.title}  (Nilai ${g.grade})`, 460, 'bold 34px Georgia, serif', '#3a8a4f');
   center(`Skor kuis literasi: ${S.quizCorrect}/${S.quizTotal}  ·  SHU diterima: ${rupiah(S.shu)}`, 510, '20px Georgia, serif', '#5b5160');
+  if (S.loanType === 'koperasi'){
+    center('Memilih pinjam dari Koperasi — keputusan yang bijak dan bertanggung jawab', 552, 'italic 16px Georgia, serif', '#3a8a4f');
+  } else if (S.loanType === 'rentenir'){
+    center('Catatan: memilih rentenir (bunga 30%) — lain kali pilih koperasi!', 552, 'italic 16px Georgia, serif', '#c0432f');
+  }
 
   const d = new Date();
   const tgl = d.toLocaleDateString('id-ID', { day:'numeric', month:'long', year:'numeric' });
