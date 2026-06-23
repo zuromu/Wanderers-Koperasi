@@ -51,6 +51,7 @@ export class Village extends Phaser.Scene {
     this.locked     = true;
 
     this.drawGround();
+    this.drawGrassTufts();
     this.drawWater();
     this.drawWaterFoam();
     this.drawWaterLilies();
@@ -58,6 +59,7 @@ export class Village extends Phaser.Scene {
     this.drawTrees();
     this.makeClouds();
     this.drawBuildings();
+    this.drawPropsDecor();
     this.makeTorches();
     this.makeMarker();
     this.makePlayer();
@@ -189,6 +191,32 @@ export class Village extends Phaser.Scene {
           const bc = [C.coral, C.roofRed, 0xff9944][(r()*3)|0];
           for (let b=0; b<3; b++)
             g.fillStyle(bc, 0.88).fillCircle(cx+(r()-0.5)*5, cy+(r()-0.5)*4, 1.7);
+        }
+      }
+    }
+  }
+
+  /* -------- Rerumputan panjang di tepi air -------- */
+  drawGrassTufts(){
+    const g = this.add.graphics().setDepth(1.6);
+    const r = rng(7654);
+    for (let y=0; y<ROWS; y++){
+      for (let x=0; x<COLS; x++){
+        if (+MAP[y][x] !== 0) continue;
+        const adj = (y>0&&+MAP[y-1][x]===2)||(y<ROWS-1&&+MAP[y+1][x]===2)||
+                    (x>0&&+MAP[y][x-1]===2)||(x<COLS-1&&+MAP[y][x+1]===2);
+        if (!adj) continue;
+        const px = x*TILE, py = y*TILE;
+        const count = 3 + (r()*4)|0;
+        for (let t=0; t<count; t++){
+          const bx  = px + 4 + r()*(TILE-8);
+          const by  = py + 4 + r()*(TILE-8);
+          const h   = 5  + r()*9;
+          const ln  = (r()-0.5)*6;
+          const gc  = [C.leaf, C.leafHi, C.leafDark][(r()*3)|0];
+          g.lineStyle(1.2, gc, 0.55 + r()*0.3);
+          g.lineBetween(bx, by, bx+ln, by-h);
+          g.lineBetween(bx, by, bx+ln*0.5+1, by-h*0.6);
         }
       }
     }
@@ -451,6 +479,57 @@ export class Village extends Phaser.Scene {
     g.fillStyle(C.shadow, 0.4).fillRoundedRect(cx-5, cy-8, 10, 18, 1);
   }
 
+  /* -------- Prop dekoratif ambien di sekitar bangunan -------- */
+  drawPropsDecor(){
+    const g = this.add.graphics().setDepth(2.2);
+
+    const pasar = SPOTS.find(s => s.id==='pasar');
+    if (pasar){
+      const cx = pasar.x*TILE+TILE/2, cy = pasar.y*TILE+TILE/2;
+      this._drawBarrel(g, cx-TILE*0.78, cy+4);
+      this._drawCrate(g, cx+TILE*0.78, cy+5);
+    }
+
+    const balai = SPOTS.find(s => s.id==='balai');
+    if (balai){
+      const cx = balai.x*TILE+TILE/2, cy = balai.y*TILE+TILE/2;
+      // Bangku batu di kiri-kanan pintu
+      [-20,14].forEach(ox => {
+        g.fillStyle(C.stone).fillRoundedRect(cx+ox, cy+9, 8, 5, 2);
+        g.lineStyle(1, C.ink, 0.7).strokeRoundedRect(cx+ox, cy+9, 8, 5, 2);
+        g.fillStyle(0xb8b7c4, 0.4).fillRect(cx+ox+1, cy+9, 6, 1.5);
+      });
+    }
+
+    const bendahara = SPOTS.find(s => s.id==='bendahara');
+    if (bendahara){
+      const cx = bendahara.x*TILE+TILE/2, cy = bendahara.y*TILE+TILE/2;
+      const rc = rng(7788);
+      for (let ci=0; ci<5; ci++){
+        const gx = cx-13 + rc()*26, gy = cy+11 + rc()*5;
+        g.fillStyle(C.gold, 0.6+rc()*0.25).fillCircle(gx, gy, 2.2);
+        g.lineStyle(0.5, C.goldDark, 0.5).strokeCircle(gx, gy, 2.2);
+      }
+    }
+  }
+
+  _drawBarrel(g, cx, cy){
+    g.fillStyle(C.woodDark).fillRoundedRect(cx-5, cy-7, 10, 13, 2);
+    g.lineStyle(1, C.ink, 0.9).strokeRoundedRect(cx-5, cy-7, 10, 13, 2);
+    g.fillStyle(0x9e6e3c, 0.28).fillRect(cx-4, cy-6, 8, 2);
+    g.fillStyle(C.stoneDark, 0.50).fillRect(cx-5, cy-3, 10, 1.5);
+    g.fillStyle(C.stoneDark, 0.50).fillRect(cx-5, cy+1, 10, 1.5);
+    g.fillStyle(C.wood, 0.18).fillRect(cx-4, cy-5, 3, 10);
+  }
+
+  _drawCrate(g, cx, cy){
+    g.fillStyle(C.wood).fillRect(cx-6, cy-5, 12, 10);
+    g.lineStyle(1, C.ink, 0.9).strokeRect(cx-6, cy-5, 12, 10);
+    g.lineStyle(0.8, C.woodDark, 0.5).lineBetween(cx-6, cy, cx+6, cy);
+    g.lineBetween(cx, cy-5, cx, cy+5);
+    g.fillStyle(C.wood, 0.25).fillRect(cx-5, cy-4, 4, 4);
+  }
+
   /* -------- Obor / lentera dekoratif di dekat bangunan -------- */
   makeTorches(){
     const rn = rng(444);
@@ -681,19 +760,25 @@ export class Village extends Phaser.Scene {
 
   /* -------- Overlay cahaya direksinoal (matahari kanan atas) -------- */
   makeAtmosphere(){
-    const w = COLS*TILE, h = ROWS*TILE, key = 'atmo';
+    const w = COLS*TILE, h = ROWS*TILE, key = 'atmo2';
     if (!this.textures.exists(key)){
       const cv = this.textures.createCanvas(key, w, h);
       const ctx = cv.getContext();
+      // Cahaya overhead dari atas (langit cerah)
+      const gVert = ctx.createLinearGradient(0, 0, 0, h);
+      gVert.addColorStop(0,   'rgba(245,235,200,0.10)');
+      gVert.addColorStop(0.45,'rgba(245,235,200,0.02)');
+      gVert.addColorStop(1,   'rgba(10,8,30,0.14)');
+      ctx.fillStyle = gVert; ctx.fillRect(0, 0, w, h);
       // Cahaya matahari hangat dari kanan atas
-      const gSun = ctx.createRadialGradient(w*0.88, h*0.06, 0, w*0.88, h*0.06, w*0.85);
-      gSun.addColorStop(0,   'rgba(255,210,90,0.11)');
+      const gSun = ctx.createRadialGradient(w*0.88, h*0.06, 0, w*0.88, h*0.06, w*0.82);
+      gSun.addColorStop(0,   'rgba(255,210,90,0.12)');
       gSun.addColorStop(0.5, 'rgba(255,190,70,0.04)');
       gSun.addColorStop(1,   'rgba(255,190,70,0)');
       ctx.fillStyle = gSun; ctx.fillRect(0, 0, w, h);
       // Bayangan sejuk dari kiri bawah
-      const gCool = ctx.createRadialGradient(0, h, 0, 0, h, w*0.58);
-      gCool.addColorStop(0,   'rgba(70,90,200,0.07)');
+      const gCool = ctx.createRadialGradient(0, h, 0, 0, h, w*0.55);
+      gCool.addColorStop(0,   'rgba(70,90,200,0.08)');
       gCool.addColorStop(1,   'rgba(70,90,200,0)');
       ctx.fillStyle = gCool; ctx.fillRect(0, 0, w, h);
       cv.refresh();

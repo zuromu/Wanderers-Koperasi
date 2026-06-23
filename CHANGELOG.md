@@ -3,6 +3,15 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.32.0], Depth & ambience — grass tufts, props, vertical sky lighting
+
+### Ditambahkan
+- **Rumput panjang tepi air** (`drawGrassTufts`): bilah-bilah rumput pendek berwarna-warni muncul di setiap petak rumput yang berbatasan dengan air, memberikan transisi alami khas RPG profesional.
+- **Prop dekoratif ambien** (`drawPropsDecor`): tong kayu & peti di Pasar, bangku batu di Balai Desa, koin berserakan di sekitar Bendahara — menjadikan dunia terasa dihuni dan terperinci.
+- **Pencahayaan vertikal langit** (`makeAtmosphere`): gradien linear atas (terang, hangat) ke bawah (gelap, dingin) ditambahkan ke overlay atmosfer, memberikan kedalaman volumetrik khas game AAA.
+- **Scanline overlay tipis** pada `#game` via CSS `::after` (opacity ~1,8%) untuk nuansa pixel-art yang terasa lebih intentional.
+- Barrel dan crate memiliki highlight serat kayu, bangku batu memiliki highlight top bevel.
+
 ## [0.31.0], Studio art pass — cobblestones, atmospheric lighting, richer detail
 
 ### Ditambahkan
