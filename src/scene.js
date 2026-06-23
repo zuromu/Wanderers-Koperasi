@@ -53,6 +53,7 @@ export class Village extends Phaser.Scene {
     this.drawGround();
     this.drawGrassTufts();
     this.drawWater();
+    this.drawWaterShimmer();
     this.drawWaterFoam();
     this.drawWaterLilies();
     this.drawBushes();
@@ -115,6 +116,12 @@ export class Village extends Phaser.Scene {
           g.lineStyle(1, C.pathEdge, 0.32).strokeRoundedRect(px+ox+jx, py+oy+jy, 16, 16, 3);
           g.fillStyle(0xf8e8b4, 0.13).fillRect(px+ox+jx+1, py+oy+jy+1, 7, 2);
         });
+        // Retak halus sesekali (tampilan berumur & berkarakter)
+        if (rs() < 0.12){
+          const cx2 = px+6+rs()*28, cy2 = py+6+rs()*28;
+          g.lineStyle(0.7, C.pathEdge, 0.28);
+          g.lineBetween(cx2, cy2, cx2+(rs()-0.5)*10, cy2+(rs()-0.5)*10);
+        }
       }
     }
   }
@@ -127,6 +134,26 @@ export class Village extends Phaser.Scene {
         const rect = this.add.rectangle(x*TILE+TILE/2, y*TILE+TILE/2, TILE, TILE, C.water).setDepth(1);
         rect._phase = x*0.7 + y*1.3;
         this.waterTiles.push(rect);
+      }
+    }
+  }
+
+  /* -------- Kilatan cahaya statis di permukaan air -------- */
+  drawWaterShimmer(){
+    const g = this.add.graphics().setDepth(1.05);
+    const r = rng(5577);
+    for (let y=0; y<ROWS; y++){
+      for (let x=0; x<COLS; x++){
+        if (+MAP[y][x] !== 2) continue;
+        const px = x*TILE, py = y*TILE;
+        const count = 2 + (r()*3)|0;
+        for (let s=0; s<count; s++){
+          const sx = px + 4 + r()*(TILE-8);
+          const sy = py + 4 + r()*(TILE-8);
+          const ln = 5 + r()*14;
+          g.lineStyle(1, C.waterHi, 0.10 + r()*0.12);
+          g.lineBetween(sx, sy, sx+ln*0.75, sy-ln*0.25);
+        }
       }
     }
   }
@@ -292,6 +319,8 @@ export class Village extends Phaser.Scene {
       const cy = s.y*TILE + TILE/2;
       // Bayangan searah cahaya (offset kiri-bawah dari sumber kanan-atas)
       g.fillStyle(C.shadow, 0.15).fillEllipse(cx-4, cy+17, 42, 10);
+      // Ambient occlusion di dasar bangunan
+      g.fillStyle(C.shadow, 0.09).fillRect(cx-16, cy+7, 32, 5);
       switch(s.id){
         case 'kepala':    this._drawCottage(g, cx, cy);   break;
         case 'koperasi':  this._drawKoperasi(g, cx, cy);  break;
@@ -328,6 +357,9 @@ export class Village extends Phaser.Scene {
     g.fillStyle(0xd4a870, 0.45).fillRect(cx-11, cy-3, 22, 4);
     // Atap merah
     g.fillStyle(C.roofRed).fillTriangle(cx-14, cy-4, cx+14, cy-4, cx, cy-18);
+    // Garis sirap atap
+    g.lineStyle(0.8, 0x9e3020, 0.28);
+    for (let ri=3; ri<14; ri+=3.5){ const ry=cy-18+ri; g.lineBetween(cx-ri,ry,cx+ri,ry); }
     g.lineStyle(2, C.ink, 1);
     g.strokePoints([{x:cx-14,y:cy-4},{x:cx+14,y:cy-4},{x:cx,y:cy-18}], true);
     g.fillStyle(C.woodDark, 0.4).fillRect(cx-14, cy-6, 28, 3);
@@ -368,6 +400,9 @@ export class Village extends Phaser.Scene {
     g.lineStyle(2, C.ink, 1).strokeRect(cx-15, cy-20, 30, 4);
     // Pedimen segitiga
     g.fillStyle(C.stone).fillTriangle(cx-16, cy-20, cx+16, cy-20, cx, cy-30);
+    // Garis profil pedimen
+    g.lineStyle(0.7, C.stoneDark, 0.25);
+    for (let ri=2; ri<9; ri+=2.5){ const ry=cy-30+ri; const hw=ri*1.6; g.lineBetween(cx-hw,ry,cx+hw,ry); }
     g.lineStyle(2, C.ink, 1);
     g.strokePoints([{x:cx-16,y:cy-20},{x:cx+16,y:cy-20},{x:cx,y:cy-30}], true);
     // Papan nama di atas pintu
@@ -429,6 +464,9 @@ export class Village extends Phaser.Scene {
     g.lineStyle(1, C.ink, 1).strokeRect(cx-13, cy-2, 26, 4);
     // Kanopi
     g.fillStyle(C.roofTeal).fillTriangle(cx-15, cy-2, cx+15, cy-2, cx, cy-15);
+    // Garis kanopi horizontal
+    g.lineStyle(0.8, 0x2d7a7a, 0.28);
+    for (let ri=2; ri<12; ri+=3){ const ry=cy-15+ri; const hw=ri*15/13; g.lineBetween(cx-hw,ry,cx+hw,ry); }
     g.lineStyle(2, C.ink, 1);
     g.strokePoints([{x:cx-15,y:cy-2},{x:cx+15,y:cy-2},{x:cx,y:cy-15}], true);
     g.fillStyle(0x6cc4c4, 0.35).fillTriangle(cx-13, cy-2, cx+13, cy-2, cx, cy-13);
@@ -466,6 +504,9 @@ export class Village extends Phaser.Scene {
     g.lineStyle(2, C.ink, 1).strokeRect(cx-17, cy-22, 34, 4);
     // Pedimen
     g.fillStyle(C.stone).fillTriangle(cx-17, cy-22, cx+17, cy-22, cx, cy-34);
+    // Garis profil pedimen balai
+    g.lineStyle(0.7, C.stoneDark, 0.22);
+    for (let ri=2; ri<11; ri+=3){ const ry=cy-34+ri; const hw=ri*17/12; g.lineBetween(cx-hw,ry,cx+hw,ry); }
     g.lineStyle(2, C.ink, 1);
     g.strokePoints([{x:cx-17,y:cy-22},{x:cx+17,y:cy-22},{x:cx,y:cy-34}], true);
     // Jendela kiri & kanan dari pintu

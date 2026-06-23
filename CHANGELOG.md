@@ -3,6 +3,14 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.35.0], World richness — water shimmer, roof shingles, ambient occlusion
+
+### Ditambahkan
+- **Kilatan air statis** (`drawWaterShimmer`): 2-4 garis cahaya diagonal per petak air (depth 1.05) memberikan tekstur permukaan air bahkan sebelum animasi warna dimulai.
+- **Sirap atap**: garis horizontal halus di atap Kepala Desa, pedimen Koperasi, pedimen Balai Desa, dan kanopi Pasar — setiap bangunan kini terlihat punya material atap yang nyata.
+- **Ambient occlusion bangunan**: pita bayangan gelap tipis di dasar setiap bangunan menambah kedalaman dan kesan "terpasang di tanah."
+- **Retak batu jalan**: ~12% petak jalan memiliki satu garis retak halus yang mensimulasikan keausan alami (tampilan dunia yang sudah lama ada).
+
 ## [0.34.0], Premium UI — speaker badges, dialogue polish, quest panel
 
 ### Ditambahkan
