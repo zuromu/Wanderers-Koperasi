@@ -3,6 +3,42 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.13.0], Rentenir warning & post-game NPC
+
+### Ditambahkan
+- Konfirmasi sebelum memilih rentenir: dialog peringatan membandingkan biaya rentenir (Rp97.500) vs koperasi (Rp75.000) secara eksplisit.
+- Opsi "Batal, pilih koperasi" di layar konfirmasi agar pemain dapat beralih ke pilihan bijak.
+- Dialog Kepala Desa setelah misi selesai (DONE): pesan penutup menyebut nama pemain dan merangkum pencapaian.
+- Dialog Bendahara setelah misi selesai (DONE): apresiasi anggota yang bertanggung jawab.
+
+## [0.12.0], Code cleanup
+
+### Diperbaiki
+- `floatText()` kini memakai font Jersey 10 (selaras tipografi HUD) pada ukuran 22px.
+- Field `emoji` yang tidak terpakai dihapus dari semua entri SPOTS di `data.js`.
+- Panel misi tidak lagi tumpang-tindih chip HUD di layar sangat sempit (< 420 px).
+
+## [0.11.0], Music & performance
+
+### Ditambahkan
+- Suara harmoni kedua (triangle oscillator) melengkapi melodi utama.
+- Chime tiga nada saat berpindah tahap misi (advance SFX).
+- Bit-aritmetika `lerpC` menggantikan Color API Phaser untuk animasi air — nol alokasi GC per frame.
+- Layar Tentang menampilkan ringkasan fitur lengkap dalam bullet list.
+
+## [0.10.0], Social sharing
+
+### Ditambahkan
+- Tombol "Bagikan" di layar rapor menggunakan Web Share API dengan fallback clipboard.
+- Teks bagikan mencantumkan nilai, gelar, skor kuis, dan URL permainan.
+
+## [0.9.0], Demo automation depth
+
+### Ditambahkan
+- Mode demo kini mencakup empat kuis: Simpanan Pokok, Modal, Simpanan Wajib, dan SHU.
+- Langkah setoran Simpanan Wajib ditambahkan ke alur demo (8 langkah total).
+- Guard loop demo ditingkatkan ke 22 untuk mendukung rantai pilihan yang lebih panjang.
+
 ## [0.8.0], Full 5-quiz curriculum
 
 ### Ditambahkan

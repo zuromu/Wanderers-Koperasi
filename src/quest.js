@@ -24,8 +24,11 @@ export function interact(spotId){
         say('Kepala Desa',
           'Halo, pengembara! Desa kita ingin bangkit lewat KOPERASI, usaha bersama dari, oleh, dan untuk anggota. Mau bergabung dan bantu desa?',
           [{ label:'Ya, saya mau!', go:()=>{ S.stage='JOIN'; Audio.play('advance'); advance(); } }]);
+      } else if (S.stage === 'DONE'){
+        say('Kepala Desa',
+          `Luar biasa, ${S.playerName}! Kamu sudah membuktikan seluruh siklus koperasi — mendaftar, menabung, meminjam modal, bertani, melunasi, dan menerima SHU. Desa kita bangga punya kader sepertimu!`);
       } else {
-        say('Kepala Desa', 'Terus semangat, Wanderer. Ikuti misimu di pojok kanan!');
+        say('Kepala Desa', 'Terus semangat, ikuti misimu di pojok kanan!');
       }
       break;
 
@@ -70,9 +73,23 @@ export function interact(spotId){
                 [{ label:'Siap!', go:()=> askQuiz('modal', advance) }]);
             }},
             { label:'Pinjam dari Rentenir (balik Rp97.500)', go:()=>{
-              S.money+=75000; S.loan=97500; S.loanType='rentenir'; S.stage='PLANT'; Audio.play('advance');
-              say('Bendahara','Hati-hati... rentenir mencekik dengan bunga tinggi. Kamu harus balikkan Rp97.500, Rp22.500 lebih mahal! Lain kali, pilih koperasi.',
-                [{ label:'Aduh...', go:()=> askQuiz('modal', advance) }]);
+              say('Peringatan Penting',
+                'Yakin memilih rentenir?\n\n' +
+                '• Rentenir: kembalikan Rp97.500 (bunga +Rp22.500!)\n' +
+                '• Koperasi: kembalikan Rp75.000 saja\n\n' +
+                'Bunga 30% akan memangkas untung bertanimu. Pertimbangkan lagi!',
+                [
+                  { label:'Ya, tetap pilih rentenir', go:()=>{
+                    S.money+=75000; S.loan=97500; S.loanType='rentenir'; S.stage='PLANT'; Audio.play('advance');
+                    say('Bendahara','Bunga 30% rentenir memangkas keuntunganmu — kamu harus kembalikan Rp97.500. Lain kali, pilih koperasi!',
+                      [{ label:'Mengerti...', go:()=> askQuiz('modal', advance) }]);
+                  }},
+                  { label:'Batal, pilih koperasi', go:()=>{
+                    S.money+=75000; S.loan=75000; S.loanType='koperasi'; S.stage='PLANT'; Audio.play('advance');
+                    say('Bendahara','Keputusan bijak! Dana koperasi cair. Pinjaman koperasi itu amanah bersama, untungnya pun kembali ke kita.',
+                      [{ label:'Siap!', go:()=> askQuiz('modal', advance) }]);
+                  }},
+                ]);
             }},
           ]);
       } else if (S.stage === 'REPAY'){
@@ -87,6 +104,9 @@ export function interact(spotId){
         } else {
           say('Bendahara',`Saldomu belum cukup untuk lunasi ${rupiah(S.loan)}. Jual lebih banyak panen dulu di Pasar.`);
         }
+      } else if (S.stage === 'DONE'){
+        say('Bendahara',
+          `Akun pinjaman bersih. Kamu membuktikan: koperasi adalah mitra terpercaya, bukan rentenir yang mencekik. Terima kasih telah menjadi anggota yang bertanggung jawab, ${S.playerName}!`);
       } else {
         say('Bendahara','Belum ada urusan pinjaman saat ini.');
       }
