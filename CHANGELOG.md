@@ -3,6 +3,14 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.37.0], Studio polish — music percussion, ambient chirps, NPC walk bounce, well detail
+
+### Ditambahkan
+- **Perkusi musik**: kick drum sinus (120Hz exponential decay) dan hi-hat square wave pendek masuk ke loop musik latar — memberi groove seperti RPG studio sungguhan.
+- **Suara burung ambient**: `chirp` berdurasi acak (880-1100Hz, 5 nada triangle) dijadwalkan ulang setiap 7-18 detik — dunia sekarang terasa hidup bahkan saat berdiam.
+- **Pantul langkah NPC**: setiap kali warga desa berjalan, sprite-nya melakukan squish-stretch scaleY (0.90→1.04→1.04→0.90) selama 550ms — tidak ada lagi NPC yang "melayang" antar tile.
+- **Sumur lebih detail**: bibir batu bersusun 3 bagian dengan highlight, lumut sisi, pantulan air di dalam lubang, tali zigzag, dan gagang ember berbentuk U — menggantikan lingkaran batu tunggal yang datar.
+
 ## [0.36.0], Living world — field redesign, vault building, NPC variety, interaction hints
 
 ### Ditambahkan
