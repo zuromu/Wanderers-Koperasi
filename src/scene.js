@@ -35,6 +35,7 @@ export class Village extends Phaser.Scene {
     this.smoke      = [];
     this.birds      = [];
     this.ripples    = [];
+    this.npcs       = [];
     this.locked     = true;
 
     this.drawGround();
@@ -49,6 +50,7 @@ export class Village extends Phaser.Scene {
     this.makeSmoke();
     this.makeBirds();
     this.makeRipples();
+    this.makeNpcs();
     this.makeVignette();
     this.bindInput();
 
@@ -457,6 +459,22 @@ export class Village extends Phaser.Scene {
     }
   }
 
+  /* -------- Warga desa yang berkeliaran -------- */
+  makeNpcs(){
+    const COLORS = [C.tunic, C.roofRed, C.roofBlue, C.roofGreen, C.gold, C.coral];
+    const walkable = [];
+    for (let y=1; y<ROWS-1; y++)
+      for (let x=1; x<COLS-1; x++)
+        if (+MAP[y][x] !== 2) walkable.push([x,y]);
+    for (let i=0; i<7; i++){
+      const [sx,sy] = walkable[Math.floor(Math.random()*walkable.length)];
+      const col = COLORS[i % COLORS.length];
+      const body = this.add.circle(sx*TILE+TILE/2, sy*TILE+TILE/2, 4, col, 0.7).setDepth(2.1);
+      const head = this.add.circle(sx*TILE+TILE/2, sy*TILE+TILE/2-6, 3, C.skin, 0.75).setDepth(2.15);
+      this.npcs.push({ body, head, tx:sx, ty:sy, moveAt:Math.random()*2500 });
+    }
+  }
+
   /* -------- Vignette tepi layar -------- */
   makeVignette(){
     const w = COLS*TILE, h = ROWS*TILE, key = 'vignette';
@@ -601,6 +619,21 @@ export class Village extends Phaser.Scene {
       s.obj.x = s.sx + Math.sin(age * 7 + s.phX) * s.drift;
       s.obj.y = s.sy - age * 28;
       s.obj.setAlpha((1 - age) * 0.45);
+    }
+    // Warga desa bergerak
+    for (const npc of this.npcs){
+      if (time > npc.moveAt){
+        const DIRS = [[-1,0],[1,0],[0,-1],[0,1]];
+        const [dx,dy] = DIRS[Math.floor(Math.random()*4)];
+        const nx = npc.tx+dx, ny = npc.ty+dy;
+        if (nx>=1 && ny>=1 && nx<COLS-1 && ny<ROWS-1 && +MAP[ny][nx]!==2){
+          npc.tx = nx; npc.ty = ny;
+          const wx = nx*TILE+TILE/2, wy = ny*TILE+TILE/2;
+          this.tweens.add({ targets:npc.body, x:wx, y:wy, duration:550, ease:'Linear' });
+          this.tweens.add({ targets:npc.head, x:wx, y:wy-6, duration:550, ease:'Linear' });
+        }
+        npc.moveAt = time + 1600 + Math.random()*2200;
+      }
     }
     // Riak lingkaran di atas air
     for (const rip of this.ripples){
