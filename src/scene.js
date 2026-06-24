@@ -2463,9 +2463,13 @@ export class Village extends Phaser.Scene {
       s.obj.setAlpha((1 - age) * 0.42);
       s.obj.setScale(0.55 + age * 2.4);
     }
-    // Cahaya jendela berkedip (simulasi lilin / orang lewat)
+    // Cahaya jendela berkedip — nyala saat senja/malam, redup saat siang
+    const nightScale = dayP < 0.45 ? 0.06
+      : dayP < 0.65 ? (dayP - 0.45) / 0.20 * 0.94 + 0.06
+      : dayP < 0.88 ? 1.0
+      : 0.06 + (1 - dayP) / 0.12 * 0.94;
     for (const wg of this.windowGlows){
-      wg.obj.setAlpha(wg.base + Math.sin(time * wg.rate + wg.phase) * wg.amp);
+      wg.obj.setAlpha((wg.base + Math.sin(time * wg.rate + wg.phase) * wg.amp) * nightScale);
     }
     // Kupu-kupu melayang
     for (const bf of this.butterflies){

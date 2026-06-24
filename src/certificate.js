@@ -49,6 +49,14 @@ export function showRecap(){
         <button id="btnReplay">Main Lagi</button>
       </div>
     </div>`;
+  // Inject floating sparkle particles into the backdrop
+  const sr = (s => { let x=s; return ()=>{ x^=x<<13;x^=x>>17;x^=x<<5;return(x>>>0)/4294967295; }; })(73);
+  for (let i = 0; i < 14; i++){
+    const sp = document.createElement('div');
+    sp.className = 'recap-spark';
+    sp.style.cssText = `left:${4+sr()*92}%;top:${sr()*100}%;width:${1.5+sr()*2.5}px;height:${1.5+sr()*2.5}px;animation-delay:${sr()*7}s;animation-duration:${4+sr()*5}s`;
+    el.appendChild(sp);
+  }
   el.style.display = 'flex';
   Audio.play('select');
   document.getElementById('btnCert').onclick = () => { Audio.play('coin'); downloadCertificate(); };
