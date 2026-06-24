@@ -648,18 +648,33 @@ export class Village extends Phaser.Scene {
   /* -------- Prop dekoratif ambien di sekitar bangunan -------- */
   drawPropsDecor(){
     const g = this.add.graphics().setDepth(2.2);
+    const rp = rng(7711);
 
     const pasar = SPOTS.find(s => s.id==='pasar');
     if (pasar){
       const cx = pasar.x*TILE+TILE/2, cy = pasar.y*TILE+TILE/2;
       this._drawBarrel(g, cx-TILE*0.78, cy+4);
       this._drawCrate(g, cx+TILE*0.78, cy+5);
+      // Kios pasar dengan atap kecil
+      const STALLS = [
+        { ox:-TILE*1.1, oc:C.roofRed,  goods:[0xff5050,0xffaa33,0xffee44] },
+        { ox: TILE*1.3, oc:C.roofBlue, goods:[0x55aaff,0xaaeebb,0xffcc88] },
+      ];
+      for (const s of STALLS){
+        const sx = cx+s.ox, sy = cy+4;
+        g.fillStyle(s.oc, 0.88).fillTriangle(sx-2, sy-10, sx+20, sy-10, sx+10, sy-20);
+        g.fillStyle(s.oc, 0.5).fillRect(sx-2, sy-13, 22, 4);
+        g.lineStyle(0.7, C.ink, 0.38).strokeTriangle(sx-2, sy-10, sx+20, sy-10, sx+10, sy-20);
+        g.fillStyle(C.wood).fillRect(sx+1, sy-8, 18, 4);
+        g.lineStyle(0.6, C.ink, 0.4).strokeRect(sx+1, sy-8, 18, 4);
+        s.goods.forEach((gc, gi) => g.fillStyle(gc, 0.82).fillCircle(sx+5+gi*5, sy-6, 2));
+        g.fillStyle(C.woodDark).fillRect(sx+1, sy-8, 1.5, 10).fillRect(sx+18, sy-8, 1.5, 10);
+      }
     }
 
     const balai = SPOTS.find(s => s.id==='balai');
     if (balai){
       const cx = balai.x*TILE+TILE/2, cy = balai.y*TILE+TILE/2;
-      // Bangku batu di kiri-kanan pintu
       [-20,14].forEach(ox => {
         g.fillStyle(C.stone).fillRoundedRect(cx+ox, cy+9, 8, 5, 2);
         g.lineStyle(1, C.ink, 0.7).strokeRoundedRect(cx+ox, cy+9, 8, 5, 2);
@@ -676,6 +691,50 @@ export class Village extends Phaser.Scene {
         g.fillStyle(C.gold, 0.6+rc()*0.25).fillCircle(gx, gy, 2.2);
         g.lineStyle(0.5, C.goldDark, 0.5).strokeCircle(gx, gy, 2.2);
       }
+    }
+
+    // Tiang lampu jalan di persimpangan utama
+    const LAMP_POS = [
+      [9*TILE,   5*TILE-2],
+      [11*TILE,  5*TILE-2],
+      [9*TILE,  10*TILE-2],
+      [11*TILE, 10*TILE-2],
+    ];
+    for (const [lx, ly] of LAMP_POS){
+      g.fillStyle(C.ink, 0.88).fillRect(lx, ly-22, 2, 24);
+      g.fillStyle(C.ink, 0.88).fillRect(lx, ly-22, 9, 2);
+      g.fillStyle(C.goldDark).fillRoundedRect(lx+6, ly-28, 7, 8, 1);
+      g.fillStyle(0xffee44, 0.6).fillRoundedRect(lx+7, ly-27, 5, 6, 0.5);
+      g.lineStyle(0.5, C.ink, 0.45).strokeRoundedRect(lx+6, ly-28, 7, 8, 1);
+      g.fillStyle(C.stoneDark).fillRect(lx-1, ly+1, 4, 2);
+      const glow = this.add.rectangle(lx+9, ly-24, 5, 6, 0xffee44).setDepth(3.06).setAlpha(0.38);
+      this.windowGlows.push({ obj:glow, base:0.30, rate:0.0018+rp()*0.001, phase:rp()*Math.PI*2, amp:0.17 });
+    }
+
+    // Barisan padi dekat Ladang (baris rumput di timur ladang)
+    const ladang = SPOTS.find(s => s.id==='ladang');
+    if (ladang){
+      const fx = ladang.x*TILE + TILE*1.1, fy = ladang.y*TILE - TILE*0.8;
+      for (let row = 0; row < 4; row++){
+        for (let col = 0; col < 7; col++){
+          const px = fx + col*9, py = fy + row*11;
+          const th = 4 + (rp()*4)|0;
+          g.fillStyle(0x3d9e3a, 0.75).fillRect(px+1, py, 2, th);
+          g.fillStyle(0x88cc44, 0.55).fillTriangle(px-1, py+2, px+5, py+2, px+2, py-3);
+          g.fillStyle(0x6ec43c, 0.4).fillRect(px+1, py-1, 1, 3);
+        }
+      }
+    }
+
+    // Tanda batu penunjuk jalan di sudut jalur
+    const MILESTONES = [
+      [3*TILE+TILE/2, 10*TILE+2],
+      [16*TILE+TILE/2, 10*TILE+2],
+    ];
+    for (const [mx, my] of MILESTONES){
+      g.fillStyle(C.stone).fillRoundedRect(mx-3, my-9, 7, 11, 1);
+      g.fillStyle(0xb8b7c4, 0.38).fillRect(mx-2, my-8, 5, 3);
+      g.lineStyle(0.6, C.ink, 0.3).strokeRoundedRect(mx-3, my-9, 7, 11, 1);
     }
   }
 

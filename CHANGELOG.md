@@ -3,6 +3,14 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.47.0], World props — lamp posts, market stalls, rice paddy, milestone stones
+
+### Ditambahkan
+- **Tiang lampu jalan**: 4 lampu jalan dengan lentera keemasan di persimpangan jalur utama (row 5 & 10, col 9 & 11) — berkedip sinkron dengan sistem `windowGlows`, memberi kesan kota desa yang tertata.
+- **Kios pasar**: 2 kios dengan atap segitiga berwarna (merah & biru) di sisi kiri-kanan bangunan Pasar, lengkap dengan meja kayu dan tumpukan barang berwarna-warni — area pasar kini terasa hidup seperti pasar desa sesungguhnya.
+- **Barisan padi**: Deretan tanaman padi kecil (4×7 grid) di area timur Ladang — segitiga daun dan batang hijau berlapis mencerminkan sawah yang siap panen.
+- **Batu petunjuk jalan**: 2 tanda batu kecil berbentuk pilar di ujung jalur selatan (dekat ladang dan pasar) — detail kecil yang membuat dunia terasa seperti peta RPG sungguhan, bukan grid kosong.
+
 ## [0.46.0], Game feel — movement squish, money drain, triple confetti, banner wipe, mobile d-pad
 
 ### Diubah
