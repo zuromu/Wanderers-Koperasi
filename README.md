@@ -112,7 +112,7 @@ docs/cover.svg    # banner
 ## 👥 Tim
 
 - Ahmad Hoesin ([@zuromu](https://github.com/zuromu))
-- Muhammad Idris Kamal ([@1drism](https://github.com/1drism))
+- Muhamad Idris Kamal ([@1drism](https://github.com/1drism))
 - Goran Adriano Tamrella ([@adrianogoran](https://github.com/adrianogoran))
 
 ## 📄 Lisensi
