@@ -128,6 +128,7 @@ export class Village extends Phaser.Scene {
     this.makeButterflies();
     this.makeAtmosphere();
     this.makeVignette();
+    this.makeCornerFoliage();
     this.bindInput();
     this.hintShowing = false;
     this.makeInteractHint();
@@ -1952,6 +1953,49 @@ export class Village extends Phaser.Scene {
       cv.refresh();
     }
     this.add.image(0, 0, key).setOrigin(0).setDepth(100);
+  }
+
+  /* -------- Dedaunan sudut kanvas — framing alami -------- */
+  makeCornerFoliage(){
+    const W = COLS*TILE, H = ROWS*TILE;
+    const g = this.add.graphics().setDepth(101);
+    const rf = rng(6187);
+
+    const leaf = (x, y, w, h, col, a) => g.fillStyle(col, a).fillEllipse(x, y, w, h);
+    const dot  = (x, y, r, col, a)    => g.fillStyle(col, a).fillCircle(x, y, r);
+
+    // Top-left corner cluster
+    const TL = [{x:-2,y:14,w:52,h:20},{x:18,y:-2,w:20,h:44},{x:36,y:8,w:46,h:18},
+                {x:8,y:30,w:38,h:16},{x:52,y:-4,w:18,h:38},{x:62,y:16,w:36,h:14},
+                {x:24,y:44,w:32,h:14},{x:74,y:4,w:28,h:12}];
+    const TLC = [C.leafDark, C.leaf, C.leaf, C.leafDark, C.leafHi, C.leaf, C.leafDark, C.leaf];
+    TL.forEach((l,i) => { leaf(l.x, l.y, l.w, l.h, TLC[i], 0.72+rf()*0.18); });
+    // Highlight veins
+    [[-1,8],[20,2],[38,14],[8,36],[56,0],[62,20]].forEach(([x,y]) =>
+      g.fillStyle(C.leafHi, 0.18+rf()*0.12).fillEllipse(x+4, y+3, 10, 4));
+    // Small blossoms TL
+    [[30,22,4,0xffccdd],[48,6,3,0xffbbcc],[66,28,3.5,0xffeedd]].forEach(([x,y,r,c]) => {
+      dot(x, y, r+1, c, 0.72); dot(x, y, r*0.5, 0xfff0a0, 0.85);
+    });
+
+    // Top-right corner cluster (mirror X from right edge)
+    const TR = [{x:W+2,y:14,w:52,h:20},{x:W-18,y:-2,w:20,h:44},{x:W-36,y:8,w:46,h:18},
+                {x:W-8,y:30,w:38,h:16},{x:W-52,y:-4,w:18,h:38},{x:W-62,y:16,w:36,h:14},
+                {x:W-24,y:44,w:32,h:14},{x:W-74,y:4,w:28,h:12}];
+    const TRC = [C.leaf, C.leafDark, C.leafDark, C.leaf, C.leaf, C.leafDark, C.leaf, C.leafHi];
+    TR.forEach((l,i) => { leaf(l.x, l.y, l.w, l.h, TRC[i], 0.68+rf()*0.20); });
+    [[-1,8],[20,2],[38,14],[8,36],[56,0],[62,20]].forEach(([ox,oy]) =>
+      g.fillStyle(C.leafHi, 0.18+rf()*0.12).fillEllipse(W-ox-4, oy+3, 10, 4));
+    [[30,22,4,0xddffcc],[48,6,3,0xccffbb],[66,28,3.5,0xeeffdd]].forEach(([ox,y,r,c]) => {
+      dot(W-ox, y, r+1, c, 0.68); dot(W-ox, y, r*0.5, 0xfff0a0, 0.85);
+    });
+
+    // Bottom-left corner (lighter — reeds/grass style)
+    [[0,H+2,44,18],[10,H-12,18,36],[30,H-2,38,16],[20,H-22,28,14],[48,H+2,22,16]].forEach(
+      ([x,y,w,h]) => leaf(x, y, w, h, C.leafDark, 0.55+rf()*0.15));
+    // Bottom-right corner
+    [[W+2,H+2,44,18],[W-10,H-12,18,36],[W-30,H-2,38,16],[W-20,H-22,28,14],[W-48,H+2,22,16]].forEach(
+      ([x,y,w,h]) => leaf(x, y, w, h, C.leaf, 0.50+rf()*0.15));
   }
 
   scheduleChirp(){
