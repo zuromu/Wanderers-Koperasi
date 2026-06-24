@@ -3,6 +3,15 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.56.0], Title screen village skyline + interaction sparkle burst
+
+### Ditambahkan
+- **Siluet desa di layar judul**: SVG bertingkat menampilkan skyline desa di bagian bawah layar judul — koperasi berkolomn + bendera merah-putih, balai desa + bendera ungu, pasar dengan atap segitiga, rumah-rumah, pohon-pohon berkerumun, dan gradasi kabut di bagian bawah; memberi pratinjau dunia game sebelum pemain mulai
+- **Ledakan percikan saat interaksi**:
+  - Menyentuh bangunan → 9 partikel emas meledak dari pintu masuk
+  - Bicara dengan NPC → 6 partikel kuning-putih meledak di atas kepala NPC
+  - Menggunakan fungsi `burst()` yang sama dengan efek uang
+
 ## [0.55.0], Entrance glow pools + village hall flag + pollen density
 
 ### Ditambahkan

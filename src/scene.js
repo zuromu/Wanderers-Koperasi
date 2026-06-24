@@ -1656,9 +1656,20 @@ export class Village extends Phaser.Scene {
 
   tryInteract(){
     const near = SPOTS.find(s => Math.abs(s.x-this.px)<=1 && Math.abs(s.y-this.py)<=1);
-    if (near){ Audio.play('talk'); interact(near.id); return; }
+    if (near){
+      Audio.play('talk');
+      burst(this, near.x*TILE+TILE/2, near.y*TILE+TILE/2-8, C.gold, 9);
+      interact(near.id);
+      return;
+    }
     const nearNpc = this.npcs.find(n => Math.abs(n.tx-this.px)<=1 && Math.abs(n.ty-this.py)<=1);
-    if (nearNpc){ Audio.play('talk'); const tips = NPC_CHAR_TIPS[nearNpc.name] || NPC_TIPS; showDialogue(nearNpc.name, tips[Math.floor(Math.random()*tips.length)]); return; }
+    if (nearNpc){
+      Audio.play('talk');
+      burst(this, nearNpc.tx*TILE+TILE/2, nearNpc.ty*TILE+TILE/2-22, 0xffe060, 6);
+      const tips = NPC_CHAR_TIPS[nearNpc.name] || NPC_TIPS;
+      showDialogue(nearNpc.name, tips[Math.floor(Math.random()*tips.length)]);
+      return;
+    }
     showDialogue('Wanderer','Tidak ada siapa-siapa di sini. Dekati bangunan atau warga, lalu tekan Spasi.');
   }
 
