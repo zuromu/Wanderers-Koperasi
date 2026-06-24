@@ -1463,14 +1463,19 @@ export class Village extends Phaser.Scene {
     this._makeCharTextures();
 
     const c = this.add.container(this.px*TILE+TILE/2, this.py*TILE+TILE/2).setDepth(2.5 + this.py/ROWS*4);
+    
+    // FIX: Set shadow and body to the exact same Y (12) and origin to bottom (1)
     this.pShadow = this.add.ellipse(0, 12, 26, 10, C.shadow, 0.35);
-    this.pBody   = this.add.image(0, 0, 'char_i').setOrigin(0.5, 0.75);
+    this.pBody   = this.add.image(0, 12, 'char_i').setOrigin(0.5, 1);
+    
     c.add([this.pShadow, this.pBody]);
     this.pc = c;
     this.moving = false;
     this.stepCount = 0;
-    // Bob idle
-    this.tweens.add({ targets:this.pBody, y:-3, duration:900, yoyo:true, repeat:-1, ease:'Sine.easeInOut' });
+    
+    // FIX: Explicit {from, to} ensures the player always lands exactly on the ground
+    // bob idle
+    this.tweens.add({ targets:this.pBody, y:{from: 12, to: 9}, duration:900, yoyo:true, repeat:-1, ease:'Sine.easeInOut' });
     this.scheduleBlink();
     this.updateMarker();
   }
@@ -1954,17 +1959,23 @@ export class Village extends Phaser.Scene {
       const d = NPC_DATA[i];
       const [sx,sy] = walkable[Math.floor(Math.random()*walkable.length)];
       const wx = sx*TILE+TILE/2, wy = sy*TILE+TILE/2;
+      
+      // FIX: Set shadow and sprite to the exact same Y (9) and origin to bottom (1)
       const shadow = this.add.ellipse(0, 9, 18, 7, C.shadow, 0.28);
-      const sprite = this.add.image(0, 0, d.key).setOrigin(0.5, 0.88);
+      const sprite = this.add.image(0, 9, d.key).setOrigin(0.5, 1);
+      
       const c = this.add.container(wx, wy, [shadow, sprite]).setDepth(2.5 + wy/(ROWS*TILE)*4).setScale(d.sc);
+      
+      // FIX: Explicit {from, to} bounding so they never float away from Y=9
       if (d.itype === 'sway'){
         this.tweens.add({ targets:sprite, scaleX:{from:1,to:0.93}, duration:1100+i*90,  yoyo:true, repeat:-1, ease:'Sine.easeInOut' });
-        this.tweens.add({ targets:sprite, y:{from:0,to:-1.5},      duration:920+i*80,   yoyo:true, repeat:-1, ease:'Sine.easeInOut' });
+        this.tweens.add({ targets:sprite, y:{from:9, to:7.5},      duration:920+i*80,   yoyo:true, repeat:-1, ease:'Sine.easeInOut' });
       } else if (d.itype === 'rock'){
         this.tweens.add({ targets:sprite, rotation:{from:-0.06,to:0.06}, duration:960+i*115, yoyo:true, repeat:-1, ease:'Sine.easeInOut' });
       } else {
-        this.tweens.add({ targets:sprite, y:-2, duration:800+i*110, yoyo:true, repeat:-1, ease:'Sine.easeInOut' });
+        this.tweens.add({ targets:sprite, y:{from:9, to:7}, duration:800+i*110, yoyo:true, repeat:-1, ease:'Sine.easeInOut' });
       }
+      
       this.npcs.push({ container:c, sprite, tx:sx, ty:sy, name:d.name, moveAt:Math.random()*2500, bubble:null, bubbleFading:false });
     }
   }
