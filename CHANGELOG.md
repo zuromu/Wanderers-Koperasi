@@ -3,6 +3,13 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.61.0], Entrance potted plants on all main buildings
+
+### Ditambahkan
+- **Pot bunga di teras**: 2 pot terra-cotta di setiap pintu masuk bangunan utama (Kepala Desa, Kantor Koperasi, Bendahara, Balai Desa) — tiap bangunan punya warna bunga khas: merah (kepala), emas (koperasi), hijau/daun (bendahara), ungu (balai)
+- **Detail pot prosedural**: pot bertingkat (saucer + body + rim) dengan highlight dan shadow, tanah bercorak elips, 2–3 batang tegak dengan pasang daun masing-masing, dan bunga bulat dengan center putih keemasan; sedikit variasi lean per batang berdasarkan PRNG seeded
+- Kedalaman 3.2 (di atas bangunan depth 3, di bawah label depth 4)
+
 ## [0.60.0], Fluffy cloud system with ground shadows
 
 ### Ditambahkan / Diperbarui
