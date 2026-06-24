@@ -106,6 +106,7 @@ export class Village extends Phaser.Scene {
     this.drawTrees();
     this.makeClouds();
     this.drawBuildings();
+    this.drawEntrancePots();
     this.makeWindowGlows();
     this.makeEntranceGlows();
     this.drawPropsDecor();
@@ -594,6 +595,56 @@ export class Village extends Phaser.Scene {
       cld.setAlpha(0.16);
       this.clouds.push({ shd, cld, speed:d.speed });
     }
+  }
+
+  /* -------- Pot bunga di teras bangunan -------- */
+  drawEntrancePots(){
+    const g = this.add.graphics().setDepth(3.2);
+    const POT_DEFS = [
+      { id:'kepala',    flowerC:0xff6060, offsets:[[-11,8],[10,8]]  },
+      { id:'koperasi',  flowerC:C.gold,   offsets:[[-14,9],[13,9]]  },
+      { id:'bendahara', flowerC:0x66cc44, offsets:[[-12,9],[11,9]]  },
+      { id:'balai',     flowerC:0xaa66ee, offsets:[[-14,8],[13,8]]  },
+    ];
+    const drawPot = (px, py, flowerC, seed) => {
+      const rp = rng(seed);
+      // Saucer
+      g.fillStyle(0x9a3010, 1).fillRect(px-3, py+1, 6, 2);
+      g.lineStyle(0.6, C.ink, 0.8).strokeRect(px-3, py+1, 6, 2);
+      // Pot body
+      g.fillStyle(0xc85030, 1).fillRect(px-4, py-6, 8, 7);
+      g.fillStyle(0xd87050, 0.45).fillRect(px-4, py-6, 8, 3);
+      g.fillStyle(0x8a2808, 0.30).fillRect(px-4, py-1, 8, 2);
+      g.lineStyle(1, C.ink, 1).strokeRect(px-4, py-6, 8, 7);
+      // Rim
+      g.fillStyle(0xc85030, 1).fillRect(px-5, py-7, 10, 2);
+      g.fillStyle(0xd87050, 0.4).fillRect(px-5, py-7, 10, 1);
+      g.lineStyle(0.8, C.ink, 1).strokeRect(px-5, py-7, 10, 2);
+      // Soil
+      g.fillStyle(0x5a2f0e, 0.9).fillEllipse(px, py-6, 8, 3);
+      // Stems (2-3 stalks)
+      const nStalk = 2 + (rp()>0.5?1:0);
+      for (let i=0; i<nStalk; i++){
+        const sx = px + (i - (nStalk-1)*0.5) * 3;
+        const lean = (rp()-0.5)*3;
+        g.fillStyle(0x3d7020, 0.9).fillRect(sx-0.7+lean*0.3, py-15, 1.4, 9);
+        // Leaf pair
+        g.fillStyle(C.leaf, 0.88).fillEllipse(sx-3+lean, py-12, 6, 3);
+        g.fillStyle(C.leaf, 0.88).fillEllipse(sx+3+lean, py-11, 6, 3);
+        g.fillStyle(C.leafHi, 0.40).fillEllipse(sx-3+lean+0.5, py-12.5, 3, 1.5);
+        // Flower
+        g.fillStyle(flowerC, 1).fillCircle(sx+lean, py-17, 3.2);
+        g.fillStyle(0xffffff, 0.45).fillCircle(sx+lean-0.6, py-17.8, 1.3);
+        g.fillStyle(0xfff0a0, 0.9).fillCircle(sx+lean, py-17, 1.5);
+        g.lineStyle(0.5, C.ink, 0.5).strokeCircle(sx+lean, py-17, 3.2);
+      }
+    };
+    POT_DEFS.forEach(({ id, flowerC, offsets }) => {
+      const s = SPOTS.find(sp => sp.id === id);
+      if (!s) return;
+      const cx = s.x*TILE + TILE/2, cy = s.y*TILE + TILE/2;
+      offsets.forEach(([ox, oy], i) => drawPot(cx+ox, cy+oy, flowerC, 7700 + s.x*31 + i*13));
+    });
   }
 
   /* -------- Bangunan prosedural (gaya pixel-art bergaris tinta) -------- */
