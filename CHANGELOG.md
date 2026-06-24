@@ -3,6 +3,13 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.59.0], Street lamp posts along village paths
+
+### Ditambahkan
+- **Tiang lampu jalan**: 6 tiang lampu prosedural di persimpangan jalan utama desa (col 9 row 3 & 6; col 4 & 14 di E-W road row 5 & 10) — setiap tiang terdiri dari plinth batu bergaris, tiang besi dengan specular highlight, lengan horizontal, cap/atap lantera, dan kotak kaca lantera dengan pembagi bingkai (grid 2×2); kedalaman 2.70 (di atas pohon, di bawah bangunan)
+- **Cahaya lantai hangat**: setiap tiang memiliki kolam cahaya elips keemasan di lantai (depth 0.8) yang bernapas dengan lembut menggunakan tween Sine.easeInOut
+- **Flicker lantera**: cahaya dalam kotak kaca setiap tiang masuk ke sistem `windowGlows` — berkedip seperti nyala lilin kecil sinkron dengan jendela-jendela bangunan lain
+
 ## [0.58.0], Blossom petals + fish in water
 
 ### Ditambahkan
