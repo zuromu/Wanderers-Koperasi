@@ -104,6 +104,7 @@ export class Village extends Phaser.Scene {
     this.drawWaterLilies();
     this.drawBushes();
     this.drawTrees();
+    this.drawWatermill();
     this.makeClouds();
     this.drawBuildings();
     this.drawEntrancePots();
@@ -499,6 +500,133 @@ export class Village extends Phaser.Scene {
         }
       }
     }
+  }
+
+  /* -------- Kincir air / watermill di tepi selatan -------- */
+  drawWatermill(){
+    // Posisi: antara baris 12 (rumput) dan 13 (air), kolom 5–7
+    const mx = 6*TILE, my = 12*TILE + 20;  // center of mill structure
+
+    // Statik: fondasi batu + bangunan
+    const gs = this.add.graphics().setDepth(2.6);
+
+    // Bayangan di tanah
+    gs.fillStyle(C.shadow, 0.14).fillEllipse(mx, my+20, 54, 14);
+
+    // Fondasi batu
+    gs.fillStyle(C.stoneDark).fillRect(mx-18, my+10, 36, 8);
+    gs.fillStyle(C.stone, 0.4).fillRect(mx-18, my+10, 36, 3);
+    gs.lineStyle(1, C.ink, 1).strokeRect(mx-18, my+10, 36, 8);
+
+    // Badan bangunan utama (kayu)
+    gs.fillStyle(C.wood).fillRect(mx-14, my-14, 28, 26);
+    gs.fillStyle(0xd4a870, 0.38).fillRect(mx-14, my-14, 28, 7);
+    gs.fillStyle(C.woodDark, 0.25).fillRect(mx-14, my+4, 28, 8);
+    gs.lineStyle(2, C.ink, 1).strokeRect(mx-14, my-14, 28, 26);
+    // Serat kayu horizontal
+    gs.lineStyle(0.5, C.woodDark, 0.20);
+    [-8,-2,4,10].forEach(oy => gs.lineBetween(mx-13, my+oy, mx+13, my+oy));
+
+    // Atap segitiga hijau-teal
+    gs.fillStyle(C.roofTeal).fillTriangle(mx-16, my-14, mx+16, my-14, mx, my-28);
+    gs.lineStyle(0.6, 0x2d7a7a, 0.25);
+    for (let ri=2; ri<14; ri+=3){ const ry=my-28+ri; const hw=ri*16/14; gs.lineBetween(mx-hw,ry,mx+hw,ry); }
+    gs.lineStyle(2, C.ink, 1).strokePoints([{x:mx-16,y:my-14},{x:mx+16,y:my-14},{x:mx,y:my-28}], true);
+
+    // Cerobong kecil
+    gs.fillStyle(C.stoneDark).fillRect(mx+4, my-32, 5, 8);
+    gs.lineStyle(1, C.ink, 1).strokeRect(mx+4, my-32, 5, 8);
+    gs.fillStyle(C.stoneDark, 0.8).fillRect(mx+3, my-34, 7, 3);
+    gs.lineStyle(0.8, C.ink, 0.9).strokeRect(mx+3, my-34, 7, 3);
+
+    // Pintu kecil di depan
+    gs.fillStyle(C.woodDark).fillRoundedRect(mx-4, my-4, 8, 18, 1);
+    gs.lineStyle(1.2, C.ink, 1).strokeRoundedRect(mx-4, my-4, 8, 18, 1);
+    gs.fillStyle(C.gold).fillCircle(mx+3, my+5, 1.5);
+
+    // Saluran air (chute ke roda)
+    gs.fillStyle(C.woodDark).fillRect(mx-18, my+2, 6, 14);
+    gs.fillStyle(C.wood, 0.3).fillRect(mx-18, my+2, 2, 14);
+    gs.lineStyle(1, C.ink, 0.9).strokeRect(mx-18, my+2, 6, 14);
+    // Air mengalir di saluran
+    gs.fillStyle(C.water, 0.55).fillRect(mx-17, my+3, 4, 12);
+    gs.fillStyle(C.waterHi, 0.30).fillRect(mx-17, my+3, 2, 5);
+
+    // === Roda air berputar (animasi via Container) ===
+    const rx = mx - 20, ry = my + 10;  // center of wheel (at shore line)
+    const wheelR = 18;
+    const BLADES = 6;
+
+    // Draw wheel as a Container so we can rotate it
+    const wheelG = this.add.graphics().setDepth(2.7);
+    // Hub center
+    wheelG.fillStyle(C.woodDark).fillCircle(rx, ry, 4);
+    wheelG.lineStyle(1.2, C.ink, 1).strokeCircle(rx, ry, 4);
+    // Spokes + paddles
+    for (let i=0; i<BLADES; i++){
+      const ang = (i / BLADES) * Math.PI * 2;
+      const ex = rx + Math.cos(ang) * wheelR;
+      const ey = ry + Math.sin(ang) * wheelR;
+      // Spoke
+      wheelG.lineStyle(1.5, C.woodDark, 0.9).lineBetween(rx, ry, ex, ey);
+      // Paddle (perpendicular short plank)
+      const px2 = ex + Math.cos(ang + Math.PI/2) * 4;
+      const py2 = ey + Math.sin(ang + Math.PI/2) * 4;
+      const px3 = ex + Math.cos(ang - Math.PI/2) * 4;
+      const py3 = ey + Math.sin(ang - Math.PI/2) * 4;
+      wheelG.lineStyle(2.5, C.wood, 1).lineBetween(px2, py2, px3, py3);
+      wheelG.lineStyle(0.8, C.ink, 0.8).lineBetween(px2, py2, px3, py3);
+    }
+    // Outer rim circle
+    wheelG.lineStyle(2, C.woodDark, 0.85).strokeCircle(rx, ry, wheelR);
+    wheelG.lineStyle(0.6, C.wood, 0.40).strokeCircle(rx, ry, wheelR);
+    // Hub again on top
+    wheelG.fillStyle(C.wood).fillCircle(rx, ry, 3);
+    wheelG.lineStyle(1, C.ink, 1).strokeCircle(rx, ry, 3);
+
+    // Animate: store wheel + schedule update via tween (rotation simulated via redraw)
+    this.wheelCx = rx;
+    this.wheelCy = ry;
+    this.wheelAngle = 0;
+    this.wheelR = wheelR;
+    this.wheelG = wheelG;
+    this.wheelBlades = BLADES;
+    // Tween the angle 0→2π in 6s, repeat
+    this.tweens.add({
+      targets: this,
+      wheelAngle: Math.PI * 2,
+      duration: 6000,
+      repeat: -1,
+      ease: 'Linear',
+      onUpdate: () => {
+        const g2 = this.wheelG;
+        g2.clear();
+        const ang0 = this.wheelAngle;
+        g2.fillStyle(C.woodDark).fillCircle(rx, ry, 4);
+        g2.lineStyle(1.2, C.ink, 1).strokeCircle(rx, ry, 4);
+        for (let i=0; i<this.wheelBlades; i++){
+          const ang = ang0 + (i / this.wheelBlades) * Math.PI * 2;
+          const ex = rx + Math.cos(ang) * wheelR;
+          const ey = ry + Math.sin(ang) * wheelR;
+          g2.lineStyle(1.5, C.woodDark, 0.9).lineBetween(rx, ry, ex, ey);
+          const px2 = ex + Math.cos(ang + Math.PI/2) * 4;
+          const py2 = ey + Math.sin(ang + Math.PI/2) * 4;
+          const px3 = ex + Math.cos(ang - Math.PI/2) * 4;
+          const py3 = ey + Math.sin(ang - Math.PI/2) * 4;
+          g2.lineStyle(2.5, C.wood, 1).lineBetween(px2, py2, px3, py3);
+          g2.lineStyle(0.8, C.ink, 0.8).lineBetween(px2, py2, px3, py3);
+        }
+        g2.lineStyle(2, C.woodDark, 0.85).strokeCircle(rx, ry, wheelR);
+        g2.lineStyle(0.6, C.wood, 0.40).strokeCircle(rx, ry, wheelR);
+        g2.fillStyle(C.wood).fillCircle(rx, ry, 3);
+        g2.lineStyle(1, C.ink, 1).strokeCircle(rx, ry, 3);
+      },
+    });
+
+    // Small water splash beneath wheel
+    const splash = this.add.graphics().setDepth(1.3);
+    splash.fillStyle(C.waterHi, 0.28).fillEllipse(rx, ry+wheelR-4, 22, 8);
+    splash.fillStyle(C.foam, 0.20).fillEllipse(rx-2, ry+wheelR-6, 12, 4);
   }
 
   /* -------- Pohon dekoratif di tepi peta -------- */
