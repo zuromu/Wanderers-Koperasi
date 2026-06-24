@@ -33,13 +33,45 @@ const NPC_TIPS = [
   'SHU bukan bunga bank — ini bagi hasil keuntungan koperasi. Makin aktif kamu bertransaksi, makin besar SHU-mu.',
   'Gotong royong adalah jiwa koperasi: dari anggota, oleh anggota, dan untuk kesejahteraan anggota bersama.',
   'Koperasi berbeda dari perusahaan biasa: tujuannya bukan memaksimalkan keuntungan pemilik, tapi mensejahterakan anggota.',
-  'Simpanan di koperasi bukan hilang — itu aset milikmu yang bisa diambil kembali saat keluar dari keanggotaan.',
-  'Bunga pinjaman rentenir bisa mencapai 10-30% per bulan! Koperasi tidak boleh memberatkan anggotanya seperti itu.',
-  'Koperasi Unit Desa (KUD) pernah menjadi tulang punggung pertanian Indonesia — menyalurkan pupuk, bibit, dan kredit tani.',
-  'Lambang koperasi Indonesia adalah pohon beringin, timbangan, bintang, roda gigi, padi-kapas, dan perisai — masing-masing punya makna mendalam.',
-  'Koperasi siswa di sekolah mengajarkan kewirausahaan sejak dini: belajar menabung, meminjam, dan berbagi hasil.',
-  'Menurut UU No.25/1992, koperasi adalah badan usaha yang beranggotakan orang-seorang atau badan hukum koperasi dengan melandaskan kegiatannya pada prinsip koperasi.',
 ];
+
+const NPC_CHAR_TIPS = {
+  'Pak Darmo': [
+    'Sudah 30 tahun saya jadi anggota koperasi. Sawah ini pun dulu dibeli pakai modal pinjaman koperasi desa.',
+    'Koperasi Unit Desa (KUD) dulu jadi tulang punggung pertanian — pupuk, bibit, kredit tani semua dari sana.',
+    'Anak-anak muda perlu belajar sejarah koperasi. Raden Aria Wiriatmadja mendirikannya tahun 1896 buat bantu pegawai yang terjerat rentenir.',
+  ],
+  'Bu Siti': [
+    'Kalau mau buka warung, jangan pinjam ke rentenir! Bunga 30% per bulan itu mencekik. Koperasi jauh lebih manusiawi.',
+    'Di pasar ini separuh pedagangnya anggota koperasi. Kami saling bantu, tidak bersaing mati-matian.',
+    'SHU itu seperti bonus akhir tahun. Makin sering bertransaksi lewat koperasi, makin besar bagianmu!',
+  ],
+  'Dodi': [
+    'Kak, koperasi itu apa? Kata Bu Lastri, kaya menabung bareng teman-teman, terus untungnya dibagi!',
+    'Di sekolahku ada koperasi siswa lho! Aku beli buku dan pensil di sana. Lebih murah dari warung luar!',
+    'Ayahku bilang, kalau mau jadi pengusaha sukses, harus tahu dulu cara berkooperasi. Seru ya?',
+  ],
+  'Ratna': [
+    'Saya baru ikut RAT pertama kali. Satu anggota satu suara — tidak peduli besar kecil simpanannya!',
+    'Simpanan di koperasi bukan hilang ya. Itu aset milik sendiri yang bisa diambil saat keluar dari keanggotaan.',
+    'Ada 7 prinsip koperasi internasional: keanggotaan sukarela, pengelolaan demokratis, sampai kepedulian terhadap komunitas.',
+  ],
+  'Pak Hasan': [
+    'Perahu saya ini dibeli pakai pinjaman koperasi nelayan. Cicilan ringan, tidak ada bunga berbunga.',
+    'Koperasi nelayan di sini bantu kami beli jaring dan es bersama-sama. Beli kolektif jauh lebih hemat!',
+    'Di koperasi, kalau kamu aktif, kamu dapat SHU lebih besar. Berbeda dengan bank yang keuntungannya buat pemegang saham.',
+  ],
+  'Bu Lastri': [
+    'Saya mengajarkan literasi keuangan di sekolah. Koperasi adalah contoh nyata ekonomi gotong royong Pancasila!',
+    'Menurut UU No.25/1992, koperasi adalah badan usaha yang beranggotakan orang-seorang, dikelola secara demokratis.',
+    'Koperasi siswa mengajarkan anak-anak: menabung, meminjam dengan bertanggung jawab, dan berbagi hasil secara adil.',
+  ],
+  'Rudi': [
+    'Bro, tahu nggak? Ada lebih dari 140.000 koperasi aktif di Indonesia! Gila banyaknya, tapi masih banyak yang belum kenal.',
+    'Lambang koperasi itu ada pohon beringin, timbangan, bintang, roda gigi, padi-kapas... masing-masing ada maknanya lho!',
+    'Aku mau gabung koperasi pemuda desa. Lumayan buat modal usaha kecil-kecilan, bunganya jauh lebih manusiawi.',
+  ],
+};
 
 export class Village extends Phaser.Scene {
   constructor(){ super('Village'); }
@@ -1584,7 +1616,7 @@ export class Village extends Phaser.Scene {
     const near = SPOTS.find(s => Math.abs(s.x-this.px)<=1 && Math.abs(s.y-this.py)<=1);
     if (near){ Audio.play('talk'); interact(near.id); return; }
     const nearNpc = this.npcs.find(n => Math.abs(n.tx-this.px)<=1 && Math.abs(n.ty-this.py)<=1);
-    if (nearNpc){ Audio.play('talk'); showDialogue(nearNpc.name, NPC_TIPS[Math.floor(Math.random()*NPC_TIPS.length)]); return; }
+    if (nearNpc){ Audio.play('talk'); const tips = NPC_CHAR_TIPS[nearNpc.name] || NPC_TIPS; showDialogue(nearNpc.name, tips[Math.floor(Math.random()*tips.length)]); return; }
     showDialogue('Wanderer','Tidak ada siapa-siapa di sini. Dekati bangunan atau warga, lalu tekan Spasi.');
   }
 
