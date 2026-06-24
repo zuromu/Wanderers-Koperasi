@@ -3,6 +3,13 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.71.0], Quest-target building glow
+
+### Ditambahkan
+- **Halo emas bangunan target misi**: bangunan yang menjadi tujuan tahap misi aktif sekarang punya aura emas berdenyut di bawahnya (dua elips konsentris + 4 sparkle orbit berputar); aura memudar perlahan saat pemain mendekat dalam 1.5 tile dan menghilang saat di sebelah bangunan
+- Menggunakan `questInfo().target` dari state machine misi — otomatis pindah ke bangunan berikutnya saat tahap misi berubah
+- Depth 2.99 (di atas tanah, di bawah bangunan) sehingga tampak seperti cahaya dari bawah bangunan
+
 ## [0.70.0], Title screen polish — moon, stars, window flicker, gold aura
 
 ### Ditambahkan / Diperbarui
