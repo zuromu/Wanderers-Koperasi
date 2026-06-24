@@ -109,6 +109,7 @@ export class Village extends Phaser.Scene {
     this.makeWindowGlows();
     this.makeEntranceGlows();
     this.drawPropsDecor();
+    this.makeLampPosts();
     this.makeTorches();
     this.makeMarker();
     this.makePlayer();
@@ -1240,6 +1241,75 @@ export class Village extends Phaser.Scene {
       g.fillStyle(0xffc840, 0.040).fillEllipse(cx, cy, 32, 12);
       g.fillStyle(0xffe080, 0.034).fillEllipse(cx, cy, 18,  7);
       g.fillStyle(0xfff0a0, 0.020).fillEllipse(cx, cy,  8,  4);
+    });
+  }
+
+  /* -------- Tiang lampu jalan di persimpangan -------- */
+  makeLampPosts(){
+    const POST_POS = [[9,3],[9,6],[4,5],[14,5],[4,10],[14,10]];
+    const rp = rng(8812);
+
+    POST_POS.forEach(([tx,ty]) => {
+      const cx = tx*TILE + TILE/2, cy = ty*TILE + TILE/2;
+
+      // Ground glow pool — depth 0.8
+      const gGlow = this.add.graphics().setDepth(0.8);
+      gGlow.fillStyle(0xffcc44, 1).fillEllipse(cx, cy+10, 52, 18);
+      gGlow.fillStyle(0xff9a00, 1).fillEllipse(cx, cy+10, 26, 10);
+      gGlow.setAlpha(0.055);
+      this.tweens.add({ targets:gGlow, alpha:{ from:0.040, to:0.090 },
+        duration:2100+rp()*1100, yoyo:true, repeat:-1,
+        ease:'Sine.easeInOut', delay:rp()*2000 });
+
+      // Structure — depth 2.70 (above trees, below buildings)
+      const g = this.add.graphics().setDepth(2.70);
+
+      // Footprint shadow
+      g.fillStyle(C.shadow, 0.14).fillEllipse(cx, cy+12, 18, 5);
+
+      // Stone plinth top cap
+      g.fillStyle(C.stone).fillRect(cx-6, cy+7, 12, 2);
+      g.lineStyle(0.7, C.ink, 0.9); g.strokeRect(cx-6, cy+7, 12, 2);
+
+      // Stone plinth body
+      g.fillStyle(C.stoneDark).fillRect(cx-5, cy+9, 10, 5);
+      g.fillStyle(C.stone, 0.45).fillRect(cx-4, cy+9, 3, 1);
+      g.lineStyle(1, C.ink, 1); g.strokeRect(cx-5, cy+9, 10, 5);
+
+      // Iron pole
+      g.fillStyle(C.stoneDark).fillRect(cx-1.5, cy-14, 3, 22);
+      g.fillStyle(0xd0cce0, 0.22).fillRect(cx-0.5, cy-14, 1, 22);
+      g.lineStyle(0.7, C.ink, 0.9); g.strokeRect(cx-1.5, cy-14, 3, 22);
+
+      // Arm bracket
+      g.fillStyle(C.stoneDark).fillRect(cx, cy-13, 9, 2);
+      g.fillStyle(0xd0cce0, 0.18).fillRect(cx, cy-13, 9, 0.7);
+      g.lineStyle(0.6, C.ink, 0.85); g.strokeRect(cx, cy-13, 9, 2);
+
+      // Lantern cap / roof
+      g.fillStyle(C.stoneDark).fillRect(cx+4, cy-23, 11, 3);
+      g.fillStyle(C.stone, 0.30).fillRect(cx+4, cy-23, 11, 1);
+      g.lineStyle(0.9, C.ink, 1); g.strokeRect(cx+4, cy-23, 11, 3);
+
+      // Lantern glass body
+      g.fillStyle(0xfde08a, 0.80).fillRect(cx+5, cy-20, 9, 8);
+      g.fillStyle(0xffffff, 0.38).fillRect(cx+5, cy-20, 9, 3);
+      g.fillStyle(0xffb820, 0.18).fillRect(cx+5, cy-17, 9, 5);
+      g.lineStyle(1.2, C.ink, 1); g.strokeRect(cx+5, cy-20, 9, 8);
+      g.lineStyle(0.7, C.ink, 0.55);
+      g.beginPath(); g.moveTo(cx+9.5, cy-20); g.lineTo(cx+9.5, cy-12); g.strokePath();
+      g.lineStyle(0.7, C.ink, 0.55);
+      g.beginPath(); g.moveTo(cx+5, cy-16); g.lineTo(cx+14, cy-16); g.strokePath();
+
+      // Pole finial knob
+      g.fillStyle(C.stone).fillCircle(cx, cy-14, 2.5);
+      g.lineStyle(0.6, C.ink, 0.9); g.strokeCircle(cx, cy-14, 2.5);
+
+      // Lantern inner flicker — separate flickering object
+      const lFl = this.add.graphics().setDepth(2.71);
+      lFl.fillStyle(0xfffae0, 1).fillRect(cx+6, cy-19, 7, 5);
+      this.windowGlows.push({ obj:lFl, base:0.20, rate:0.0035+rp()*0.002,
+        phase:rp()*Math.PI*2, amp:0.20 });
     });
   }
 
