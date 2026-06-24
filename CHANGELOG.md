@@ -3,6 +3,13 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.69.0], Ambient animals — ducks + chickens
+
+### Ditambahkan
+- **Bebek di air (5 ekor)**: tekstur bebek piksel kecil (22×12) — badan putih, kepala hijau teal, paruh oranye — mengapung di baris air atas & bawah, berenang pelan kiri-kanan dengan goyang badan sinus; depth 1.35 (di atas air, di bawah bunga teratai)
+- **Ayam di ladang (4 ekor)**: tekstur ayam piksel (15×14) — badan coklat-oranye, jambul merah, paruh kuning, kaki garis — berjalan di area ladang & pasar, sesekali mematuk tanah (head-bob animasi); depth 2.15
+- Keduanya memakai PRNG seeded untuk posisi & fase awal yang deterministik
+
 ## [0.68.0], Time-of-day ambient cycle + dusk stars
 
 ### Ditambahkan / Diperbarui

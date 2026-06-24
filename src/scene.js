@@ -91,6 +91,8 @@ export class Village extends Phaser.Scene {
     this.windowGlows = [];
     this.butterflies = [];
     this.fishArr     = [];
+    this.ducks       = [];
+    this.chickens    = [];
     this.locked      = true;
 
     this.drawGround();
@@ -125,6 +127,7 @@ export class Village extends Phaser.Scene {
     this.makeLeaves();
     this.makeBlossomPetals();
     this.makeFish();
+    this.makeAnimals();
     this.makeButterflies();
     this.makeAtmosphere();
     this.makeSkyGlow();
@@ -1961,6 +1964,69 @@ export class Village extends Phaser.Scene {
     });
   }
 
+  /* -------- Hewan ambien: bebek di air + ayam di ladang -------- */
+  makeAnimals(){
+    // Bebek di baris air (depth 1.35)
+    if (!this.textures.exists('duck')){
+      const dg = this.add.graphics();
+      dg.fillStyle(0xeeece8, 1).fillEllipse(9, 7, 15, 9);       // badan putih
+      dg.fillStyle(0xd0cec8, 0.45).fillEllipse(8, 8.5, 13, 5);  // bayangan badan
+      dg.fillStyle(0x55a060, 1).fillEllipse(14.5, 4, 8, 6);     // kepala hijau teal
+      dg.fillStyle(0x3a8048, 0.75).fillEllipse(14, 3.5, 7, 4);  // gelap kepala
+      dg.fillStyle(0x110e18, 1).fillCircle(16.5, 3.5, 1);       // mata
+      dg.fillStyle(0xffffff, 0.65).fillCircle(17, 3, 0.38);     // highlight mata
+      dg.fillStyle(0xf09020, 1).fillTriangle(17.5, 3.8, 21, 4.3, 17.5, 5.2); // paruh
+      dg.lineStyle(1.0, 0xccc8c0, 0.55).lineBetween(3, 6, 11, 5);  // garis sayap
+      dg.generateTexture('duck', 22, 12);
+      dg.destroy();
+    }
+    const rd = rng(7742);
+    const DUCK_DEF = [
+      { x: 3*TILE+12, y: TILE*0.48 },
+      { x: 8*TILE+18, y: TILE*0.52 },
+      { x:14*TILE+8,  y: TILE*0.44 },
+      { x: 5*TILE+15, y: (ROWS-1)*TILE + TILE*0.50 },
+      { x:12*TILE+5,  y: (ROWS-1)*TILE + TILE*0.42 },
+    ];
+    for (const d of DUCK_DEF){
+      const sc = 0.74 + rd()*0.26;
+      const img = this.add.image(d.x, d.y, 'duck')
+        .setOrigin(0.5).setDepth(1.35).setScale(sc).setFlipX(rd() > 0.5);
+      this.ducks.push({ obj:img, bx:d.x, by:d.y, ph:rd()*Math.PI*2, sp:0.22+rd()*0.32 });
+    }
+
+    // Ayam di ladang dan area pasar (depth 2.15)
+    if (!this.textures.exists('chick')){
+      const cg = this.add.graphics();
+      cg.fillStyle(0xc27030, 1).fillEllipse(5.5, 7.5, 11, 8);    // badan coklat-oranye
+      cg.fillStyle(0xd8903c, 0.65).fillEllipse(4.5, 6.5, 9, 5);  // highlight badan
+      cg.fillStyle(0xc27030, 1).fillEllipse(10, 3.5, 6, 5);      // kepala
+      cg.fillStyle(0xdf1e1e, 1).fillTriangle(11, 1, 13, 2.2, 11, 3.5); // jambul
+      cg.fillStyle(0xdf1e1e, 0.75).fillTriangle(9.5, 1.5, 11, 2.5, 9.5, 4); // jambul2
+      cg.fillStyle(0xf0b820, 1).fillTriangle(12, 3.5, 14, 4.2, 12, 5.2);  // paruh
+      cg.fillStyle(0x110e18, 1).fillCircle(11, 3, 0.9);          // mata
+      cg.fillStyle(0xffffff, 0.55).fillCircle(11.4, 2.6, 0.36); // highlight mata
+      cg.lineStyle(0.8, 0xa06028, 0.7).lineBetween(3, 6.5, 9, 5.5); // garis sayap
+      cg.lineStyle(0.9, 0xf09828, 1).lineBetween(4, 11, 3, 13);  // kaki kiri
+      cg.lineStyle(0.9, 0xf09828, 1).lineBetween(7, 11, 8, 13);  // kaki kanan
+      cg.generateTexture('chick', 15, 14);
+      cg.destroy();
+    }
+    const rc = rng(8821);
+    const CHICK_DEF = [
+      { x: 2*TILE+22, y: 7*TILE+15 },
+      { x: 3*TILE+30, y: 8*TILE-8  },
+      { x: 4*TILE+8,  y: 6*TILE+28 },
+      { x:16*TILE+20, y: 8*TILE+10 },
+    ];
+    for (const d of CHICK_DEF){
+      const sc = 0.78 + rc()*0.24;
+      const img = this.add.image(d.x, d.y, 'chick')
+        .setOrigin(0.5).setDepth(2.15).setScale(sc).setFlipX(rc() > 0.5);
+      this.chickens.push({ obj:img, bx:d.x, by:d.y, ph:rc()*Math.PI*2, sp:0.16+rc()*0.20 });
+    }
+  }
+
   /* -------- Kupu-kupu ambien (4 ekor, terbang melayang di area rumput) -------- */
   makeButterflies(){
     if (!this.textures.exists('butterfly')){
@@ -2409,6 +2475,21 @@ export class Village extends Phaser.Scene {
       f.obj.x += f.spd * 0.016;
       if (f.spd > 0 && f.obj.x > COLS*TILE + 22) f.obj.x = -22;
       if (f.spd < 0 && f.obj.x < -22) f.obj.x = COLS*TILE + 22;
+    }
+    // Bebek berenang pelan + goyang badan
+    for (const dk of this.ducks){
+      const dt = time * 0.001;
+      dk.obj.x = dk.bx + Math.sin(dt * dk.sp + dk.ph) * 24;
+      dk.obj.y = dk.by + Math.cos(dt * 1.4 + dk.ph) * 1.6;
+      dk.obj.setFlipX(Math.cos(dt * dk.sp + dk.ph) > 0);
+    }
+    // Ayam mematuk tanah — bob kepala berkala
+    for (const ck of this.chickens){
+      const ct = time * 0.001;
+      ck.obj.x = ck.bx + Math.sin(ct * ck.sp + ck.ph) * 20;
+      const peck = Math.max(0, Math.sin(ct * 2.6 + ck.ph * 1.8));
+      ck.obj.y = ck.by - (peck > 0.82 ? (peck - 0.82) * 12 : 0);
+      ck.obj.setFlipX(Math.cos(ct * ck.sp + ck.ph) > 0);
     }
     // Warga desa bergerak
     for (const npc of this.npcs){
