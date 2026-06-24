@@ -3,6 +3,13 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.48.0], Character identity + ambient life — scarf, cloud pulse, shimmer animation
+
+### Ditambahkan
+- **Syal wanderer**: karakter pemain kini mengenakan syal merah-oranye di leher (terlihat dari depan sebagai dua ujung juntai, dari belakang sebagai kain melilit) — memberikan visual identity yang khas dan mudah dikenali sebelum dialog dimulai.
+- **Denyut cahaya ambient**: overlay samar (alpha maks 0.028) berosilasi setiap ~12 detik di seluruh layar mensimulasikan bayangan awan tipis yang melintas — dunia terasa bernapas tanpa efek berlebihan.
+- **Kilatan air beranimasi**: lapisan shimmer di permukaan air (garis-garis cahaya) kini perlahan-lahan berdenyut (alpha 0.1–1.0, periode ~16 detik) — air kini terlihat berkilau dinamis seperti sungai/danau sungguhan.
+
 ## [0.47.0], World props — lamp posts, market stalls, rice paddy, milestone stones
 
 ### Ditambahkan
