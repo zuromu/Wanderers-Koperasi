@@ -3,6 +3,17 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.45.0], World rendering — ground gradient, depth sorting, torch flame, bird flap, hint visibility
+
+### Diubah
+- **Gradien cahaya lapangan**: warna tanah kini memiliki gradien arah top-left→bottom-right (luminance 0.05–0.35 vs flat random 0–0.3) — lapangan tampak seperti diterangi matahari dari kanan atas, bukan noise static.
+- **Depth sorting perspektif**: pemain dan NPC kini memperbarui `depth` tiap frame berdasarkan posisi Y (`2.5 + y/560*4`) — karakter yang lebih jauh (atas layar) otomatis berada di belakang karakter yang lebih dekat (bawah layar), termasuk bangunan di kedalaman 3.
+- **Api obor teardrop**: dua lingkaran oranye diganti dengan segitiga bertumpuk (oranye luar → kuning tengah) plus titik bara merah di pangkal — tampak seperti api nyata bukan LED bulat.
+- **Radius glow obor lebih proporsional**: radius lingkaran ambient turun dari 18+v*8 ke 12+v*5 — selaras dengan ukuran api teardrop baru.
+- **Bird flap dibalik**: animasi sayap burung dikoreksi dari "mengecil ke atas" (scaleY 0.55–1.1) ke "glide-to-fold" (scaleY 1.0–0.5) — sayap kini terlipat ke bawah saat kepak, bukan seluruh sprite mengecil.
+- **Indikator interaksi lebih terlihat**: alpha cincin emas naik dari 0.14–0.38 ke 0.25–0.65; tambah highlight putih kecil di tengah; teks dari `'[ SPASI ]'` 7px ke `'SPASI ▶'` 9px berwarna emas.
+- **Gelembung NPC lebih ramah**: teks `'...'` diganti `'Bicara?'`; font naik dari 9px ke 10px; gelembung kini muncul dengan animasi pop-in scale 0.5→1.0 (`Back.easeOut`).
+
 ## [0.44.0], UI legibility — bigger portraits, SVG arrow, button hierarchy, semantic disabled
 
 ### Diubah
