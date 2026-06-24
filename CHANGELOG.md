@@ -3,6 +3,12 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.79.0], Character Grounding Fix
+
+### Diperbaiki
+- **Penyelarasan Bayangan Karakter**: Memperbaiki bug visual di mana pemain dan warga desa (NPC) tampak melayang. Titik tumpu (origin) sprite kini ditetapkan secara absolut ke dasar kaki (`1`), dan disejajarkan persis pada koordinat Y bayangan masing-masing (Y=12 untuk pemain, Y=9 untuk NPC).
+- **Tween Animasi Idle**: Animasi pernapasan/bobbing idle kini menggunakan nilai batas `{from, to}` yang eksplisit, memastikan karakter selalu kembali memijak tanah dengan sempurna setelah memantul.
+
 ## [0.78.0], Animated sun
 
 ### Ditambahkan
