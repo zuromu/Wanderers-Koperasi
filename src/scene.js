@@ -95,6 +95,8 @@ export class Village extends Phaser.Scene {
     this.chickens    = [];
     this.waterRefl   = [];
     this.lampGlows   = [];
+    this.bats        = [];
+    this.mistDots    = [];
     this.locked      = true;
 
     this.drawGround();
@@ -140,6 +142,8 @@ export class Village extends Phaser.Scene {
     this.makeBannerFlag();
     this.makeVignette();
     this.makeCornerFoliage();
+    this.makeDawnMist();
+    this.makeBats();
     this.bindInput();
     this.hintShowing = false;
     this.makeInteractHint();
@@ -2275,6 +2279,76 @@ export class Village extends Phaser.Scene {
     this.questGlowGfx = this.add.graphics().setDepth(2.99);
   }
 
+  /* -------- Kabut pagi tipis di baris air (fajar) -------- */
+  makeDawnMist(){
+    this.mistGfx = this.add.graphics().setDepth(1.06);
+    const r = rng(4422);
+    for (let i=0; i<18; i++){
+      this.mistDots.push({
+        bx: r()*(COLS*TILE), row: i<9 ? 0 : ROWS-1,
+        phase: r()*Math.PI*2, sp: 0.28+r()*0.55,
+        w: 58+r()*55, h: 11+r()*12,
+      });
+    }
+  }
+
+  /* -------- Kawanan kelelawar senja -------- */
+  makeBats(){
+    if (!this.textures.exists('batTex')){
+      const g = this.add.graphics();
+      g.fillStyle(0x1a0f22, 0.95);
+      g.fillTriangle(8,5, 0,1, 4,7);
+      g.fillTriangle(8,5, 16,1, 12,7);
+      g.fillEllipse(8, 5.5, 5, 4);
+      g.generateTexture('batTex', 16, 8);
+      g.destroy();
+    }
+    const r = rng(9921);
+    for (let i=0; i<7; i++){
+      const sc = 0.88+r()*0.36;
+      const img = this.add.image(-50, 0, 'batTex').setDepth(97.5).setAlpha(0).setScale(sc);
+      this.bats.push({ img, sc, xOff:(i-3)*24+r()*8-4, baseY:8+r()*42, ph:r()*Math.PI*2, flapSp:0.0026+r()*0.002 });
+    }
+  }
+
+  /* -------- Ambient halaman web — warna body mengikuti siklus hari -------- */
+  _applyPageAmbient(p){
+    const l3=(a,b,t)=>[
+      (a[0]+(b[0]-a[0])*t)|0,
+      (a[1]+(b[1]-a[1])*t)|0,
+      (a[2]+(b[2]-a[2])*t)|0,
+    ];
+    const N=[14,10,22], Nb=[8,6,14];
+    const D=[38,22,14], Db=[22,14,8];
+    const Y=[16,22,38], Yb=[8,12,22];
+    const S=[48,20,12], Sb=[28,12,8];
+    const K=[26,14,42], Kb=[16,8,28];
+    let c1, c2;
+    if      (p < 0.12){ c1=N;  c2=Nb; }
+    else if (p < 0.30){ const t=(p-0.12)/0.18; c1=l3(N,D,t);  c2=l3(Nb,Db,t); }
+    else if (p < 0.50){ const t=(p-0.30)/0.20; c1=l3(D,Y,t);  c2=l3(Db,Yb,t); }
+    else if (p < 0.72){ const t=(p-0.50)/0.22; c1=l3(Y,S,t);  c2=l3(Yb,Sb,t); }
+    else if (p < 0.88){ const t=(p-0.72)/0.16; c1=l3(S,K,t);  c2=l3(Sb,Kb,t); }
+    else               { const t=(p-0.88)/0.12; c1=l3(K,N,t);  c2=l3(Kb,Nb,t); }
+    document.body.style.background=`radial-gradient(ellipse at 50% 30%,rgb(${c1}) 0%,rgb(${c2}) 100%)`;
+    const gEl = document.getElementById('game');
+    if (!gEl) return;
+    let glowC;
+    if (p > 0.48 && p < 0.74){
+      const t=(p-0.48)/0.26, bell=Math.sin(t*Math.PI);
+      glowC=`rgba(255,${Math.round(130-90*bell)},${Math.round(43-43*bell)},${(0.30+bell*0.38).toFixed(2)})`;
+    } else if (p > 0.10 && p < 0.32){
+      const t=(p-0.10)/0.22, bell=Math.sin(t*Math.PI);
+      glowC=`rgba(255,${Math.round(200+55*bell)},${Math.round(100+100*bell)},${(0.22+bell*0.20).toFixed(2)})`;
+    } else if (p > 0.73 && p < 0.94){
+      const t=Math.min(1,(p-0.73)/0.21);
+      glowC=`rgba(${(80+60*t)|0},${(50+30*t)|0},${(180+40*t)|0},${(0.28+t*0.22).toFixed(2)})`;
+    } else {
+      glowC='rgba(224,165,43,0.28)';
+    }
+    gEl.style.boxShadow=`0 0 0 1px #a9781b, 0 8px 32px rgba(0,0,0,.6), 0 0 52px ${glowC}, inset 0 0 0 1px rgba(224,165,43,.15)`;
+  }
+
   makeInteractHint(){
     this.hintRingGfx = this.add.graphics().setDepth(3.9);
     this.hintText = this.add.text(0, 0, 'SPASI ▶', {
@@ -2473,6 +2547,11 @@ export class Village extends Phaser.Scene {
   update(time){
     // Siklus hari 2 menit: pagi hangat → siang jernih → sore emas → senja ungu
     const dayP = (time % 120000) / 120000;
+    // Ambient halaman — perbarui warna body ~2x/detik
+    if (!this._pageTick || time - this._pageTick > 480){
+      this._pageTick = time;
+      this._applyPageAmbient(dayP);
+    }
     if (this.ambientOverlay){
       let col, al;
       if (dayP < 0.30){
@@ -2534,6 +2613,22 @@ export class Village extends Phaser.Scene {
           const pulse = (Math.sin(time*0.0015*r.sp + r.phase)+1)*0.5;
           this.waterGlowGfx.fillStyle(sunC, glowAl*(0.42+pulse*0.58));
           this.waterGlowGfx.fillEllipse(rx, ry, r.w*(0.55+pulse*0.45), r.h);
+        }
+      }
+    }
+    // Kabut pagi di baris air — menipis seiring pagi
+    if (this.mistGfx && this.mistDots.length){
+      this.mistGfx.clear();
+      const mistAl = dayP < 0.28 ? Math.sin(dayP/0.28*Math.PI)*0.20 : 0;
+      if (mistAl > 0.004){
+        for (const m of this.mistDots){
+          const mx = m.bx + Math.sin(time*m.sp*0.00038 + m.phase)*20;
+          const my = m.row===0
+            ? TILE*0.55 + Math.cos(time*0.00028+m.phase)*5
+            : (ROWS-1)*TILE + TILE*0.45 + Math.cos(time*0.00028+m.phase)*5;
+          const pulse2 = 0.5 + 0.5*Math.sin(time*0.00022+m.phase+1);
+          this.mistGfx.fillStyle(0xd0e8f8, mistAl*pulse2);
+          this.mistGfx.fillEllipse(mx, my, m.w, m.h);
         }
       }
     }
@@ -2727,6 +2822,19 @@ export class Village extends Phaser.Scene {
       ff.obj.x = ff.ox + Math.sin(time * ff.sp * 0.0006 + ff.ph) * 14;
       ff.obj.y = ff.oy + Math.cos(time * ff.sp * 0.0004 + ff.ph * 1.3) * 10;
       ff.obj.setAlpha(((Math.sin(time * 0.0022 + ff.aph) + 1) / 2) * (0.60 + dusk * 0.40));
+    }
+    // Kelelawar senja melintas langit (kanan → kiri, dayP 0.64–0.92)
+    if (this.bats.length){
+      const batVis = dayP>0.64 && dayP<0.92
+        ? Math.sin((dayP-0.64)/0.28*Math.PI)*0.80 : 0;
+      const batX = COLS*TILE - (time*0.050)%(COLS*TILE+200);
+      for (const b of this.bats){
+        b.img.x = batX + b.xOff;
+        b.img.y = b.baseY + Math.sin(time*0.00085 + b.ph)*7;
+        b.img.setAlpha(batVis);
+        const fw = 0.35 + Math.abs(Math.sin(time*b.flapSp + b.ph))*0.65;
+        b.img.setScale(b.sc, fw*b.sc);
+      }
     }
     // Gelembung seru (!) di atas NPC saat pemain mendekat
     if (!this.locked){
