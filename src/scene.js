@@ -137,6 +137,7 @@ export class Village extends Phaser.Scene {
     this.bindInput();
     this.hintShowing = false;
     this.makeInteractHint();
+    this.makeQuestGlow();
 
     this.cameras.main.fadeIn(450, 8, 6, 12);
     this.scheduleChirp();
@@ -2184,6 +2185,11 @@ export class Village extends Phaser.Scene {
     this.time.delayedCall(delay, () => { Audio.play('chirp'); this.scheduleChirp(); });
   }
 
+  /* -------- Halo bangunan target misi -------- */
+  makeQuestGlow(){
+    this.questGlowGfx = this.add.graphics().setDepth(2.99);
+  }
+
   makeInteractHint(){
     this.hintRingGfx = this.add.graphics().setDepth(3.9);
     this.hintText = this.add.text(0, 0, 'SPASI ▶', {
@@ -2595,6 +2601,38 @@ export class Village extends Phaser.Scene {
           this.tweens.killTweensOf(b);
           this.tweens.add({ targets:b, alpha:0, scaleX:0.5, scaleY:0.5, duration:160,
             onComplete:()=>{ npc.container.remove(b, true); npc.bubble=null; npc.bubbleFading=false; } });
+        }
+      }
+    }
+    // Halo target misi: aura emas lembut di bangunan yang dituju
+    if (this.questGlowGfx){
+      this.questGlowGfx.clear();
+      const qi = questInfo();
+      if (qi.target && !isDialogueOpen()){
+        const ts = SPOTS.find(s => s.id === qi.target);
+        if (ts){
+          const tx = ts.x*TILE + TILE/2, ty = ts.y*TILE + TILE/2 + 4;
+          const ddx = this.px - ts.x, ddy = this.py - ts.y;
+          const dist = Math.sqrt(ddx*ddx + ddy*ddy);
+          const fade = dist < 1.5 ? 0 : Math.min(1, (dist - 1.5) / 2.5);
+          if (fade > 0.01){
+            const pulse = (Math.sin(time * 0.0020) + 1) / 2;
+            // Outer soft halo
+            this.questGlowGfx.fillStyle(C.gold, fade * (0.05 + pulse * 0.07));
+            this.questGlowGfx.fillEllipse(tx, ty, 80, 28);
+            // Inner brighter halo
+            this.questGlowGfx.fillStyle(C.gold, fade * (0.08 + pulse * 0.11));
+            this.questGlowGfx.fillEllipse(tx, ty, 52, 17);
+            // 4 orbiting gold sparkles
+            const rot = time * 0.0016;
+            for (let i = 0; i < 4; i++){
+              const a = rot + i * Math.PI / 2;
+              const ox = tx + Math.cos(a) * 40, oy = ty + Math.sin(a) * 14;
+              const sr = 1.5 + Math.sin(time * 0.003 + i * 1.57) * 0.6;
+              this.questGlowGfx.fillStyle(C.gold, fade * (0.28 + pulse * 0.42));
+              this.questGlowGfx.fillCircle(ox, oy, sr);
+            }
+          }
         }
       }
     }
