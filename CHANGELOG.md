@@ -3,6 +3,14 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.65.0], Hay bales + fishing boat + net near south shore
+
+### Ditambahkan
+- **Tumpukan jerami**: 3 hay bale di sebelah timur ladang padi — bale bulat berserabut (garis straws + tali pengikat + butiran jerami lepas di sekitar); depth 2.2
+- **Perahu nelayan kayu (perahu)**: perahu kayu trapesoid berangka coklat di dermaga selatan dekat kincir air — papan interior kayu, tiang kecil, tali tambat ke dermaga, pantulan air; depth 1.4 (di dalam air seperti mengapung)
+- **Jaring ikan**: grid jaring kecil menggantung di tepi dermaga; depth 2.05
+- Memperkuat tema desa nelayan+pertanian Indonesia bagi Pak Hasan
+
 ## [0.64.0], Corner foliage overlay — natural viewport frame
 
 ### Ditambahkan
