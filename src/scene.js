@@ -104,7 +104,7 @@ export class Village extends Phaser.Scene {
         if (t === 2) continue;
         const base  = t === 1 ? C.path      : C.grass;
         const shade = t === 1 ? C.pathShade : C.grassShade;
-        g.fillStyle(lerpC(base, shade, r()*0.3), 1).fillRect(x*TILE, y*TILE, TILE, TILE);
+        g.fillStyle(lerpC(base, shade, 0.05 + (x/COLS)*0.18 + (y/ROWS)*0.12 + r()*0.08), 1).fillRect(x*TILE, y*TILE, TILE, TILE);
         const dots = 1 + ((r()*3)|0);
         for (let d=0; d<dots; d++){
           const dx = x*TILE + 4 + r()*(TILE-8);
@@ -731,7 +731,7 @@ export class Village extends Phaser.Scene {
     this.pFacing = 1; // 1=kanan, -1=kiri
     this._makeCharTextures();
 
-    const c = this.add.container(this.px*TILE+TILE/2, this.py*TILE+TILE/2).setDepth(6);
+    const c = this.add.container(this.px*TILE+TILE/2, this.py*TILE+TILE/2).setDepth(2.5 + this.py/ROWS*4);
     this.pShadow = this.add.ellipse(0, 12, 26, 10, C.shadow, 0.35);
     this.pBody   = this.add.image(0, 0, 'char_i').setOrigin(0.5, 0.75);
     c.add([this.pShadow, this.pBody]);
@@ -1002,7 +1002,7 @@ export class Village extends Phaser.Scene {
       const wx = sx*TILE+TILE/2, wy = sy*TILE+TILE/2;
       const shadow = this.add.ellipse(0, 9, 18, 7, C.shadow, 0.28);
       const sprite = this.add.image(0, 0, `npc_${i % 6}`).setOrigin(0.5, 0.88);
-      const c = this.add.container(wx, wy, [shadow, sprite]).setDepth(2.1).setScale(SCALES[i]);
+      const c = this.add.container(wx, wy, [shadow, sprite]).setDepth(2.5 + wy/(ROWS*TILE)*4).setScale(SCALES[i]);
       // Variasi animasi idle: bob / sway / rock per NPC
       const itype = ['bob','sway','rock','bob','sway','rock','bob'][i];
       if (itype === 'sway'){
@@ -1148,9 +1148,9 @@ export class Village extends Phaser.Scene {
 
   makeInteractHint(){
     this.hintRingGfx = this.add.graphics().setDepth(3.9);
-    this.hintText = this.add.text(0, 0, '[ SPASI ]', {
+    this.hintText = this.add.text(0, 0, 'SPASI ▶', {
       fontFamily:"'Pixelify Sans','Trebuchet MS',sans-serif",
-      fontSize:'7px', color:'#e8c84a',
+      fontSize:'9px', color:'#e0a52b',
       stroke:'#241d2e', strokeThickness:2,
     }).setOrigin(0.5).setDepth(99).setAlpha(0).setVisible(false);
   }
@@ -1329,7 +1329,7 @@ export class Village extends Phaser.Scene {
     for (const b of this.birds){
       b.obj.x = birdX + b.xOff;
       b.obj.y = b.baseY + Math.sin(time * 0.0009 + b.ph) * 4;
-      const flap = 0.55 + Math.abs(Math.sin(time * b.flapSp + b.flapPh)) * 0.55;
+      const flap = 1.0 - Math.abs(Math.sin(time * b.flapSp + b.flapPh)) * 0.5;
       b.obj.setScale(b.obj.scaleX, flap * b.obj.scaleX);
     }
     // Asap cerobong — mengembang dan memudar saat naik
@@ -1372,18 +1372,22 @@ export class Village extends Phaser.Scene {
         }
         npc.moveAt = time + 1600 + Math.random()*2200;
       }
+      npc.container.setDepth(2.5 + npc.container.y / (ROWS*TILE) * 4);
     }
+    // Kedalaman pemain mengikuti posisi Y (depth sorting perspektif atas)
+    if (this.pc) this.pc.setDepth(2.5 + this.pc.y / (ROWS*TILE) * 4);
     // Obor berkedip
     for (const t of this.torches){
       const v = (Math.sin(time * 0.0038 + t.phase) + 1) / 2;
       t.glow.clear();
       t.glow.fillStyle(C.gold, 0.07 + v*0.07);
-      t.glow.fillCircle(t.sx, t.sy, 18 + v*8);
+      t.glow.fillCircle(t.sx, t.sy, 12 + v*5);
       t.glow.fillStyle(0xff8822, 0.10 + v*0.08);
-      t.glow.fillCircle(t.sx, t.sy, 9 + v*4);
+      t.glow.fillCircle(t.sx, t.sy, 6 + v*3);
       t.flame.clear();
-      t.flame.fillStyle(0xff9911, 0.9).fillCircle(t.sx, t.sy, 2.8 + v*0.7);
-      t.flame.fillStyle(0xffee55, 0.85).fillCircle(t.sx, t.sy - 1, 1.6);
+      t.flame.fillStyle(0xff6611, 0.9).fillTriangle(t.sx-2, t.sy+1, t.sx+2, t.sy+1, t.sx, t.sy-5);
+      t.flame.fillStyle(0xffee55, 0.85).fillTriangle(t.sx-1, t.sy+1, t.sx+1, t.sy+1, t.sx, t.sy-(3+v*2));
+      t.flame.fillStyle(0xff3300, 0.8).fillCircle(t.sx, t.sy+1, 2);
     }
     // Cahaya hangat obor pada karakter (tint dinamis)
     if (this.pBody && this.torches.length){
@@ -1421,15 +1425,15 @@ export class Village extends Phaser.Scene {
         const near = Math.abs(npc.tx-this.px)<=1 && Math.abs(npc.ty-this.py)<=1;
         const show = near && !isDialogueOpen();
         if (show && !npc.bubble && !npc.bubbleFading){
-          npc.bubble = this.add.text(0, -36, '...', {
+          npc.bubble = this.add.text(0, -36, 'Bicara?', {
             fontFamily:"'Pixelify Sans',sans-serif",
-            fontSize:'9px', color:'#f4ecd8',
+            fontSize:'10px', color:'#f4ecd8',
             stroke:'#241d2e', strokeThickness:2,
             backgroundColor:'rgba(36,29,46,0.72)',
             padding:{ x:5, y:2 }
-          }).setOrigin(0.5).setDepth(6.8).setAlpha(0);
+          }).setOrigin(0.5).setDepth(6.8).setAlpha(0).setScale(0.5);
           npc.container.add(npc.bubble);
-          this.tweens.add({ targets:npc.bubble, alpha:1, y:-42, duration:240, ease:'Quad.easeOut' });
+          this.tweens.add({ targets:npc.bubble, alpha:1, y:-42, scale:1.0, duration:240, ease:'Back.easeOut' });
         } else if (!show && npc.bubble && !npc.bubbleFading){
           npc.bubbleFading = true;
           const b = npc.bubble;
@@ -1445,10 +1449,12 @@ export class Village extends Phaser.Scene {
       if (nearSpot){
         const hx = nearSpot.x*TILE+TILE/2, hy = nearSpot.y*TILE+TILE/2;
         const pulse = (Math.sin(time * 0.004) + 1) / 2;
-        this.hintRingGfx.lineStyle(2, C.gold, 0.14 + pulse * 0.24);
+        this.hintRingGfx.lineStyle(2, C.gold, 0.25 + pulse * 0.40);
         this.hintRingGfx.strokeEllipse(hx, hy+6, 52, 16);
-        this.hintRingGfx.lineStyle(1, C.gold, 0.05 + pulse * 0.10);
+        this.hintRingGfx.lineStyle(1, C.gold, 0.08 + pulse * 0.16);
         this.hintRingGfx.strokeEllipse(hx, hy+6, 62, 22);
+        this.hintRingGfx.lineStyle(1, 0xffffff, 0.05 + pulse * 0.12);
+        this.hintRingGfx.strokeEllipse(hx, hy+6, 20, 10);
         if (!this.hintShowing){
           this.hintShowing = true;
           this.hintText.setVisible(true);
