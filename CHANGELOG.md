@@ -3,6 +3,14 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.62.0], Animated water mill (kincir air) at south shore
+
+### Ditambahkan
+- **Kincir air prosedural**: bangunan penggilingan kayu lengkap di tepi selatan peta (kol 6, baris 12–13) — fondasi batu, badan kayu bercorak serat horizontal, atap segitiga teal, cerobong kecil, pintu, dan saluran air kayu ke roda
+- **Roda berputar animasi**: 6 bilah roda air (jari-jari 18px) digambar ulang setiap frame via `tweens.add` + `onUpdate` — rotasi penuh 360° dalam 6 detik terus-menerus
+- **Percikan air**: kolam buih kecil di bawah roda (depth 1.3) menambah kesan aliran air nyata
+- Landmark visual unik yang memperkuat tema desa pertanian tropis Indonesia
+
 ## [0.61.0], Entrance potted plants on all main buildings
 
 ### Ditambahkan
