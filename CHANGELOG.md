@@ -3,6 +3,16 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.49.0], NPC identity + world micro-detail — named villagers, shoreline, building props
+
+### Ditambahkan
+- **Warga desa bernama**: 7 NPC kini memiliki nama unik (Pak Darmo, Bu Siti, Dodi, Ratna, Pak Hasan, Bu Lastri, Rudi) dengan ukuran yang berbeda-beda (anak kecil 0.82×, tua 1.08×) — bubble nama muncul saat pemain mendekat dan dialog menampilkan nama + portrait yang sesuai.
+- **NPC menghadap pemain**: saat pemain dalam jangkauan bicara, setiap NPC secara otomatis membalik sprite-nya menghadap pemain — interaksi terasa lebih alami dan responsif.
+- **Batu tepi pantai (shoreline rocks)**: batu-batu kecil berkilau tersebar di seluruh tepi air (water tiles bersebelahan dengan daratan) — transisi air-darat tidak lagi terpotong abrupt, memberikan nuansa pantai/sungai yang natural.
+- **Kotak bunga + jemuran di cottage**: Kepala Desa kini punya kotak bunga merah-putih-kuning di bawah jendela dan tali jemuran dengan baju berwarna di sisi rumah — micro-detail yang membuat dunia terasa dihuni.
+- **Pot tanaman di Koperasi**: dua pot merah dengan tanaman hijau di sisi pintu Kantor Koperasi — menambah atmosfer bangunan publik yang terawat.
+- **Portrait per NPC di BADGE_MAP**: semua 7 nama NPC terdaftar di BADGE_MAP dengan portrait warga desa dan warna tema unik masing-masing.
+
 ## [0.48.0], Character identity + ambient life — scarf, cloud pulse, shimmer animation
 
 ### Ditambahkan

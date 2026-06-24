@@ -65,6 +65,7 @@ export class Village extends Phaser.Scene {
     this.drawWater();
     this.drawWaterShimmer();
     this.drawWaterFoam();
+    this.drawShoreline();
     this.drawWaterLilies();
     this.drawBushes();
     this.drawTrees();
@@ -308,6 +309,30 @@ export class Village extends Phaser.Scene {
           g.lineStyle(1.2, gc, 0.55 + r()*0.3);
           g.lineBetween(bx, by, bx+ln, by-h);
           g.lineBetween(bx, by, bx+ln*0.5+1, by-h*0.6);
+        }
+      }
+    }
+  }
+
+  /* -------- Batu-batu kecil di tepi air (garis pantai natural) -------- */
+  drawShoreline(){
+    const g = this.add.graphics().setDepth(1.15);
+    const rs = rng(8123);
+    for (let y=0; y<ROWS; y++){
+      for (let x=0; x<COLS; x++){
+        if (+MAP[y][x] !== 2) continue;
+        const adjLand = (y>0&&+MAP[y-1][x]!==2)||(y<ROWS-1&&+MAP[y+1][x]!==2)||
+                        (x>0&&+MAP[y][x-1]!==2)||(x<COLS-1&&+MAP[y][x+1]!==2);
+        if (!adjLand) continue;
+        const px = x*TILE, py = y*TILE;
+        const count = 2 + (rs()*3)|0;
+        for (let i=0; i<count; i++){
+          const rx = px + 5 + rs()*(TILE-10);
+          const ry = py + 5 + rs()*(TILE-10);
+          const rw = 4 + rs()*6, rh = 2.5 + rs()*3.5;
+          const shade = 0.18 + rs()*0.18;
+          g.fillStyle(lerpC(C.stone, C.stoneDark, 0.3 + rs()*0.4), 0.42 + rs()*0.28).fillEllipse(rx, ry, rw, rh);
+          g.fillStyle(0xb8c8d0, shade).fillEllipse(rx-rw*0.18, ry-rh*0.2, rw*0.45, rh*0.35);
         }
       }
     }
@@ -737,6 +762,44 @@ export class Village extends Phaser.Scene {
       g.fillStyle(0xb8b7c4, 0.38).fillRect(mx-2, my-8, 5, 3);
       g.lineStyle(0.6, C.ink, 0.3).strokeRoundedRect(mx-3, my-9, 7, 11, 1);
     }
+
+    // Kotak bunga + jemuran di cottage Kepala Desa
+    const kepala = SPOTS.find(s => s.id==='kepala');
+    if (kepala){
+      const cx = kepala.x*TILE+TILE/2, cy = kepala.y*TILE+TILE/2;
+      // Kotak bunga di bawah jendela (jendela di cx-11, cy-13, 7×7)
+      g.fillStyle(C.woodDark, 0.85).fillRoundedRect(cx-12, cy-7, 9, 3, 1);
+      g.lineStyle(0.5, C.ink, 0.45).strokeRoundedRect(cx-12, cy-7, 9, 3, 1);
+      g.fillStyle(C.roofRed,  0.9).fillCircle(cx-10, cy-9, 1.8);
+      g.fillStyle(0xffffff,   0.9).fillCircle(cx-7,  cy-9, 1.8);
+      g.fillStyle(C.gold,     0.9).fillCircle(cx-4,  cy-9, 1.8);
+      g.fillStyle(C.leaf,     0.7).fillRect(cx-12, cy-8, 9, 1.5);
+      // Tali jemuran di samping cottage
+      g.lineStyle(0.7, C.woodDark, 0.50).lineBetween(cx+14, cy-8, cx+30, cy-8);
+      const CLOTHES = [{ ox:17, col:C.roofTeal }, { ox:24, col:C.coral }];
+      for (const cl of CLOTHES){
+        const clx = cx+cl.ox, cly = cy-8;
+        g.fillStyle(C.woodDark, 0.45).fillRect(clx-0.4, cly, 0.8, 2);
+        g.fillStyle(cl.col, 0.80).fillRect(clx-3, cly+2, 6, 5);
+        g.fillStyle(cl.col, 0.60).fillRect(clx-5, cly+3, 2, 3).fillRect(clx+3, cly+3, 2, 3);
+        g.lineStyle(0.5, C.ink, 0.3).strokeRect(clx-3, cly+2, 6, 5);
+      }
+    }
+
+    // Pot tanaman di depan Koperasi
+    const koperasi = SPOTS.find(s => s.id==='koperasi');
+    if (koperasi){
+      const kx = koperasi.x*TILE+TILE/2, ky = koperasi.y*TILE+TILE/2;
+      for (const ox of [-20, 18]){
+        const px = kx+ox, py = ky+9;
+        g.fillStyle(C.roofRed, 0.82).fillRoundedRect(px-3.5, py, 7, 6, 1);
+        g.fillStyle(0x8a2c10, 0.35).fillRect(px-3, py+3, 6, 2);
+        g.lineStyle(0.5, C.ink, 0.4).strokeRoundedRect(px-3.5, py, 7, 6, 1);
+        g.fillStyle(0x5a3a10, 0.65).fillRect(px-2, py, 4, 2);
+        g.fillStyle(C.leafDark, 0.82).fillCircle(px, py-3, 4);
+        g.fillStyle(C.leafHi, 0.5).fillCircle(px-1.5, py-4, 2);
+      }
+    }
   }
 
   _drawBarrel(g, cx, cy){
@@ -1061,29 +1124,35 @@ export class Village extends Phaser.Scene {
   /* -------- Warga desa yang berkeliaran -------- */
   makeNpcs(){
     this.makeNpcTextures();
-    // Variasi ukuran: 2 anak kecil, 1 warga tua, sisanya normal
-    const SCALES = [0.82, 1.0, 1.0, 1.08, 0.85, 1.0, 1.0];
+    const NPC_DATA = [
+      { name:'Pak Darmo',  idx:0, sc:1.08, itype:'bob'  },
+      { name:'Bu Siti',    idx:1, sc:1.00, itype:'sway' },
+      { name:'Dodi',       idx:2, sc:0.82, itype:'rock' },
+      { name:'Ratna',      idx:3, sc:1.00, itype:'bob'  },
+      { name:'Pak Hasan',  idx:4, sc:1.05, itype:'sway' },
+      { name:'Bu Lastri',  idx:5, sc:1.00, itype:'rock' },
+      { name:'Rudi',       idx:1, sc:0.85, itype:'bob'  },
+    ];
     const walkable = [];
     for (let y=1; y<ROWS-1; y++)
       for (let x=1; x<COLS-1; x++)
         if (+MAP[y][x] !== 2) walkable.push([x,y]);
-    for (let i=0; i<7; i++){
+    for (let i=0; i<NPC_DATA.length; i++){
+      const d = NPC_DATA[i];
       const [sx,sy] = walkable[Math.floor(Math.random()*walkable.length)];
       const wx = sx*TILE+TILE/2, wy = sy*TILE+TILE/2;
       const shadow = this.add.ellipse(0, 9, 18, 7, C.shadow, 0.28);
-      const sprite = this.add.image(0, 0, `npc_${i % 6}`).setOrigin(0.5, 0.88);
-      const c = this.add.container(wx, wy, [shadow, sprite]).setDepth(2.5 + wy/(ROWS*TILE)*4).setScale(SCALES[i]);
-      // Variasi animasi idle: bob / sway / rock per NPC
-      const itype = ['bob','sway','rock','bob','sway','rock','bob'][i];
-      if (itype === 'sway'){
+      const sprite = this.add.image(0, 0, `npc_${d.idx}`).setOrigin(0.5, 0.88);
+      const c = this.add.container(wx, wy, [shadow, sprite]).setDepth(2.5 + wy/(ROWS*TILE)*4).setScale(d.sc);
+      if (d.itype === 'sway'){
         this.tweens.add({ targets:sprite, scaleX:{from:1,to:0.93}, duration:1100+i*90,  yoyo:true, repeat:-1, ease:'Sine.easeInOut' });
         this.tweens.add({ targets:sprite, y:{from:0,to:-1.5},      duration:920+i*80,   yoyo:true, repeat:-1, ease:'Sine.easeInOut' });
-      } else if (itype === 'rock'){
+      } else if (d.itype === 'rock'){
         this.tweens.add({ targets:sprite, rotation:{from:-0.06,to:0.06}, duration:960+i*115, yoyo:true, repeat:-1, ease:'Sine.easeInOut' });
       } else {
         this.tweens.add({ targets:sprite, y:-2, duration:800+i*110, yoyo:true, repeat:-1, ease:'Sine.easeInOut' });
       }
-      this.npcs.push({ container:c, sprite, tx:sx, ty:sy, moveAt:Math.random()*2500, bubble:null, bubbleFading:false });
+      this.npcs.push({ container:c, sprite, tx:sx, ty:sy, name:d.name, moveAt:Math.random()*2500, bubble:null, bubbleFading:false });
     }
   }
 
@@ -1346,7 +1415,7 @@ export class Village extends Phaser.Scene {
     const near = SPOTS.find(s => Math.abs(s.x-this.px)<=1 && Math.abs(s.y-this.py)<=1);
     if (near){ Audio.play('talk'); interact(near.id); return; }
     const nearNpc = this.npcs.find(n => Math.abs(n.tx-this.px)<=1 && Math.abs(n.ty-this.py)<=1);
-    if (nearNpc){ Audio.play('talk'); showDialogue('Warga Desa', NPC_TIPS[Math.floor(Math.random()*NPC_TIPS.length)]); return; }
+    if (nearNpc){ Audio.play('talk'); showDialogue(nearNpc.name, NPC_TIPS[Math.floor(Math.random()*NPC_TIPS.length)]); return; }
     showDialogue('Wanderer','Tidak ada siapa-siapa di sini. Dekati bangunan atau warga, lalu tekan Spasi.');
   }
 
@@ -1527,12 +1596,13 @@ export class Village extends Phaser.Scene {
       for (const npc of this.npcs){
         const near = Math.abs(npc.tx-this.px)<=1 && Math.abs(npc.ty-this.py)<=1;
         const show = near && !isDialogueOpen();
+        if (near) npc.sprite.setFlipX(this.px < npc.tx);
         if (show && !npc.bubble && !npc.bubbleFading){
-          npc.bubble = this.add.text(0, -36, 'Bicara?', {
+          npc.bubble = this.add.text(0, -36, npc.name, {
             fontFamily:"'Pixelify Sans',sans-serif",
-            fontSize:'10px', color:'#f4ecd8',
+            fontSize:'9px', color:'#f4ecd8',
             stroke:'#241d2e', strokeThickness:2,
-            backgroundColor:'rgba(36,29,46,0.72)',
+            backgroundColor:'rgba(36,29,46,0.78)',
             padding:{ x:5, y:2 }
           }).setOrigin(0.5).setDepth(6.8).setAlpha(0).setScale(0.5);
           npc.container.add(npc.bubble);
