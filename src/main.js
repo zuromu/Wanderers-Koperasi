@@ -56,16 +56,34 @@ function startDemo(){
   if (v) runDemo(v);
 }
 
-/* Partikel emas naik di layar judul */
+/* Partikel judul: gold sparks (22), drifting (8), twinkle (6) */
 const tp = $('titleParticles');
 if (tp){
-  for (let i=0; i<28; i++){
+  for (let i=0; i<36; i++){
     const sp = document.createElement('div');
-    sp.className = 't-spark';
-    const sz = 2 + Math.random()*3;
-    sp.style.cssText = `left:${Math.random()*100}%;bottom:${5+Math.random()*70}%;` +
-      `width:${sz}px;height:${sz}px;` +
-      `animation-duration:${4+Math.random()*7}s;animation-delay:${-Math.random()*11}s`;
+    const rnd = Math.random();
+    const sz = 2 + Math.random()*3.5;
+    const left = Math.random()*100;
+    const bot  = 5 + Math.random()*72;
+    const dur  = 4 + Math.random()*7;
+    const del  = -Math.random()*12;
+    if (i < 22){
+      sp.className = 't-spark';
+      const goldVar = Math.random() < 0.3 ? '#f5d060' : '#e0a52b';
+      sp.style.cssText = `left:${left}%;bottom:${bot}%;width:${sz}px;height:${sz}px;` +
+        `background:${goldVar};animation-duration:${dur}s;animation-delay:${del}s`;
+    } else if (i < 30){
+      sp.className = 't-drift';
+      const dx = (Math.random()-0.5)*28;
+      sp.style.cssText = `left:${left}%;bottom:${bot}%;width:${sz*0.9}px;height:${sz*0.9}px;` +
+        `background:${Math.random()<0.5?'#e0a52b':'#fffae8'};` +
+        `--dx:${dx}px;animation-duration:${dur+1}s;animation-delay:${del}s`;
+    } else {
+      sp.className = 't-twinkle';
+      const tsz = 1.5 + Math.random()*2;
+      sp.style.cssText = `left:${left}%;bottom:${bot}%;width:${tsz}px;height:${tsz}px;` +
+        `animation-duration:${2.5+Math.random()*3}s;animation-delay:${del}s`;
+    }
     tp.appendChild(sp);
   }
 }

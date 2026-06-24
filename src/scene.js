@@ -62,6 +62,7 @@ export class Village extends Phaser.Scene {
 
     this.drawGround();
     this.drawGrassTufts();
+    this.drawCliffEdges();
     this.drawWater();
     this.drawWaterShimmer();
     this.drawWaterFoam();
@@ -163,6 +164,62 @@ export class Village extends Phaser.Scene {
         }
       }
     }
+  }
+
+  /* -------- Tebing batu di batas utara + alang-alang di batas selatan -------- */
+  drawCliffEdges(){
+    const rc = rng(3141);
+    // Tebing utara: lapisan batu di tepi atas baris 1 yang berbatasan langsung dengan air
+    const gN = this.add.graphics().setDepth(1.65);
+    for (let x=0; x<COLS; x++){
+      if (+MAP[1][x] === 2) continue;
+      const px = x*TILE, py = TILE;
+      gN.fillStyle(C.ink, 0.38).fillRect(px, py-5, TILE, 5);
+      const c1 = lerpC(C.stoneDark, C.ink, 0.32 + rc()*0.14);
+      const c2 = lerpC(C.stone, C.stoneDark, 0.42);
+      gN.fillStyle(c1, 0.58).fillRect(px, py-3, TILE, 2.5);
+      gN.fillStyle(c2, 0.34).fillRect(px+1, py-1, TILE-2, 2);
+      gN.lineStyle(0.5, C.ink, 0.18).lineBetween(px, py-2, px+TILE, py-2);
+      if (rc() < 0.26){
+        const bx = px + 5 + rc()*(TILE-14);
+        gN.fillStyle(c1, 0.52).fillRoundedRect(bx, py-6, 5+rc()*5, 4, 0.5);
+        gN.lineStyle(0.5, C.ink, 0.14).strokeRoundedRect(bx, py-6, 5+rc()*5, 4, 0.5);
+      }
+      if (rc() < 0.30) gN.fillStyle(0x4a7a28, 0.32).fillRect(px+3+rc()*(TILE-8), py-3, 3+rc()*5, 1.5);
+    }
+    // Alang-alang selatan: tumbuh di batas bawah baris 12 ke dalam area air
+    const gS = this.add.graphics().setDepth(1.65);
+    for (let x=1; x<COLS-1; x++){
+      if (+MAP[12][x] === 2) continue;
+      const px = x*TILE, py = 13*TILE;
+      const count = 2 + (rc()*4)|0;
+      for (let i=0; i<count; i++){
+        const rx = px + 4 + rc()*(TILE-8);
+        const rh = 8 + rc()*14;
+        const lean = (rc()-0.5)*6;
+        const col = rc() < 0.55 ? 0x8a6a30 : 0xa08040;
+        gS.lineStyle(1.2 + rc()*0.5, col, 0.52 + rc()*0.22).lineBetween(rx, py, rx+lean, py-rh);
+        if (rc() < 0.55){
+          gS.lineStyle(0.8, 0x6a8828, 0.32).lineBetween(rx+lean*0.4, py-rh*0.5, rx+lean*0.4+(rc()-0.5)*8, py-rh*0.7);
+        }
+        if (rh > 17) gS.fillStyle(0x7a5020, 0.68).fillEllipse(rx+lean, py-rh, 2.5+rc()*1.5, 5+rc()*3);
+      }
+    }
+    // Tebing barat & timur: garis batu tipis di batas sisi (baris yang berbatasan dengan air di col 0/19)
+    [0, COLS-1].forEach(bx => {
+      const wx = bx === 0 ? TILE : (COLS-1)*TILE;
+      for (let y=1; y<ROWS-1; y++){
+        if (+MAP[y][bx === 0 ? 1 : COLS-2] === 2) continue;
+        const py = y*TILE;
+        const cx2 = bx === 0 ? wx : wx+TILE;
+        const dir = bx === 0 ? 1 : -1;
+        gN.fillStyle(C.ink, 0.30).fillRect(bx===0?wx-4:wx, py, 4, TILE);
+        gN.fillStyle(lerpC(C.stoneDark, C.ink, 0.35), 0.48).fillRect(bx===0?wx-3:wx, py+1, 2.5, TILE-2);
+        if (rc() < 0.22){
+          gN.fillStyle(0x4a7a28, 0.28).fillRect(bx===0?wx-3:wx, py+4+rc()*(TILE-10), 2, 3+rc()*5);
+        }
+      }
+    });
   }
 
   /* -------- Air beranimasi -------- */
