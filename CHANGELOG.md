@@ -3,6 +3,12 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.77.0], Night moon + afternoon rain
+
+### Ditambahkan
+- **Bulan malam**: bulan bergerak melintasi langit (kiri→kanan) saat malam hari (dayP 0.72–0.12); punya halo cahaya lembut berlapis, badan krem bercahaya, highlight putih, dan samar-samar kawah; visibilitas berkurva halus saat terbit/terbenam
+- **Hujan siang hari (gerimis tropis)**: 88 tetes hujan diagonal tipis (biru muda) jatuh selama dayP 0.34–0.58 (hujan tengah hari khas tropis Indonesia); intensitas fade-in/fade-out mulus; overlay biru-abu tipis menggelapkan layar sedikit saat hujan
+
 ## [0.76.0], Living page ambience + dawn mist + dusk bats
 
 ### Ditambahkan

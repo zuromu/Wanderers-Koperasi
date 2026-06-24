@@ -97,6 +97,7 @@ export class Village extends Phaser.Scene {
     this.lampGlows   = [];
     this.bats        = [];
     this.mistDots    = [];
+    this.rainDrops   = [];
     this.locked      = true;
 
     this.drawGround();
@@ -144,6 +145,8 @@ export class Village extends Phaser.Scene {
     this.makeCornerFoliage();
     this.makeDawnMist();
     this.makeBats();
+    this.makeMoon();
+    this.makeRain();
     this.bindInput();
     this.hintShowing = false;
     this.makeInteractHint();
@@ -2349,6 +2352,33 @@ export class Village extends Phaser.Scene {
     gEl.style.boxShadow=`0 0 0 1px #a9781b, 0 8px 32px rgba(0,0,0,.6), 0 0 52px ${glowC}, inset 0 0 0 1px rgba(224,165,43,.15)`;
   }
 
+  /* -------- Bulan malam — busur melintasi langit saat malam -------- */
+  makeMoon(){
+    this.moonHaloGfx = this.add.graphics().setDepth(97.1);
+    this.moonGfx     = this.add.graphics().setDepth(97.2);
+  }
+
+  /* -------- Hujan siang hari — gerimis tropis tipis -------- */
+  makeRain(){
+    if (!this.textures.exists('rdrop')){
+      const g = this.add.graphics();
+      g.fillStyle(0x88b8d8, 1).fillRect(0, 0, 1, 10);
+      g.fillStyle(0xb0d8f0, 0.5).fillRect(0, 0, 1, 3);
+      g.generateTexture('rdrop', 2, 11);
+      g.destroy();
+    }
+    const W = COLS*TILE, H = ROWS*TILE + 30;
+    const r = rng(3322);
+    for (let i = 0; i < 88; i++){
+      const img = this.add.image(r()*W, 0, 'rdrop')
+        .setDepth(96.2).setAlpha(0).setRotation(-0.22);
+      this.rainDrops.push({ img, bx: r()*W, phase: r()*H, spd: 0.062+r()*0.038 });
+    }
+    this.rainOverlay = this.add.rectangle(
+      W/2, (ROWS*TILE)/2, W, ROWS*TILE, 0x304060, 0
+    ).setDepth(99.43);
+  }
+
   makeInteractHint(){
     this.hintRingGfx = this.add.graphics().setDepth(3.9);
     this.hintText = this.add.text(0, 0, 'SPASI ▶', {
@@ -2588,6 +2618,55 @@ export class Village extends Phaser.Scene {
         const tw = (Math.sin(time * s.sp * 0.0022 + s.ph) + 1) / 2;
         s.dot.setAlpha(starV * (0.28 + tw * 0.52));
       }
+    }
+    // Bulan malam: busur melintasi langit saat malam (dayP 0.72–1.00 / 0.00–0.12)
+    if (this.moonGfx){
+      this.moonGfx.clear(); this.moonHaloGfx.clear();
+      let moonVis = 0;
+      let moonProg = 0;
+      if (dayP >= 0.72){
+        moonVis  = Math.min(1, (dayP - 0.72) / 0.08);
+        moonProg = (dayP - 0.72) / 0.40;
+      } else if (dayP < 0.12){
+        moonVis  = Math.max(0, 1 - dayP / 0.12);
+        moonProg = (dayP + 0.28) / 0.40;
+      }
+      moonProg = Math.min(1, Math.max(0, moonProg));
+      if (moonVis > 0.01){
+        const W = COLS*TILE;
+        const mx = 36 + moonProg * (W - 72);
+        const my = 15 - Math.sin(moonProg * Math.PI) * 10;
+        // Outer glow halo
+        this.moonHaloGfx.fillStyle(0xfff0c0, moonVis * 0.05).fillCircle(mx, my, 38);
+        this.moonHaloGfx.fillStyle(0xfff0c0, moonVis * 0.08).fillCircle(mx, my, 24);
+        // Moon body
+        this.moonGfx.fillStyle(0xfff2d0, moonVis * 0.95).fillCircle(mx, my, 11);
+        // Bright highlight (top-left crescent)
+        this.moonGfx.fillStyle(0xffffff, moonVis * 0.44).fillCircle(mx - 2.5, my - 3, 5.5);
+        // Subtle dark craters
+        this.moonGfx.fillStyle(0xd8cca8, moonVis * 0.22).fillCircle(mx + 3.5, my + 2.5, 2.8);
+        this.moonGfx.fillStyle(0xd8cca8, moonVis * 0.16).fillCircle(mx - 1.5, my + 4.5, 1.8);
+        // Thin ring
+        this.moonGfx.lineStyle(0.6, 0xfff0c0, moonVis * 0.10).strokeCircle(mx, my, 13);
+      }
+    }
+    // Hujan siang hari (dayP 0.34–0.58): gerimis tropis tipis
+    {
+      const FADE = 0.045;
+      let rainI = 0;
+      if (dayP > 0.34 && dayP < 0.58){
+        const t = (dayP - 0.34) / 0.24;
+        rainI = t < FADE ? t/FADE : t > 1-FADE ? (1-t)/FADE : 1;
+      }
+      if (this.rainDrops.length){
+        const W = COLS*TILE, H = ROWS*TILE + 30;
+        for (const rd of this.rainDrops){
+          const y = (time * rd.spd + rd.phase) % H - 10;
+          const x = ((rd.bx + y * 0.22) % W + W) % W;
+          rd.img.setPosition(x, y).setAlpha(rainI * 0.55);
+        }
+      }
+      if (this.rainOverlay) this.rainOverlay.setFillStyle(0x304060, rainI * 0.07);
     }
     // Kilatan air bergeser perlahan
     if (this.waterShimmer)
