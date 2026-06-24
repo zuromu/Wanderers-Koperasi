@@ -93,6 +93,7 @@ export class Village extends Phaser.Scene {
     this.fishArr     = [];
     this.ducks       = [];
     this.chickens    = [];
+    this.waterRefl   = [];
     this.locked      = true;
 
     this.drawGround();
@@ -132,6 +133,8 @@ export class Village extends Phaser.Scene {
     this.makeAtmosphere();
     this.makeSkyGlow();
     this.makeStars();
+    this.makeWaterReflections();
+    this.makeBannerFlag();
     this.makeVignette();
     this.makeCornerFoliage();
     this.bindInput();
@@ -1700,17 +1703,54 @@ export class Village extends Phaser.Scene {
     });
   }
 
-  /* -------- Asap cerobong beranimasi -------- */
+  /* -------- Asap cerobong beranimasi (kepala + pasar + ladang) -------- */
   makeSmoke(){
+    const addSmoke = (sx, sy, count, col, alpha, drift, seed) => {
+      const r = rng(seed);
+      for (let i=0; i<count; i++){
+        const dot = this.add.circle(sx, sy, 1.8+r()*1.8, col, alpha).setDepth(3.2);
+        this.smoke.push({ obj:dot, sx, sy, phase:r(), phX:r()*Math.PI*2, drift:drift+r()*drift });
+      }
+    };
     const kepala = SPOTS.find(s => s.id === 'kepala');
-    if (!kepala) return;
-    const sx = kepala.x * TILE + TILE/2 + 7;
-    const sy = kepala.y * TILE + TILE/2 - 26;
-    const r = rng(55);
-    for (let i = 0; i < 8; i++){
-      const dot = this.add.circle(sx, sy, 2.2+r()*1.6, 0x9a9aaa, 0.30).setDepth(3.2);
-      this.smoke.push({ obj:dot, sx, sy, phase:r(), phX:r()*Math.PI*2, drift:2.5+r()*3 });
+    if (kepala) addSmoke(kepala.x*TILE+TILE/2+7, kepala.y*TILE+TILE/2-26, 8, 0x9a9aaa, 0.30, 2.5, 55);
+    const pasar = SPOTS.find(s => s.id === 'pasar');
+    if (pasar)  addSmoke(pasar.x*TILE+TILE/2+5, pasar.y*TILE+TILE/2-24, 5, 0xb89880, 0.24, 2.2, 77);
+    const ladangS = SPOTS.find(s => s.id === 'ladang');
+    if (ladangS) addSmoke(ladangS.x*TILE+TILE/2+10, ladangS.y*TILE+TILE/2-22, 5, 0xc4b86a, 0.20, 2.0, 88);
+  }
+
+  /* -------- Pantulan cahaya matahari sore di permukaan air -------- */
+  makeWaterReflections(){
+    this.waterGlowGfx = this.add.graphics().setDepth(1.08);
+    const rp = rng(8811);
+    const W = COLS*TILE;
+    for (let i=0; i<20; i++){
+      this.waterRefl.push({
+        bx: 14 + rp()*(W-28),
+        row: rp() > 0.5 ? 0 : ROWS-1,
+        phase: rp()*Math.PI*2,
+        sp: 0.38+rp()*0.82,
+        w: 12+rp()*22,
+        h: 2.5+rp()*3,
+      });
     }
+  }
+
+  /* -------- Bendera merah di balai desa -------- */
+  makeBannerFlag(){
+    const balai = SPOTS.find(s => s.id === 'balai');
+    if (!balai) return;
+    const fx = balai.x * TILE + TILE/2 - 2;
+    const fy = balai.y * TILE + TILE/2 - 28;
+    const pole = this.add.graphics().setDepth(3.8);
+    pole.fillStyle(C.woodDark, 0.92).fillRect(fx-1.5, fy-18, 3, 22);
+    pole.lineStyle(0.5, C.ink, 0.7).strokeRect(fx-1.5, fy-18, 3, 22);
+    pole.fillStyle(0xd0cce0, 0.20).fillRect(fx-0.5, fy-18, 1, 22);
+    pole.fillStyle(C.gold, 0.85).fillCircle(fx, fy-19, 2.5);
+    pole.lineStyle(0.5, C.ink, 0.6).strokeCircle(fx, fy-19, 2.5);
+    this.flagGfx = this.add.graphics().setDepth(3.85);
+    this._flagAnchor = { fx, fy: fy-18 };
   }
 
   /* -------- Kawanan burung melintas -------- */
@@ -2432,6 +2472,37 @@ export class Village extends Phaser.Scene {
     for (const w of this.waterTiles){
       const t = (Math.sin(time*0.002 + w._phase) + 1) / 2;
       w.fillColor = lerpC(C.water, C.waterHi, t*0.6);
+    }
+    // Pantulan kilauan matahari sore di permukaan air
+    if (this.waterGlowGfx && this.waterRefl.length){
+      this.waterGlowGfx.clear();
+      let glowAl = 0;
+      if (dayP > 0.47 && dayP < 0.91){
+        const peak = dayP < 0.67 ? (dayP-0.47)/0.20 : 1-(dayP-0.67)/0.24;
+        glowAl = Math.max(0, Math.min(1, peak)) * 0.32;
+      }
+      if (glowAl > 0.004){
+        const sunC = lerpC(0xffb840, 0xff5060, Math.min(1, Math.max(0, (dayP-0.54)/0.24)));
+        for (const r of this.waterRefl){
+          const rx = r.bx + Math.sin(time*0.00038*r.sp + r.phase*1.3)*9;
+          const ry = r.row*TILE + TILE/2 + Math.sin(time*0.00066*r.sp + r.phase)*2;
+          const pulse = (Math.sin(time*0.0015*r.sp + r.phase)+1)*0.5;
+          this.waterGlowGfx.fillStyle(sunC, glowAl*(0.42+pulse*0.58));
+          this.waterGlowGfx.fillEllipse(rx, ry, r.w*(0.55+pulse*0.45), r.h);
+        }
+      }
+    }
+    // Bendera balai melambai di angin
+    if (this.flagGfx && this._flagAnchor){
+      const { fx, fy } = this._flagAnchor;
+      const wave  = Math.sin(time * 0.0028) * 3.8;
+      const wave2 = Math.sin(time * 0.0028 + 0.9) * 2;
+      this.flagGfx.clear();
+      this.flagGfx.fillStyle(C.roofRed, 0.88);
+      this.flagGfx.fillTriangle(fx+1.5, fy+1, fx+16+wave, fy+5+wave2, fx+1.5, fy+9);
+      this.flagGfx.lineStyle(0.6, C.ink, 0.45);
+      this.flagGfx.lineBetween(fx+1.5, fy+1, fx+16+wave, fy+5+wave2);
+      this.flagGfx.lineBetween(fx+16+wave, fy+5+wave2, fx+1.5, fy+9);
     }
     // Pollen melayang (angin pelan ke kanan-kiri sesuai wdx)
     for (const p of this.pollen){

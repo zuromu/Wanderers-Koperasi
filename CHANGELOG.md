@@ -3,6 +3,13 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.73.0], Sunset water reflections + multi-chimney smoke + waving flag
+
+### Ditambahkan
+- **Pantulan matahari sore di air**: 20 elips kilauan hangat (0xffb840→0xff5060) melayang di baris air atas/bawah saat golden hour (dayP 0.47–0.91), intensitas membentuk kurva lonceng — terlihat paling dramatis saat senja
+- **Asap dari tiga bangunan**: `kepala`, `pasar`, dan `ladang` kini masing-masing punya asap cerobong beranimasi; pasar berasap cokelat hangat (api masak), ladang berasap kekuningan (perapian luar)
+- **Bendera merah melambai di balai desa**: tiang kayu + finial emas + segitiga merah yang dihitung ulang tiap frame dengan fungsi sinus untuk simulasi angin
+
 ## [0.72.0], Night-cycle window lighting + animated win screen
 
 ### Ditambahkan / Diperbarui
