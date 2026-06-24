@@ -125,7 +125,25 @@
             <stop offset="0" stop-color="#0a0810" stop-opacity="0"/>
             <stop offset="1" stop-color="#0a0810" stop-opacity="1"/>
           </linearGradient>
+          <radialGradient id="moonGrad" cx="45%" cy="42%" r="52%">
+            <stop offset="0%" stop-color="#fffce8" stop-opacity=".96"/>
+            <stop offset="65%" stop-color="#fff8d0" stop-opacity=".82"/>
+            <stop offset="100%" stop-color="#f0e8b0" stop-opacity=".0"/>
+          </radialGradient>
         </defs>
+        <!-- moon -->
+        <circle cx="730" cy="18" r="9" fill="url(#moonGrad)" class="title-moon"/>
+        <circle cx="726" cy="15" r="5.5" fill="#0a0810" fill-opacity=".18"/>
+        <!-- stars -->
+        <circle cx="40"  cy="7"  r=".9" fill="#fff" class="sky-star" style="animation-delay:-1.2s"/>
+        <circle cx="95"  cy="14" r=".7" fill="#fff8d0" class="sky-star" style="animation-delay:-3.5s"/>
+        <circle cx="200" cy="5"  r="1"  fill="#fff" class="sky-star" style="animation-delay:-2.1s"/>
+        <circle cx="310" cy="11" r=".8" fill="#fff8e0" class="sky-star" style="animation-delay:-0.4s"/>
+        <circle cx="450" cy="6"  r=".7" fill="#fff" class="sky-star" style="animation-delay:-4.1s"/>
+        <circle cx="560" cy="10" r="1"  fill="#fff" class="sky-star" style="animation-delay:-1.8s"/>
+        <circle cx="640" cy="4"  r=".8" fill="#fff8d0" class="sky-star" style="animation-delay:-2.9s"/>
+        <circle cx="690" cy="14" r=".6" fill="#fff" class="sky-star" style="animation-delay:-0.7s"/>
+        <circle cx="760" cy="8"  r=".9" fill="#fff8e0" class="sky-star" style="animation-delay:-3.3s"/>
         <!-- ground -->
         <rect x="0" y="78" width="800" height="12" fill="#0d0a18"/>
         <!-- trees left -->
@@ -136,7 +154,7 @@
         <!-- small cottage -->
         <rect x="56" y="60" width="34" height="18" fill="#1a1030" fill-opacity=".88"/>
         <polygon points="50,60 92,60 71,45" fill="#1a1030" fill-opacity=".90"/>
-        <circle cx="64" cy="66" r="2" fill="#ffd060" fill-opacity=".22"/>
+        <circle cx="64" cy="66" r="2" fill="#ffd060" class="sky-win" style="animation-delay:-2.1s"/>
         <!-- koperasi: columns + pediment + flag -->
         <rect x="145" y="40" width="64" height="38" fill="#1a1030" fill-opacity=".90"/>
         <polygon points="138,40 216,40 177,18" fill="#1a1030" fill-opacity=".92"/>
@@ -147,14 +165,14 @@
         <rect x="155" y="12" width="2" height="16" fill="#0d0a18" fill-opacity=".95"/>
         <rect x="157" y="12" width="10" height="5" fill="#501010" fill-opacity=".75"/>
         <rect x="157" y="17" width="10" height="5" fill="#d0d0d0" fill-opacity=".35"/>
-        <circle cx="168" cy="52" r="2" fill="#ffd060" fill-opacity=".20"/>
+        <circle cx="168" cy="52" r="2" fill="#ffd060" class="sky-win" style="animation-delay:-0.8s"/>
         <!-- tree center-left -->
         <rect x="224" y="54" width="7" height="26" fill="#140c24" fill-opacity=".82"/>
         <ellipse cx="228" cy="44" rx="14" ry="11" fill="#140c24" fill-opacity=".76"/>
         <!-- market stall -->
         <rect x="250" y="58" width="48" height="20" fill="#1a1030" fill-opacity=".88"/>
         <polygon points="244,58 304,58 274,42" fill="#1a1030" fill-opacity=".85"/>
-        <circle cx="266" cy="66" r="2" fill="#ffd060" fill-opacity=".20"/>
+        <circle cx="266" cy="66" r="2" fill="#ffd060" class="sky-win" style="animation-delay:-3.7s"/>
         <!-- tree center -->
         <rect x="320" y="50" width="8" height="30" fill="#140c24" fill-opacity=".82"/>
         <ellipse cx="324" cy="38" rx="18" ry="14" fill="#140c24" fill-opacity=".76"/>
@@ -168,22 +186,22 @@
         <rect x="418" y="22" width="5" height="56" fill="#201840" fill-opacity=".68"/>
         <rect x="390" y="14" width="2" height="16" fill="#0d0a18" fill-opacity=".95"/>
         <rect x="392" y="14" width="9" height="6" fill="#3a1860" fill-opacity=".75"/>
-        <circle cx="364" cy="50" r="2" fill="#ffd060" fill-opacity=".18"/>
-        <circle cx="408" cy="50" r="2" fill="#ffd060" fill-opacity=".18"/>
+        <circle cx="364" cy="50" r="2" fill="#ffd060" class="sky-win" style="animation-delay:-1.4s"/>
+        <circle cx="408" cy="50" r="2" fill="#ffd060" class="sky-win" style="animation-delay:-4.2s"/>
         <!-- tree center-right -->
         <rect x="438" y="52" width="7" height="28" fill="#140c24" fill-opacity=".82"/>
         <ellipse cx="442" cy="42" rx="15" ry="12" fill="#140c24" fill-opacity=".76"/>
         <!-- treasury -->
         <rect x="466" y="46" width="48" height="32" fill="#1a1030" fill-opacity=".88"/>
         <polygon points="460,46 520,46 490,30" fill="#1a1030" fill-opacity=".90"/>
-        <circle cx="490" cy="56" r="2" fill="#ffd060" fill-opacity=".20"/>
+        <circle cx="490" cy="56" r="2" fill="#ffd060" class="sky-win" style="animation-delay:-2.6s"/>
         <!-- tree right -->
         <rect x="530" y="50" width="8" height="30" fill="#140c24" fill-opacity=".82"/>
         <ellipse cx="534" cy="38" rx="18" ry="14" fill="#140c24" fill-opacity=".76"/>
         <!-- small house right -->
         <rect x="566" y="58" width="34" height="20" fill="#1a1030" fill-opacity=".88"/>
         <polygon points="560,58 602,58 581,43" fill="#1a1030" fill-opacity=".90"/>
-        <circle cx="574" cy="64" r="2" fill="#ffd060" fill-opacity=".22"/>
+        <circle cx="574" cy="64" r="2" fill="#ffd060" class="sky-win" style="animation-delay:-0.3s"/>
         <!-- tree pair far right -->
         <rect x="614" y="52" width="7" height="28" fill="#140c24" fill-opacity=".80"/>
         <ellipse cx="618" cy="41" rx="14" ry="11" fill="#140c24" fill-opacity=".74"/>

@@ -3,6 +3,14 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.70.0], Title screen polish — moon, stars, window flicker, gold aura
+
+### Ditambahkan / Diperbarui
+- **Bulan bersinar** di langit silhuet judul — lingkaran krem dengan radialGradient + animasi `moonPulse` drop-shadow berdenyut
+- **9 bintang berkelip** di langit judul — masing-masing dengan `animation-delay` berbeda agar bergerak natural
+- **7 jendela berkedip** di silhuet desa — menggunakan animasi `skyWin` yang meniru nyala lilin (opacity 0.14→0.60→0.28 tidak teratur); tiap jendela punya delay unik
+- **Aura emas bernapas** pada layar judul (`#title::before`) — radial gradient emas halus di tengah atas yang perlahan muncul/hilang dalam 4.6 detik
+
 ## [0.69.0], Ambient animals — ducks + chickens
 
 ### Ditambahkan
