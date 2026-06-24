@@ -3,6 +3,13 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.66.0], NPC "!" speech bubble on approach
+
+### Ditambahkan / Diperbarui
+- **Gelembung seru NPC**: saat pemain mendekat dalam 1 tile, muncul speech bubble bergaris emas dengan "!" besar di dalam — menggantikan chip nama teks biasa sebelumnya
+- Bubble dibuat sebagai Container berisi Graphics (badan rounded-rect + ekor segitiga) + Text "!" bold kuning; animasi scale 0.55→1 dengan `Back.easeOut` saat muncul, bob naik-turun terus-menerus, dan shrink+fade saat pemain menjauh
+- Lebih mirip RPG studio (Zelda, Pokemon, Animal Crossing) dibanding chip nama biasa
+
 ## [0.65.0], Hay bales + fishing boat + net near south shore
 
 ### Ditambahkan

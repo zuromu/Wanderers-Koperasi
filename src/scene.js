@@ -2393,26 +2393,42 @@ export class Village extends Phaser.Scene {
       ff.obj.y = ff.oy + Math.cos(time * ff.sp * 0.0004 + ff.ph * 1.3) * 10;
       ff.obj.setAlpha(((Math.sin(time * 0.0022 + ff.aph) + 1) / 2) * 0.60);
     }
-    // Gelembung pendekatan NPC ("...")
+    // Gelembung seru (!) di atas NPC saat pemain mendekat
     if (!this.locked){
       for (const npc of this.npcs){
         const near = Math.abs(npc.tx-this.px)<=1 && Math.abs(npc.ty-this.py)<=1;
         const show = near && !isDialogueOpen();
         if (near) npc.sprite.setFlipX(this.px < npc.tx);
         if (show && !npc.bubble && !npc.bubbleFading){
-          npc.bubble = this.add.text(0, -36, npc.name, {
-            fontFamily:"'Pixelify Sans',sans-serif",
-            fontSize:'9px', color:'#f4ecd8',
-            stroke:'#241d2e', strokeThickness:2,
-            backgroundColor:'rgba(36,29,46,0.78)',
-            padding:{ x:5, y:2 }
-          }).setOrigin(0.5).setDepth(6.8).setAlpha(0).setScale(0.5);
-          npc.container.add(npc.bubble);
-          this.tweens.add({ targets:npc.bubble, alpha:1, y:-42, scale:1.0, duration:240, ease:'Back.easeOut' });
+          // Build a "!" speech bubble as a Container
+          const bc = this.add.container(0, -46);
+          const bg = this.add.graphics();
+          // Bubble body
+          bg.fillStyle(0xfff8e0, 0.97).fillRoundedRect(-11, -11, 22, 19, 3.5);
+          bg.fillStyle(C.gold, 0.14).fillRoundedRect(-11, -11, 22, 19, 3.5);
+          bg.lineStyle(2, C.gold, 0.92).strokeRoundedRect(-11, -11, 22, 19, 3.5);
+          // Tail
+          bg.fillStyle(0xfff8e0, 0.97);
+          bg.fillTriangle(-4, 8, 4, 8, 0, 14);
+          bg.lineStyle(1.8, C.gold, 0.88);
+          bg.beginPath(); bg.moveTo(-4, 8); bg.lineTo(0, 14); bg.lineTo(4, 8); bg.strokePath();
+          const excl = this.add.text(0, -2, '!', {
+            fontFamily:"'Jersey 10',cursive",
+            fontSize:'16px', fontStyle:'bold', color:'#e0a52b',
+            stroke:'#241d2e', strokeThickness:2.5,
+          }).setOrigin(0.5);
+          bc.add([bg, excl]);
+          bc.setDepth(6.8).setAlpha(0).setScale(0.55);
+          npc.container.add(bc);
+          npc.bubble = bc;
+          this.tweens.add({ targets:bc, alpha:1, y:-50, scaleX:1, scaleY:1, duration:220, ease:'Back.easeOut' });
+          // Gentle bob
+          this.tweens.add({ targets:bc, y:'-=4', duration:550, yoyo:true, repeat:-1, ease:'Sine.easeInOut', delay:220 });
         } else if (!show && npc.bubble && !npc.bubbleFading){
           npc.bubbleFading = true;
           const b = npc.bubble;
-          this.tweens.add({ targets:b, alpha:0, duration:180,
+          this.tweens.killTweensOf(b);
+          this.tweens.add({ targets:b, alpha:0, scaleX:0.5, scaleY:0.5, duration:160,
             onComplete:()=>{ npc.container.remove(b, true); npc.bubble=null; npc.bubbleFading=false; } });
         }
       }
