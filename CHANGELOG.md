@@ -3,6 +3,15 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.43.0], Audio overhaul — noise percussion, footsteps, drift-free music
+
+### Diubah
+- **Click/pop dihilangkan**: `blip()` kini pakai linear attack ramp (15ms sine / 3ms lainnya) sebelum sustain — tidak ada lagi artifak zipper di setiap nada dan SFX.
+- **Hihat berbasis noise**: hihat sebelumnya adalah osilator square 3200Hz (terdengar seperti peluit), kini diganti buffer white-noise → highpass 7kHz → decay 40ms — terdengar seperti simbal sesungguhnya.
+- **Kick dengan transient click**: kick kini diawali osilator sine 3kHz yang decay 10ms (snap awal) diikuti pitch-sweep body 120→0Hz — terdengar punchy bukan berdengung.
+- **Footstep berbasis noise**: `stepGrass` dan `stepPath` kini menggunakan burst noise terfilter (lowpass 300Hz untuk rumput, bandpass 1800Hz untuk jalan) dengan playback-rate acak ±10% — langkah kaki terasa nyata, bukan nada musik.
+- **Musik drift-free**: scheduler diganti dari `setInterval` ke `setTimeout` self-rescheduling dengan lookahead 50ms — timing musik stabil tidak bergeser. Setiap 16 beat (4 bar) beralih antara MELODY_A dan MELODY_B (naik satu semitone), beat 4 & 12 tanpa kick di bar B, 15% probabilitas rest acak per nada — musik terasa lebih organik dan tidak robotik.
+
 ## [0.42.0], Quiz portraits + NPC tip variety
 
 ### Ditambahkan
