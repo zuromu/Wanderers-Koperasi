@@ -3,6 +3,11 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.75.0], Night-reactive lamp post ground glow
+
+### Diperbarui
+- **Cahaya tanah tiang lampu**: gGlow (elips kuning di bawah setiap tiang lampu) kini mengikuti siklus siang/malam melalui array `lampGlows` baru — tidak terlihat saat siang, muncul saat senja, penuh saat malam; sebuah cone cahaya lebih lebar (depth 0.75) juga muncul di bawah tiap lampu di malam hari, menciptakan efek "genangan cahaya" yang dramatis
+
 ## [0.74.0], Festival bunting + village square stone plaza
 
 ### Ditambahkan

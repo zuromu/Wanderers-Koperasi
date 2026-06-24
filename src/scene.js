@@ -94,6 +94,7 @@ export class Village extends Phaser.Scene {
     this.ducks       = [];
     this.chickens    = [];
     this.waterRefl   = [];
+    this.lampGlows   = [];
     this.locked      = true;
 
     this.drawGround();
@@ -1619,14 +1620,16 @@ export class Village extends Phaser.Scene {
     POST_POS.forEach(([tx,ty]) => {
       const cx = tx*TILE + TILE/2, cy = ty*TILE + TILE/2;
 
-      // Ground glow pool — depth 0.8
+      // Ground glow pool — day/night managed via lampGlows array
       const gGlow = this.add.graphics().setDepth(0.8);
       gGlow.fillStyle(0xffcc44, 1).fillEllipse(cx, cy+10, 52, 18);
       gGlow.fillStyle(0xff9a00, 1).fillEllipse(cx, cy+10, 26, 10);
-      gGlow.setAlpha(0.055);
-      this.tweens.add({ targets:gGlow, alpha:{ from:0.040, to:0.090 },
-        duration:2100+rp()*1100, yoyo:true, repeat:-1,
-        ease:'Sine.easeInOut', delay:rp()*2000 });
+      gGlow.setAlpha(0);
+      // Larger soft cone (depth 0.75) — radius 70×24, only visible at night
+      const gCone = this.add.graphics().setDepth(0.75);
+      gCone.fillStyle(0xffb820, 1).fillEllipse(cx, cy+10, 70, 24);
+      gCone.setAlpha(0);
+      this.lampGlows.push({ glow:gGlow, cone:gCone, phase:rp()*Math.PI*2, rate:0.00046+rp()*0.00022 });
 
       // Structure — depth 2.70 (above trees, below buildings)
       const g = this.add.graphics().setDepth(2.70);
@@ -2621,6 +2624,12 @@ export class Village extends Phaser.Scene {
       : 0.06 + (1 - dayP) / 0.12 * 0.94;
     for (const wg of this.windowGlows){
       wg.obj.setAlpha((wg.base + Math.sin(time * wg.rate + wg.phase) * wg.amp) * nightScale);
+    }
+    // Pancaran cahaya tiang lampu — muncul saat malam, redup saat siang
+    for (const lg of this.lampGlows){
+      const flicker = 0.045 + Math.sin(time * lg.rate + lg.phase) * 0.022;
+      lg.glow.setAlpha(flicker * nightScale);
+      lg.cone.setAlpha(flicker * 0.45 * nightScale);
     }
     // Kupu-kupu melayang
     for (const bf of this.butterflies){
