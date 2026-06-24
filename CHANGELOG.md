@@ -3,6 +3,26 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.53.0], NPC character dialogue + certificate visual overhaul
+
+### Ditambahkan
+- **Dialog unik per karakter NPC**: setiap dari 7 warga desa kini memiliki 3 kalimat dialog khas yang mencerminkan kepribadian dan latar belakang mereka:
+  - **Pak Darmo** — perspektif petani veteran 30 tahun anggota koperasi, KUD, sejarah 1896
+  - **Bu Siti** — pedagang pasar yang waspada rentenir, manfaat SHU, solidaritas anggota
+  - **Dodi** — anak kecil yang penasaran, koperasi siswa, bahasa yang ringan dan riang
+  - **Ratna** — anggota baru yang antusias, prinsip 7 koperasi, RAT demokratis
+  - **Pak Hasan** — nelayan yang merasakan langsung manfaat pinjaman koperasi, pembelian kolektif
+  - **Bu Lastri** — guru yang mengajarkan literasi keuangan, UU No.25/1992, koperasi siswa
+  - **Rudi** — pemuda casual yang baru tertarik bergabung, fakta menarik, lambang koperasi
+- **Sertifikat visual overhaul**: desain sertifikat unduhan diperbarui total:
+  - Stempel nilai berwarna (hijau/biru/oranye/merah sesuai grade) dengan 24 gerigi rosette di luar dan nomor grade besar
+  - Tiga lapis bingkai bertingkat (emas tebal → tinta tipis → emas dalam) dengan aksen celah emas
+  - Hiasan sudut berlapis tiga berlian bersarang + titik aksen di empat arah
+  - Divider swash kaligrafi berpusat dengan lengkungan Bezier dan berlian kecil
+  - Siluet desa di footer (gedung koperasi, rumah-rumah, pohon-pohon, sumur)
+  - Latar bertekstur perkamen dengan gradiasi radial hangat yang kaya
+  - Watermark lambang koperasi yang lebih detail (lingkaran + gigi)
+
 ## [0.52.0], Road crossings, fishing dock, village signpost
 
 ### Ditambahkan
