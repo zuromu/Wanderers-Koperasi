@@ -63,8 +63,9 @@ export const isDialogueOpen = () => dialogueOpen;
 export function showDialogue(who, text, choices){
   dialogueOpen = true; pendingClose = null; pendingChoices = choices || null;
   const bd = BADGE_MAP[who] || { c:'#241d2e', i:who[0] };
-  const portrait = bd.p ? `<span class="dlg-portrait">${bd.p}</span>` : '';
-  dwho.innerHTML = `<span class="who-badge" style="background:${bd.c}">${bd.i}</span>${portrait}${who}`;
+  dwho.innerHTML = bd.p
+    ? `<span class="dlg-portrait">${bd.p}</span>${who}`
+    : `<span class="who-badge" style="background:${bd.c}">${bd.i}</span>${who}`;
   dchoices.innerHTML = '';
   if (darrow) darrow.style.display = 'none';
   dlg.classList.remove('dlg-open');
@@ -99,7 +100,8 @@ function renderChoices(choices){
       const b = document.createElement('button');
       if (ch.cond === false){
         b.textContent = ch.label + ' (saldo kurang)';
-        b.style.opacity = .5; b.style.cursor = 'not-allowed';
+        b.setAttribute('data-disabled', '');
+        b.setAttribute('aria-disabled', 'true');
       } else {
         b.textContent = ch.label;
         b.onclick = () => { Audio.play('select'); if (ch.go) ch.go(); };
