@@ -3,6 +3,16 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.46.0], Game feel — movement squish, money drain, triple confetti, banner wipe, mobile d-pad
+
+### Diubah
+- **Anticipation movement**: setiap langkah pemain kini diawali pre-squish 40ms (scaleY 0.82, scaleX 1.12) sebelum bergerak, lalu stretch (scaleY 1.08) saat mendarat — bukan lagi piece yang bergeser di grid datar.
+- **Money drain lebih berasa**: pengeluaran uang kini disertai flash merah (0xdd3333), kamera shake lebih kuat (0.006 × 180ms), dan 7 percikan merah gelap — pengeluaran terasa berbeda dari pemasukan.
+- **Tiga gelombang konfeti**: layar kemenangan kini menembakkan konfeti tiga kali (center t=0, kiri t=600ms, kanan t=1200ms) + dua flash putih (t=400ms, t=900ms) — 4 detik pertama dikunci agar pemain tidak berjalan di tengah fanfare.
+- **Win-glow 3× loop**: animasi emas di border kanvas sekarang diputar 3 kali (bukan 1) sehingga terasa seperti momen kemenangan, bukan kedip sekilas.
+- **Stage banner wipe**: banner tidak lagi fade-in dari posisi tetap, melainkan muncul horizontal dari kiri dengan `Back.easeOut` (380ms) disertai flash+shake saat masuk, dan bertahan 2200ms (dari 1700ms).
+- **D-pad mobile lebih besar**: tombol arah naik dari 46px ke 50px, tombol Aksi tengah naik ke 54px dengan ring emas `gold-dark` — memenuhi standar minimum touch target pada layar kecil.
+
 ## [0.45.0], World rendering — ground gradient, depth sorting, torch flame, bird flap, hint visibility
 
 ### Diubah

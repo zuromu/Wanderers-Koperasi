@@ -1202,12 +1202,20 @@ export class Village extends Phaser.Scene {
     const stepEven = this.stepCount % 2 === 0;
     const walkTex = isBack ? (stepEven ? 'char_uL' : 'char_uR') : (stepEven ? 'char_wL' : 'char_wR');
     this.pBody.setTexture(walkTex);
-    this.tweens.add({ targets:this.pBody,   scaleY:0.88, duration:65, yoyo:true, ease:'Quad.easeOut' });
-    this.tweens.add({ targets:this.pShadow, scaleX:1.3,  duration:65, yoyo:true });
+    this.tweens.add({ targets:this.pShadow, scaleX:1.3, duration:65, yoyo:true });
     const idleTex = isBack ? 'char_u' : 'char_i';
-    this.tweens.add({
-      targets:this.pc, x:nx*TILE+TILE/2, y:ny*TILE+TILE/2, duration:130, ease:'Quad.easeInOut',
-      onComplete:()=>{ this.moving = false; this.pBody?.setTexture(idleTex); },
+    // Pre-squish anticipation (40ms) → move (110ms) → stretch → settle
+    this.tweens.add({ targets:this.pBody, scaleY:0.82, scaleX:1.12, duration:40, ease:'Quad.easeIn',
+      onComplete:()=>{
+        this.tweens.add({
+          targets:this.pc, x:nx*TILE+TILE/2, y:ny*TILE+TILE/2, duration:110, ease:'Quad.easeInOut',
+          onComplete:()=>{
+            this.moving = false; this.pBody?.setTexture(idleTex);
+            this.tweens.add({ targets:this.pBody, scaleY:1.08, scaleX:1.0, duration:55, ease:'Quad.easeOut',
+              onComplete:()=> this.tweens.add({ targets:this.pBody, scaleY:1, duration:40 }) });
+          },
+        });
+      },
     });
   }
 
@@ -1278,13 +1286,23 @@ export class Village extends Phaser.Scene {
       burst(this, x, y, C.gold, 16); Audio.play('coin'); shake(this, 0.004, 100);
     } else if (delta < 0){
       floatText(this, x, y, '-Rp'+(-delta).toLocaleString('id-ID'), '#d96c6c');
-      shake(this, 0.003, 90); Audio.play('pay');
+      flash(this, 0xdd3333, 0.22);
+      shake(this, 0.006, 180);
+      burst(this, x, y+10, 0xaa2222, 7);
+      Audio.play('pay');
     }
   }
 
   celebrate(){
     confetti(this, this.pc.x, this.pc.y - 20);
-    flash(this, 0xffdd66, 0.38); shake(this, 0.01, 220); Audio.play('fanfare');
+    flash(this, 0xffdd66, 0.38); shake(this, 0.01, 220);
+    this.time.delayedCall(600,  ()=> confetti(this, this.pc.x - 80, this.pc.y - 20));
+    this.time.delayedCall(1200, ()=> confetti(this, this.pc.x + 80, this.pc.y - 20));
+    this.time.delayedCall(400,  ()=> flash(this, 0xffffff, 0.25));
+    this.time.delayedCall(900,  ()=> flash(this, 0xffffff, 0.18));
+    Audio.play('fanfare');
+    this.locked = true;
+    this.time.delayedCall(4000, ()=>{ this.locked = false; });
     const gameEl = document.getElementById('game');
     if (gameEl){ gameEl.classList.remove('win-glow'); requestAnimationFrame(()=> gameEl.classList.add('win-glow')); }
   }
@@ -1292,18 +1310,24 @@ export class Village extends Phaser.Scene {
   stageBanner(text){
     if (!text) return;
     const w = COLS*TILE, cy = ROWS*TILE * 0.34 + 8;
-    const bar  = this.add.rectangle(w/2, cy, w, 48, C.ink, 0.92).setDepth(99.8).setAlpha(0);
-    const lTop = this.add.rectangle(w/2, cy-23, w, 2, C.gold, 0.5).setDepth(99.85).setAlpha(0);
-    const lBot = this.add.rectangle(w/2, cy+23, w, 2, C.gold, 0.5).setDepth(99.85).setAlpha(0);
-    const txt  = this.add.text(w/2, cy, text, {
+    const bar  = this.add.rectangle(-w, cy, w, 48, C.ink, 0.92).setDepth(99.8);
+    const lTop = this.add.rectangle(-w, cy-23, w, 2, C.gold, 0.5).setDepth(99.85);
+    const lBot = this.add.rectangle(-w, cy+23, w, 2, C.gold, 0.5).setDepth(99.85);
+    const txt  = this.add.text(-w, cy, text, {
       fontFamily:"'Jersey 10',cursive", fontSize:'22px',
       color:'#e0a52b', stroke:'#14101c', strokeThickness:3,
-    }).setOrigin(0.5).setDepth(99.9).setAlpha(0);
+    }).setOrigin(0.5).setDepth(99.9);
     const all = [bar, lTop, lBot, txt];
-    this.tweens.add({ targets:all, alpha:1, y:'-=9', duration:280, ease:'Quad.easeOut',
-      onComplete:()=> this.time.delayedCall(1700, ()=>
-        this.tweens.add({ targets:all, alpha:0, duration:360,
-          onComplete:()=> all.forEach(o => o.destroy()) })) });
+    // Horizontal wipe entrance from left
+    this.tweens.add({ targets:all, x:w/2, duration:380, ease:'Back.easeOut',
+      onComplete:()=>{
+        flash(this, 0xffdd66, 0.18); shake(this, 0.005, 120);
+        this.time.delayedCall(2200, ()=>
+          this.tweens.add({ targets:all, alpha:0, duration:360,
+            onComplete:()=> all.forEach(o => o.destroy()) }));
+      }
+    });
+    this.tweens.add({ targets:txt, scaleX:{from:0.6,to:1.0}, scaleY:{from:0.6,to:1.0}, duration:380, ease:'Back.easeOut' });
   }
 
   update(time){
