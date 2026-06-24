@@ -3,6 +3,17 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.44.0], UI legibility — bigger portraits, SVG arrow, button hierarchy, semantic disabled
+
+### Diubah
+- **Portrait 48×48px**: potret dialog naik dari 30px ke 48px (36px mobile) — wajah karakter kini terbaca jelas di header dialog, bukan thumbnail cilik.
+- **Badge dihapus saat portrait ada**: header dialog tidak lagi menampilkan badge huruf kecil di samping portrait — lebih bersih, hierarki lebih jelas.
+- **Dialog arrow SVG**: panah lanjut (`▼`) diganti chevron SVG rounded yang terpusat — selaras dengan gaya visual RPG studio.
+- **Bounce lebih ekspresif**: animasi bounce arrow naik dari 4px ke 6px.
+- **Hierarki 3 tombol judul**: tombol Utama (48×32, text 17px, drop-shadow emas), Sekunder (18×8, text 14px), Tersier "Tentang" (underline only, opacity 0.7) — tidak lagi tiga tombol dengan bobot visual sama.
+- **Disabled button semantic**: tombol tidak terpenuhi syarat kini memakai `data-disabled` + `aria-disabled` + `pointer-events:none` — bukan inline style sniffing.
+- **Quest bar lebih tebal**: progress bar naik dari 4px ke 7px, background lebih gelap (0.22), label misi naik dari 10px ke 11px dengan letter-spacing — lebih terlihat di layar kecil.
+
 ## [0.43.0], Audio overhaul — noise percussion, footsteps, drift-free music
 
 ### Diubah
