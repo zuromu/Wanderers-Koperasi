@@ -3,6 +3,13 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.60.0], Fluffy cloud system with ground shadows
+
+### Ditambahkan / Diperbarui
+- **Awan berbuih multi-blob**: objek awan digambar dari 4–5 lingkaran bertumpuk dengan highlight dalam (putih lembut, depth 97) — menggantikan ellipse tunggal sebelumnya; alpha 0.16 agar tidak menghalangi gameplay
+- **Bayangan tanah cloud-shaped**: setiap awan kini memiliki bayangan multi-blob di lantai (depth 0.4) yang dibentuk dari proyeksi elips horizontal sesuai bentuk awan — jauh lebih natural dari bayangan ellipse tunggal sebelumnya
+- **Tiga lapisan kecepatan**: ketiga awan bergerak pada kecepatan berbeda (0.14 / 0.17 / 0.20 px/frame) sehingga tampak seperti kedalaman perspektif; keduanya (awan & bayangan) berpindah bersama
+
 ## [0.59.0], Street lamp posts along village paths
 
 ### Ditambahkan

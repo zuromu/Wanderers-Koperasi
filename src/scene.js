@@ -574,13 +574,26 @@ export class Village extends Phaser.Scene {
 
   /* -------- Bayangan awan bergerak (3 awan) -------- */
   makeClouds(){
-    const defs = [
-      { x:-90,           y:ROWS*TILE*0.28, w:200, h:65, a:0.07, s:0.18 },
-      { x:COLS*TILE*0.7, y:ROWS*TILE*0.52, w:150, h:45, a:0.05, s:0.13 },
-      { x:COLS*TILE*0.3, y:ROWS*TILE*0.14, w:240, h:70, a:0.06, s:0.15 },
+    const DEFS = [
+      { bx:-140, by:ROWS*TILE*0.26, blobs:[{x:0,y:0,r:28},{x:34,y:-9,r:20},{x:58,y:4,r:25},{x:82,y:-5,r:17}], speed:0.20, shAlpha:0.055 },
+      { bx:COLS*TILE*0.62, by:ROWS*TILE*0.53, blobs:[{x:0,y:0,r:18},{x:23,y:-5,r:22},{x:46,y:3,r:16},{x:64,y:-3,r:21},{x:84,y:6,r:15}], speed:0.14, shAlpha:0.040 },
+      { bx:COLS*TILE*0.22, by:ROWS*TILE*0.10, blobs:[{x:0,y:0,r:36},{x:42,y:-13,r:26},{x:74,y:5,r:32},{x:104,y:-7,r:20}], speed:0.17, shAlpha:0.065 },
     ];
-    for (const d of defs)
-      this.clouds.push({ obj:this.add.ellipse(d.x, d.y, d.w, d.h, C.shadow, d.a).setDepth(1.5), speed:d.s });
+    this.clouds = [];
+    for (const d of DEFS){
+      // Ground shadow — multi-blob footprint at depth 0.4
+      const shd = this.add.graphics().setDepth(0.4).setPosition(d.bx, d.by);
+      d.blobs.forEach(b => shd.fillStyle(C.shadow, 1).fillEllipse(b.x, b.y * 0.35, b.r * 2.9, b.r * 0.65));
+      shd.setAlpha(d.shAlpha);
+      // Cloud overhead — fluffy multi-blob at depth 97 (above atmosphere)
+      const cld = this.add.graphics().setDepth(97).setPosition(d.bx, d.by);
+      d.blobs.forEach(b => {
+        cld.fillStyle(0xfff8f0, 0.90).fillCircle(b.x, b.y, b.r);
+        cld.fillStyle(0xffffff, 0.50).fillCircle(b.x + b.r*0.15, b.y - b.r*0.22, b.r * 0.52);
+      });
+      cld.setAlpha(0.16);
+      this.clouds.push({ shd, cld, speed:d.speed });
+    }
   }
 
   /* -------- Bangunan prosedural (gaya pixel-art bergaris tinta) -------- */
@@ -1911,10 +1924,11 @@ export class Village extends Phaser.Scene {
       if (p.ox > COLS*TILE + 24) p.ox = -24;
       if (p.ox < -24) p.ox = COLS*TILE + 24;
     }
-    // Bayangan awan bergerak
-    for (const cloud of this.clouds){
-      cloud.obj.x += cloud.speed;
-      if (cloud.obj.x > COLS*TILE + 120) cloud.obj.x = -120;
+    // Awan bergerak + bayangan di tanah
+    for (const cl of this.clouds){
+      cl.shd.x += cl.speed;
+      cl.cld.x += cl.speed;
+      if (cl.shd.x > COLS*TILE + 300){ cl.shd.x -= COLS*TILE + 580; cl.cld.x -= COLS*TILE + 580; }
     }
     // Kawanan burung melintas (kanan ke kiri, ulang tiap ~19 dtk) — formasi V + kepak sayap
     const birdX = (time * 0.046) % (COLS*TILE + 120) - 60;
