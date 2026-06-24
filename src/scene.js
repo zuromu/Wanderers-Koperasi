@@ -510,20 +510,62 @@ export class Village extends Phaser.Scene {
       const cx = tx*TILE + TILE/2 + (r()-0.5)*4;
       const cy = ty*TILE + TILE/2;
       const s  = 0.88 + r()*0.24;
-      // Bayangan pohon (offset sedikit ke kiri = sumber cahaya dari kanan atas)
+      const bloom = r() > 0.60;   // ~40% trees are flowering blossom type
+      // Bayangan pohon
       g.fillStyle(C.shadow, 0.13).fillEllipse(cx-3, cy+15, 28*s, 9*s);
-      // Batang dengan serat cahaya
+      // Batang
       g.fillStyle(C.woodDark).fillRect(cx-2.5*s, cy+2, 5*s, 14);
       g.fillStyle(C.wood, 0.45).fillRect(cx-1.5*s, cy+3, 1.5*s, 12);
       g.lineStyle(1, C.ink, 0.8).strokeRect(cx-2.5*s, cy+2, 5*s, 14);
-      // 5 lapisan daun
-      g.fillStyle(C.leafDark, 0.60).fillCircle(cx+1, cy,    12*s);     // bayangan bawah
-      g.fillStyle(C.leaf,     0.90).fillCircle(cx,   cy-3,  11*s);     // massa utama
-      g.fillStyle(C.leafHi,   0.68).fillCircle(cx-2*s, cy-7*s, 7.5*s); // kluster cerah
-      g.fillStyle(C.leafHi,   0.42).fillCircle(cx+4*s, cy-4*s, 5*s);   // sisi
-      g.fillStyle(0xd8f8b0,   0.24).fillCircle(cx-3*s, cy-10*s, 3.5*s);// specular
-      g.lineStyle(1.5, C.ink, 0.55).strokeCircle(cx, cy-3, 11*s);
+      if (bloom){
+        // Pohon berbunga (sakura/flamboyan) — merah muda ke putih
+        g.fillStyle(0xc85878, 0.52).fillCircle(cx+1, cy,    12*s);
+        g.fillStyle(0xf0a0bc, 0.88).fillCircle(cx,   cy-3,  11*s);
+        g.fillStyle(0xf8c8dc, 0.65).fillCircle(cx-2*s, cy-7*s, 7.5*s);
+        g.fillStyle(0xfce4f0, 0.45).fillCircle(cx+4*s, cy-4*s, 5*s);
+        g.fillStyle(0xffffff, 0.28).fillCircle(cx-3*s, cy-10*s, 3.5*s);
+        g.lineStyle(1.5, C.ink, 0.40).strokeCircle(cx, cy-3, 11*s);
+        // Percikan kelopak kecil di luar lingkaran
+        for (let p=0; p<7; p++){
+          const px = cx + (r()-0.5)*26*s, py = cy-3 + (r()-0.5)*22*s;
+          g.fillStyle(0xfce4f0, 0.55).fillCircle(px, py, 1.2+r()*1.0);
+        }
+      } else {
+        // Pohon hijau biasa
+        g.fillStyle(C.leafDark, 0.60).fillCircle(cx+1, cy,    12*s);
+        g.fillStyle(C.leaf,     0.90).fillCircle(cx,   cy-3,  11*s);
+        g.fillStyle(C.leafHi,   0.68).fillCircle(cx-2*s, cy-7*s, 7.5*s);
+        g.fillStyle(C.leafHi,   0.42).fillCircle(cx+4*s, cy-4*s, 5*s);
+        g.fillStyle(0xd8f8b0,   0.24).fillCircle(cx-3*s, cy-10*s, 3.5*s);
+        g.lineStyle(1.5, C.ink, 0.55).strokeCircle(cx, cy-3, 11*s);
+      }
     });
+    // Rumpun bambu di sebelah barat ladang
+    const ladang = SPOTS.find(s => s.id === 'ladang');
+    if (ladang){
+      const rb = rng(3399);
+      const bx0 = (ladang.x - 1) * TILE + 4;
+      const by0 = ladang.y * TILE + TILE - 4;
+      for (let i=0; i<6; i++){
+        const bx = bx0 + i*5 + (rb()-0.5)*3;
+        const bh = 24 + rb()*16;
+        const lean = (rb()-0.5)*3;
+        g.fillStyle(0x78b828, 0.92).fillRect(bx+lean, by0-bh, 3.5, bh);
+        g.fillStyle(0xa8d850, 0.45).fillRect(bx+lean+0.5, by0-bh, 1, bh);
+        g.lineStyle(0.5, 0x3a6810, 0.65).strokeRect(bx+lean, by0-bh, 3.5, bh);
+        for (let ni=1; ni<4; ni++){
+          g.fillStyle(0x589010, 0.42).fillRect(bx+lean-0.5, by0-bh*ni/3.8, 4.5, 1.5);
+        }
+        if (rb() > 0.4){
+          const lx = bx+lean + (rb()>0.5?3:-6), ly = by0-bh*0.65;
+          g.fillStyle(0x90d040, 0.70).fillEllipse(lx+4, ly, 11, 4);
+        }
+        if (rb() > 0.5){
+          const lx = bx+lean + (rb()>0.5?-4:3), ly = by0-bh*0.35;
+          g.fillStyle(0x78c030, 0.60).fillEllipse(lx+4, ly, 9, 3.5);
+        }
+      }
+    }
   }
 
   /* -------- Bayangan awan bergerak (3 awan) -------- */

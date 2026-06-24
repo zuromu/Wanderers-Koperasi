@@ -3,6 +3,12 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.57.0], Flowering blossom trees + bamboo grove near rice field
+
+### Ditambahkan
+- **Pohon berbunga**: ~40% dari pohon yang tersebar di tepi peta kini tampil sebagai pohon berbunga sakura/flamboyan (merah muda ke putih — 5 lapisan lingkaran dari pink gelap ke putih specular, ditambah 7 percikan kelopak kecil di luar kanopi); sisanya tetap pohon hijau biasa — menciptakan kontras warna visual yang kaya
+- **Rumpun bambu**: 6 batang bambu prosedural di sebelah barat ladang padi — batang hijau bergaris dengan node-node horizontal, daun elips miring, dan sedikit condong satu sama lain untuk kesan natural; sangat khas desa tropis Indonesia
+
 ## [0.56.0], Title screen village skyline + interaction sparkle burst
 
 ### Ditambahkan
