@@ -179,6 +179,7 @@ export class Village extends Phaser.Scene {
   /* -------- Kilatan cahaya statis di permukaan air -------- */
   drawWaterShimmer(){
     const g = this.add.graphics().setDepth(1.05);
+    this.waterShimmer = g; // disimpan untuk animasi alfa
     const r = rng(5577);
     for (let y=0; y<ROWS; y++){
       for (let x=0; x<COLS; x++){
@@ -876,6 +877,16 @@ export class Village extends Phaser.Scene {
 
       // Leher
       g.fillStyle(C.skin).fillRect(11, 14, 6, 4);
+      // Syal wanderer (identitas visual khas)
+      g.fillStyle(0xc84820, 0.92).fillRoundedRect(9, 15, 10, 3, 1);
+      g.fillStyle(0xe86030, 0.7).fillRect(10, 14.5, 8, 1);
+      if (!back){
+        g.fillStyle(0xc84820, 0.75).fillTriangle(9,16, 12,16, 10,21);
+        g.fillStyle(0xc84820, 0.65).fillTriangle(16,16, 19,16, 17,20);
+      } else {
+        g.fillStyle(0xc84820, 0.7).fillRect(8, 16, 12, 5);
+        g.fillStyle(0xe86030, 0.4).fillRect(9, 16, 10, 2);
+      }
 
       // Kepala dengan bayangan sisi
       g.fillStyle(C.skin).fillCircle(14, 9, 8);
@@ -1183,6 +1194,9 @@ export class Village extends Phaser.Scene {
       cv.refresh();
     }
     this.add.image(0, 0, key).setOrigin(0).setDepth(99.5);
+    // Overlay untuk efek denyut cahaya ambient (bayangan awan melintas)
+    const w2 = COLS*TILE, h2 = ROWS*TILE;
+    this.ambientOverlay = this.add.rectangle(w2/2, h2/2, w2, h2, 0xfff8e0, 0).setDepth(99.45);
   }
 
   /* -------- Vignette tepi layar -------- */
@@ -1390,6 +1404,12 @@ export class Village extends Phaser.Scene {
   }
 
   update(time){
+    // Denyut cahaya ambient (bayangan awan pelan, ≈12 dtk periode)
+    if (this.ambientOverlay)
+      this.ambientOverlay.setAlpha(Math.max(0, Math.sin(time * 0.00052) * 0.028));
+    // Kilatan air bergeser perlahan
+    if (this.waterShimmer)
+      this.waterShimmer.setAlpha(0.55 + Math.sin(time * 0.00038) * 0.45);
     // Air beranimasi
     for (const w of this.waterTiles){
       const t = (Math.sin(time*0.002 + w._phase) + 1) / 2;
