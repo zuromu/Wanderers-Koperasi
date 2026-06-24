@@ -3,6 +3,14 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.68.0], Time-of-day ambient cycle + dusk stars
+
+### Ditambahkan / Diperbarui
+- **Siklus hari 2 menit**: ambientOverlay berubah warna & intensitas per fase — pagi krem hangat (0.015α) → siang jernih → sore emas (0.055α) → senja ungu-biru (0.038α) → kembali; memakai `lerpC` untuk interpolasi warna halus
+- **Kilauan langit sore**: overlay persegi panjang baru (depth 99.4) yang mengembang dari atas layar selama golden-hour/senja, warna amber → ungu, bell-curve alpha
+- **Bintang kelap-kelip malam**: 22 titik putih kecil di baris paling atas kanvas (depth 98) yang muncul hanya saat senja — masing-masing dengan frekuensi kelap-kelip berbeda
+- **Kunang-kunang lebih terang saat senja**: alpha maksimal kunang-kunang naik dari 0.60 → 1.0 saat `dayP > 0.55`
+
 ## [0.67.0], Cobblestone medallions + animated interaction ring
 
 ### Ditambahkan / Diperbarui
