@@ -3,6 +3,11 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.80.0], H-key input fix
+
+### Diperbaiki
+- **Hotkey H saat mengetik nama**: Memperbaiki bug di mana menekan "H" saat mengetik nama pemain di kotak input ikut membuka glosarium dan memainkan suara `select`. Event keydown kini diabaikan jika berasal dari elemen `<input>` (mengecek `e.target.tagName`).
+
 ## [0.79.0], Character Grounding Fix
 
 ### Diperbaiki

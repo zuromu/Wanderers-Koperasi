@@ -114,14 +114,18 @@ document.querySelectorAll('#dpad button').forEach(btn => {
 
 /* ---------- Bantuan / glosarium ---------- */
 function toggleHelp(force){
+  if (document.activeElement && document.activeElement.tagName === 'INPUT') return;
   const o = $('helpOverlay'); if (!o) return;
   const show = force ?? (o.style.display !== 'flex');
   o.style.display = show ? 'flex' : 'none';
   Audio.play('select');
 }
+
 $('help')?.addEventListener('click', ()=> toggleHelp(true));
 $('btnHelpClose')?.addEventListener('click', ()=> toggleHelp(false));
+
 window.addEventListener('keydown', (e)=>{
+  if (e.target.tagName === 'INPUT') return;
   if (e.code === 'KeyH') toggleHelp();
   hideHint();
 });
