@@ -127,6 +127,8 @@ export class Village extends Phaser.Scene {
     this.makeFish();
     this.makeButterflies();
     this.makeAtmosphere();
+    this.makeSkyGlow();
+    this.makeStars();
     this.makeVignette();
     this.makeCornerFoliage();
     this.bindInput();
@@ -2032,6 +2034,27 @@ export class Village extends Phaser.Scene {
     this.ambientOverlay = this.add.rectangle(w2/2, h2/2, w2, h2, 0xfff8e0, 0).setDepth(99.45);
   }
 
+  /* -------- Kilauan langit sore dari atas kanvas -------- */
+  makeSkyGlow(){
+    const W = COLS*TILE, H = ROWS*TILE;
+    this.skylineGlow = this.add.rectangle(W/2, 0, W, H * 0.62, 0xffb060, 0)
+      .setOrigin(0.5, 0).setDepth(99.4);
+  }
+
+  /* -------- Bintang malam (muncul saat senja) -------- */
+  makeStars(){
+    const r = rng(5555);
+    this.stars = [];
+    const W = COLS*TILE;
+    for (let i = 0; i < 22; i++){
+      const sx = 20 + r() * (W - 40);
+      const sy = 6  + r() * 50;
+      const sr = 0.7 + r() * 0.9;
+      const dot = this.add.circle(sx, sy, sr, 0xfff8f0, 0).setDepth(98);
+      this.stars.push({ dot, ph: r() * Math.PI * 2, sp: 0.55 + r() * 0.9 });
+    }
+  }
+
   /* -------- Vignette tepi layar -------- */
   makeVignette(){
     const w = COLS*TILE, h = ROWS*TILE, key = 'vignette';
@@ -2291,9 +2314,45 @@ export class Village extends Phaser.Scene {
   }
 
   update(time){
-    // Denyut cahaya ambient (bayangan awan pelan, ≈12 dtk periode)
-    if (this.ambientOverlay)
-      this.ambientOverlay.setAlpha(Math.max(0, Math.sin(time * 0.00052) * 0.028));
+    // Siklus hari 2 menit: pagi hangat → siang jernih → sore emas → senja ungu
+    const dayP = (time % 120000) / 120000;
+    if (this.ambientOverlay){
+      let col, al;
+      if (dayP < 0.30){
+        col = 0xfff8d0; al = 0.015 * Math.min(1, dayP / 0.10);
+      } else if (dayP < 0.50){
+        col = 0xffffff; al = 0.006;
+      } else if (dayP < 0.72){
+        const t = (dayP - 0.50) / 0.22;
+        col = lerpC(0xfff8d0, 0xff9840, t); al = t * 0.055;
+      } else if (dayP < 0.88){
+        const t = (dayP - 0.72) / 0.16;
+        col = lerpC(0xff9840, 0x6055a0, t); al = 0.055*(1-t) + 0.038*t;
+      } else {
+        const t = (dayP - 0.88) / 0.12;
+        col = lerpC(0x6055a0, 0xfff8d0, t); al = 0.038*(1-t) + 0.015*t;
+      }
+      this.ambientOverlay.setFillStyle(col, al);
+    }
+    // Kilauan langit sore dari tepi atas
+    if (this.skylineGlow){
+      if (dayP > 0.48 && dayP < 0.90){
+        const t    = (dayP - 0.48) / 0.42;
+        const bell = Math.sin(t * Math.PI);
+        const sCol = t < 0.52 ? 0xffb060 : lerpC(0xffb060, 0x7050a0, (t - 0.52) / 0.48);
+        this.skylineGlow.setFillStyle(sCol, bell * 0.046);
+      } else {
+        this.skylineGlow.setFillStyle(0xffffff, 0);
+      }
+    }
+    // Bintang kelap-kelip saat senja
+    if (this.stars){
+      const starV = dayP > 0.70 ? Math.min(1, (dayP - 0.70) / 0.14) : 0;
+      for (const s of this.stars){
+        const tw = (Math.sin(time * s.sp * 0.0022 + s.ph) + 1) / 2;
+        s.dot.setAlpha(starV * (0.28 + tw * 0.52));
+      }
+    }
     // Kilatan air bergeser perlahan
     if (this.waterShimmer)
       this.waterShimmer.setAlpha(0.55 + Math.sin(time * 0.00038) * 0.45);
@@ -2411,11 +2470,12 @@ export class Village extends Phaser.Scene {
       rip.g.lineStyle(1, C.waterHi, (1 - t) * 0.38);
       rip.g.strokeCircle(rip.sx, rip.sy, 3 + t * 14);
     }
-    // Kunang-kunang berkelip
+    // Kunang-kunang berkelip — lebih terang saat senja
+    const dusk = dayP > 0.55 ? Math.min(1, (dayP - 0.55) / 0.22) : 0;
     for (const ff of this.fireflies){
       ff.obj.x = ff.ox + Math.sin(time * ff.sp * 0.0006 + ff.ph) * 14;
       ff.obj.y = ff.oy + Math.cos(time * ff.sp * 0.0004 + ff.ph * 1.3) * 10;
-      ff.obj.setAlpha(((Math.sin(time * 0.0022 + ff.aph) + 1) / 2) * 0.60);
+      ff.obj.setAlpha(((Math.sin(time * 0.0022 + ff.aph) + 1) / 2) * (0.60 + dusk * 0.40));
     }
     // Gelembung seru (!) di atas NPC saat pemain mendekat
     if (!this.locked){
