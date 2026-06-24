@@ -390,35 +390,59 @@ export class Village extends Phaser.Scene {
   /* -------- Hiasan batu di persimpangan jalan utama -------- */
   drawRoadCrossings(){
     const g = this.add.graphics().setDepth(0.2);
+    const r = rng(9017);
     // Persimpangan utama: baris 5 × col 9, baris 10 × col 9
     const CX = [
       [9*TILE + TILE/2, 5*TILE  + TILE/2],
       [9*TILE + TILE/2, 10*TILE + TILE/2],
     ];
     for (const [cx, cy] of CX){
-      // Lingkaran terluar (batu lebih terang, inlay)
-      g.lineStyle(2.5, C.pathShade, 0.20).strokeCircle(cx, cy, 18);
-      g.lineStyle(1.5, C.pathShade, 0.13).strokeCircle(cx, cy, 26);
-      // Garis silang (mawar kompas)
-      g.lineStyle(2, C.pathShade, 0.16).lineBetween(cx-22, cy, cx+22, cy);
-      g.lineStyle(2, C.pathShade, 0.16).lineBetween(cx, cy-22, cx, cy+22);
-      // Diagonal lebih tipis
-      g.lineStyle(1, C.pathShade, 0.09).lineBetween(cx-17, cy-17, cx+17, cy+17);
-      g.lineStyle(1, C.pathShade, 0.09).lineBetween(cx-17, cy+17, cx+17, cy-17);
-      // Lingkaran tengah (ujung mawar kompas)
-      g.fillStyle(C.pathShade, 0.16).fillCircle(cx, cy, 4.5);
-      g.fillStyle(C.gold, 0.10).fillCircle(cx, cy, 3);
+      // Medallion base fill
+      g.fillStyle(lerpC(C.path, C.pathShade, 0.35), 0.26).fillCircle(cx, cy, 24);
+      g.fillStyle(lerpC(C.path, C.stone, 0.15), 0.16).fillCircle(cx, cy, 18);
+      // Outer cobblestone ring — 10 stones arranged elliptically
+      for (let i = 0; i < 10; i++){
+        const a = (i / 10) * Math.PI * 2;
+        const bx = cx + Math.cos(a) * 19, by = cy + Math.sin(a) * 10;
+        const col = r() > 0.5 ? C.pathShade : lerpC(C.path, C.stone, 0.3 + r()*0.3);
+        g.fillStyle(col, 0.34 + r()*0.14).fillEllipse(bx, by, 5.5 + r()*1.5, 3.5 + r());
+        g.lineStyle(0.7, C.pathEdge, 0.22).strokeEllipse(bx, by, 5.5, 3.5);
+      }
+      // Inner cobblestone ring — 6 stones
+      for (let i = 0; i < 6; i++){
+        const a = (i / 6 + 1/12) * Math.PI * 2;
+        const bx = cx + Math.cos(a) * 11, by = cy + Math.sin(a) * 6;
+        g.fillStyle(lerpC(C.pathShade, C.stone, r()*0.4), 0.26).fillEllipse(bx, by, 4.5, 3);
+      }
+      // Compass rose — 4 arrowhead spears
+      const ARMS = [[1,0],[0,1],[-1,0],[0,-1]];
+      for (const [dx, dy] of ARMS){
+        g.lineStyle(2, C.pathShade, 0.30);
+        g.lineBetween(cx + dx*6, cy + dy*3, cx + dx*23, cy + dy*12);
+        const tx = cx + dx*23, ty = cy + dy*12;
+        g.fillStyle(C.pathShade, 0.34).fillTriangle(
+          tx + dx*5, ty + dy*3,
+          tx + dy*3, ty - dx*2,
+          tx - dy*3, ty + dx*2
+        );
+      }
+      // Center stone
+      g.fillStyle(C.stone, 0.38).fillCircle(cx, cy, 5.5);
+      g.lineStyle(1, C.pathEdge, 0.35).strokeCircle(cx, cy, 5.5);
+      g.fillStyle(C.gold, 0.28).fillCircle(cx, cy, 3);
+      g.lineStyle(1, C.gold, 0.22).strokeCircle(cx, cy, 5.5);
     }
-    // Tanda persimpangan kecil di junction baris 5/2 dan col 9/3
+    // Minor crossing markers
     const MINOR = [
       [3*TILE+TILE/2, 5*TILE+TILE/2], [16*TILE+TILE/2, 5*TILE+TILE/2],
       [3*TILE+TILE/2, 10*TILE+TILE/2],[16*TILE+TILE/2, 10*TILE+TILE/2],
     ];
     for (const [cx, cy] of MINOR){
-      g.lineStyle(1.5, C.pathShade, 0.14).strokeCircle(cx, cy, 10);
-      g.lineStyle(1, C.pathShade, 0.10).lineBetween(cx-12, cy, cx+12, cy);
-      g.lineStyle(1, C.pathShade, 0.10).lineBetween(cx, cy-12, cx, cy+12);
-      g.fillStyle(C.pathShade, 0.12).fillCircle(cx, cy, 3);
+      g.fillStyle(C.pathShade, 0.16).fillCircle(cx, cy, 8);
+      g.lineStyle(1.2, C.pathShade, 0.28).strokeCircle(cx, cy, 10);
+      g.lineStyle(1, C.pathShade, 0.22).lineBetween(cx-12, cy, cx+12, cy);
+      g.lineStyle(1, C.pathShade, 0.22).lineBetween(cx, cy-12, cx, cy+12);
+      g.fillStyle(C.gold, 0.20).fillCircle(cx, cy, 3);
     }
   }
 
@@ -2433,26 +2457,51 @@ export class Village extends Phaser.Scene {
         }
       }
     }
-    // Indikator interaksi: cincin emas berdenyut + teks melayang
+    // Indikator interaksi: busur berputar + berlian orbit
     if (this.hintRingGfx) this.hintRingGfx.clear();
     if (!isDialogueOpen() && !this.locked && this.hintRingGfx){
       const nearSpot = SPOTS.find(s => Math.abs(s.x-this.px)<=1 && Math.abs(s.y-this.py)<=1);
       if (nearSpot){
-        const hx = nearSpot.x*TILE+TILE/2, hy = nearSpot.y*TILE+TILE/2;
+        const hx = nearSpot.x*TILE+TILE/2, hy = nearSpot.y*TILE+TILE/2 + 6;
+        const t  = time * 0.001;
         const pulse = (Math.sin(time * 0.004) + 1) / 2;
-        this.hintRingGfx.lineStyle(2, C.gold, 0.25 + pulse * 0.40);
-        this.hintRingGfx.strokeEllipse(hx, hy+6, 52, 16);
-        this.hintRingGfx.lineStyle(1, C.gold, 0.08 + pulse * 0.16);
-        this.hintRingGfx.strokeEllipse(hx, hy+6, 62, 22);
-        this.hintRingGfx.lineStyle(1, 0xffffff, 0.05 + pulse * 0.12);
-        this.hintRingGfx.strokeEllipse(hx, hy+6, 20, 10);
+        const hg = this.hintRingGfx;
+        const RX = 28, RY = 9;
+        // Outer soft glow ring
+        hg.lineStyle(1, C.gold, 0.10 + pulse * 0.12);
+        hg.strokeEllipse(hx, hy, 68, 22);
+        // 8 spinning arc dashes
+        const ARC_N = 8, GAP = Math.PI * 2 / ARC_N, LEN = GAP * 0.55;
+        const rot = t * 0.7;
+        for (let i = 0; i < ARC_N; i++){
+          const a0 = rot + i * GAP, a1 = a0 + LEN;
+          hg.lineStyle(1.8, C.gold, (0.28 + pulse * 0.52) * (i % 2 === 0 ? 1.0 : 0.58));
+          hg.beginPath();
+          for (let s = 0; s <= 5; s++){
+            const a  = a0 + (a1 - a0) * s / 5;
+            const px2 = hx + Math.cos(a) * RX;
+            const py2 = hy + Math.sin(a) * RY;
+            s === 0 ? hg.moveTo(px2, py2) : hg.lineTo(px2, py2);
+          }
+          hg.strokePath();
+        }
+        // 4 orbiting diamond sparkles
+        for (let i = 0; i < 4; i++){
+          const a  = t * 1.6 + i * Math.PI / 2;
+          const dx2 = hx + Math.cos(a) * (RX + 5);
+          const dy2 = hy + Math.sin(a) * (RY + 4);
+          const ds  = 2.2 + Math.sin(t * 3 + i * 1.57) * 0.9;
+          hg.fillStyle(C.gold, 0.45 + pulse * 0.55);
+          hg.fillTriangle(dx2, dy2 - ds, dx2 + ds * 0.65, dy2, dx2, dy2 + ds);
+          hg.fillTriangle(dx2, dy2 - ds, dx2 - ds * 0.65, dy2, dx2, dy2 + ds);
+        }
         if (!this.hintShowing){
           this.hintShowing = true;
           this.hintText.setVisible(true);
           this.tweens.killTweensOf(this.hintText);
           this.tweens.add({ targets:this.hintText, alpha:1, duration:250 });
         }
-        this.hintText.setPosition(hx, hy - 32 + Math.sin(time * 0.003) * 3);
+        this.hintText.setPosition(hx, hy - 38 + Math.sin(time * 0.003) * 3);
       } else {
         if (this.hintShowing){
           this.hintShowing = false;

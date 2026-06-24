@@ -3,6 +3,12 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.67.0], Cobblestone medallions + animated interaction ring
+
+### Ditambahkan / Diperbarui
+- **Persimpangan jalan cobblestone**: ganti tanda persimpangan samar dengan medallion batu tanam nyata — cincin batu terluar 10 biji, cincin batu dalam 6 biji, mawar kompas dengan kepala panah, dan emas di tengah; persimpangan kecil juga lebih terlihat dengan alpha lebih tinggi
+- **Cincin interaksi berputar**: ganti elips tunggal dengan 8 busur dashed yang berputar perlahan + 4 berlian orbit emas (sparkle diamond) yang mengelilingi bangunan target; tampilan jauh lebih RPG studio dibanding cincin biasa
+
 ## [0.66.0], NPC "!" speech bubble on approach
 
 ### Ditambahkan / Diperbarui
