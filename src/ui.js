@@ -11,20 +11,35 @@ import { showRecap } from './certificate.js';
 let sceneRef = null;
 export function setSceneRef(scene){ sceneRef = scene; }
 
+/* Potret mini per pembicara — SVG pixel-art 30×30 */
+const P = {
+  kepala: `<svg viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg"><rect width="30" height="30" rx="3" fill="#7a5d3a"/><ellipse cx="15" cy="20" rx="7" ry="8" fill="#d4956a"/><ellipse cx="8" cy="17" rx="2" ry="4" fill="#a07840" opacity=".45"/><ellipse cx="22" cy="17" rx="2" ry="4" fill="#a07840" opacity=".45"/><rect x="8" y="7" width="14" height="7" rx="2" fill="#1a1030"/><rect x="7" y="12" width="16" height="2" rx="1" fill="#241d2e" opacity=".7"/><rect x="11" y="18" width="2" height="2" rx=".5" fill="#241d2e"/><rect x="17" y="18" width="2" height="2" rx=".5" fill="#241d2e"/><rect x="11" y="18" width="1" height="1" fill="#fff" opacity=".5"/><rect x="17" y="18" width="1" height="1" fill="#fff" opacity=".5"/><path d="M12 23q3 2 6 0" stroke="#9a5030" stroke-width="1" fill="none"/><ellipse cx="15" cy="26" rx="4" ry="2" fill="#c0a890" opacity=".4"/></svg>`,
+  koperasi: `<svg viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg"><rect width="30" height="30" rx="3" fill="#2d6cb5"/><rect x="4" y="22" width="22" height="6" rx="1" fill="#1a4a8a"/><rect x="8" y="12" width="14" height="12" fill="#3a80d0"/><polygon points="15,4 4,12 26,12" fill="#1e5aaa"/><rect x="7" y="10" width="3" height="14" rx="1" fill="#5a98e8"/><rect x="20" y="10" width="3" height="14" rx="1" fill="#5a98e8"/><rect x="12" y="17" width="6" height="7" rx="1" fill="#1a4a8a"/><rect x="13" y="13" width="4" height="3" rx=".5" fill="#ffe8a8" opacity=".45"/></svg>`,
+  bendahara: `<svg viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg"><rect width="30" height="30" rx="3" fill="#a9781b"/><ellipse cx="15" cy="20" rx="7" ry="8" fill="#d4956a"/><ellipse cx="8" cy="15" rx="2" ry="5" fill="#a07030" opacity=".4"/><ellipse cx="22" cy="15" rx="2" ry="5" fill="#a07030" opacity=".4"/><circle cx="11" cy="18" r="3" fill="none" stroke="#e0a52b" stroke-width="1.5"/><circle cx="19" cy="18" r="3" fill="none" stroke="#e0a52b" stroke-width="1.5"/><line x1="14" y1="18" x2="16" y2="18" stroke="#e0a52b" stroke-width="1.5"/><rect x="10.5" y="17" width="1.5" height="2" rx=".5" fill="#241d2e"/><rect x="18" y="17" width="1.5" height="2" rx=".5" fill="#241d2e"/><path d="M12 24q3 1.5 6 0" stroke="#8a4010" stroke-width="1" fill="none"/></svg>`,
+  ladang: `<svg viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg"><rect width="30" height="30" rx="3" fill="#4a8a30"/><ellipse cx="15" cy="20" rx="7" ry="7" fill="#c07840"/><polygon points="15,5 3,14 27,14" fill="#9a7020"/><ellipse cx="15" cy="14" rx="9" ry="2.5" fill="#b88830" opacity=".7"/><line x1="15" y1="5" x2="15" y2="14" stroke="#7a5010" stroke-width="1" opacity=".6"/><rect x="11" y="18" width="2" height="2" rx=".5" fill="#241d2e"/><rect x="17" y="18" width="2" height="2" rx=".5" fill="#241d2e"/><rect x="11" y="18" width="1" height="1" fill="#fff" opacity=".5"/><path d="M12 24q3 2 6 0" stroke="#7a3010" stroke-width="1" fill="none"/></svg>`,
+  pasar: `<svg viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg"><rect width="30" height="30" rx="3" fill="#c06030"/><ellipse cx="15" cy="20" rx="7" ry="7" fill="#d4956a"/><rect x="7" y="7" width="16" height="8" rx="3" fill="#e07028"/><ellipse cx="15" cy="14" rx="9" ry="2.5" fill="#f09040" opacity=".7"/><rect x="8" y="10" width="14" height="2" rx="1" fill="#a04010" opacity=".55"/><rect x="11" y="18" width="2" height="2" rx=".5" fill="#241d2e"/><rect x="17" y="18" width="2" height="2" rx=".5" fill="#241d2e"/><path d="M11 24q4 2.5 8 0" stroke="#7a3010" stroke-width="1" fill="none"/></svg>`,
+  balai: `<svg viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg"><rect width="30" height="30" rx="3" fill="#5a4090"/><rect x="4" y="22" width="22" height="6" rx="1" fill="#3a2070"/><rect x="7" y="11" width="16" height="13" fill="#6a50a0"/><polygon points="15,4 4,11 26,11" fill="#3a2878"/><rect x="7" y="9" width="3" height="15" rx="1" fill="#7a60b0"/><rect x="13.5" y="9" width="3" height="15" rx="1" fill="#7a60b0"/><rect x="20" y="9" width="3" height="15" rx="1" fill="#7a60b0"/><rect x="11" y="17" width="8" height="7" rx="1" fill="#3a2070"/><rect x="13" y="13" width="4" height="3" rx=".5" fill="#c8b0f8" opacity=".3"/></svg>`,
+  sumur: `<svg viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg"><rect width="30" height="30" rx="3" fill="#3a7090"/><rect x="6" y="16" width="18" height="11" rx="2" fill="#5090b0"/><rect x="4" y="14" width="22" height="4" rx="1" fill="#2a6080"/><rect x="7" y="7" width="3" height="10" rx="1" fill="#a07040"/><rect x="20" y="7" width="3" height="10" rx="1" fill="#a07040"/><rect x="7" y="6" width="16" height="2" rx="1" fill="#c09050"/><circle cx="15" cy="22" r="4" fill="#1a4a60"/><ellipse cx="15" cy="20" rx="4" ry="1.5" fill="#5ab0d0" opacity=".4"/><line x1="15" y1="12" x2="15" y2="16" stroke="#8a7060" stroke-width="1" stroke-dasharray="2,1"/></svg>`,
+  warga: `<svg viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg"><rect width="30" height="30" rx="3" fill="#4a6a5a"/><ellipse cx="15" cy="20" rx="7" ry="7" fill="#d4956a"/><rect x="7" y="7" width="16" height="7" rx="3" fill="#3f9c9c"/><rect x="6" y="12" width="18" height="2" rx="1" fill="#2d8080" opacity=".65"/><rect x="11" y="18" width="2" height="2" rx=".5" fill="#241d2e"/><rect x="17" y="18" width="2" height="2" rx=".5" fill="#241d2e"/><rect x="11" y="18" width="1" height="1" fill="#fff" opacity=".5"/><rect x="17" y="18" width="1" height="1" fill="#fff" opacity=".5"/><path d="M11 24q4 2.5 8 0" stroke="#7a3010" stroke-width="1" fill="none"/></svg>`,
+  wanderer: `<svg viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg"><rect width="30" height="30" rx="3" fill="#241d2e"/><ellipse cx="15" cy="21" rx="7" ry="7" fill="#d4956a"/><path d="M5 17Q7 4 15 4Q23 4 25 17Q22 14 15 14Q8 14 5 17Z" fill="#1a1428"/><rect x="11" y="19" width="2" height="2" rx=".5" fill="#241d2e"/><rect x="17" y="19" width="2" height="2" rx=".5" fill="#241d2e"/><rect x="11" y="19" width="1" height="1" fill="#7a60ff" opacity=".75"/><rect x="17" y="19" width="1" height="1" fill="#7a60ff" opacity=".75"/><path d="M12 25q3 1.5 6 0" stroke="#8a4020" stroke-width="1" fill="none"/></svg>`,
+  warning: `<svg viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg"><rect width="30" height="30" rx="3" fill="#c0432f"/><polygon points="15,5 2,27 28,27" fill="#e05040" opacity=".9"/><rect x="14" y="11" width="2" height="9" rx="1" fill="#fff"/><rect x="14" y="22.5" width="2" height="2.5" rx="1" fill="#fff"/></svg>`,
+  tamat: `<svg viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg"><rect width="30" height="30" rx="3" fill="#7fc96b"/><polygon points="15,3 18.5,10.5 27,11.5 21,17.5 22.8,26 15,22 7.2,26 9,17.5 3,11.5 11.5,10.5" fill="#e0a52b" stroke="#a9781b" stroke-width=".8"/></svg>`,
+};
+
 /* Badge berwarna per pembicara untuk header dialog */
 const BADGE_MAP = {
-  'Kepala Desa':       { c:'#7a5d3a', i:'KD' },
-  'Kantor Koperasi':   { c:'#2d6cb5', i:'K'  },
-  'Bendahara':         { c:'#a9781b', i:'B'  },
-  'Ladang':            { c:'#4a8a30', i:'L'  },
-  'Pasar':             { c:'#c06030', i:'P'  },
-  'Balai Desa (RAT)':  { c:'#5a4090', i:'BD' },
-  'Balai Desa':        { c:'#5a4090', i:'BD' },
-  'Sumur Desa':        { c:'#3a7090', i:'S'  },
-  'Warga Desa':        { c:'#4a6a5a', i:'W'  },
-  'Wanderer':          { c:'#241d2e', i:'?'  },
-  'Peringatan Penting':{ c:'#c0432f', i:'!'  },
-  'Tamat!':            { c:'#7fc96b', i:'★'  },
+  'Kepala Desa':       { c:'#7a5d3a', i:'KD', p: P.kepala    },
+  'Kantor Koperasi':   { c:'#2d6cb5', i:'K',  p: P.koperasi  },
+  'Bendahara':         { c:'#a9781b', i:'B',  p: P.bendahara },
+  'Ladang':            { c:'#4a8a30', i:'L',  p: P.ladang    },
+  'Pasar':             { c:'#c06030', i:'P',  p: P.pasar     },
+  'Balai Desa (RAT)':  { c:'#5a4090', i:'BD', p: P.balai     },
+  'Balai Desa':        { c:'#5a4090', i:'BD', p: P.balai     },
+  'Sumur Desa':        { c:'#3a7090', i:'S',  p: P.sumur     },
+  'Warga Desa':        { c:'#4a6a5a', i:'W',  p: P.warga     },
+  'Wanderer':          { c:'#241d2e', i:'?',  p: P.wanderer  },
+  'Peringatan Penting':{ c:'#c0432f', i:'!',  p: P.warning   },
+  'Tamat!':            { c:'#7fc96b', i:'★',  p: P.tamat     },
 };
 
 /* ---------------- Dialog (dengan efek ketik) ---------------- */
@@ -42,7 +57,8 @@ export const isDialogueOpen = () => dialogueOpen;
 export function showDialogue(who, text, choices){
   dialogueOpen = true; pendingClose = null; pendingChoices = choices || null;
   const bd = BADGE_MAP[who] || { c:'#241d2e', i:who[0] };
-  dwho.innerHTML = `<span class="who-badge" style="background:${bd.c}">${bd.i}</span>${who}`;
+  const portrait = bd.p ? `<span class="dlg-portrait">${bd.p}</span>` : '';
+  dwho.innerHTML = `<span class="who-badge" style="background:${bd.c}">${bd.i}</span>${portrait}${who}`;
   dchoices.innerHTML = '';
   if (darrow) darrow.style.display = 'none';
   dlg.classList.remove('dlg-open');

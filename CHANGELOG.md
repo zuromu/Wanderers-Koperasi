@@ -3,6 +3,12 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.41.0], Dialogue portraits — pixel-art speaker faces per NPC/location
+
+### Ditambahkan
+- **Potret dialog per pembicara**: setiap dialog kini menampilkan ikon portrait 30×30px pixel-art unik di header — Kepala Desa dengan peci hitam, Bendahara dengan kacamata emas, petani bertopi bambu, pedagang berblangkon oranye, gedung koperasi, balai desa, sumur, Wanderer berkerudung dengan mata ungu, dll. — membuat percakapan terasa seperti RPG studio AAA sesungguhnya.
+- **CSS `.dlg-portrait`**: portrait dibingkai dengan border-radius 4px, drop-shadow, dan highlight tepi atas — tampak seperti kartu karakter profesional di dalam panel dialog.
+
 ## [0.40.0], Studio living world — bird silhouettes, window glows, tile blending, butterflies
 
 ### Ditambahkan
