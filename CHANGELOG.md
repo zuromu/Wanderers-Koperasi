@@ -3,6 +3,13 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.63.0], Village entrance gate (gerbang desa) at north path
+
+### Ditambahkan
+- **Gerbang masuk desa**: gerbang batu+kayu di ujung utara jalan utama (cols 8–9, tepi air) — dua pilar batu bertingkat dengan cap batu, balok kayu horizontal penghubung, papan nama kayu "DESA KOPERASI" menggantung di tengah
+- **Lentera merah**: dua lentera merah menggantung dari ujung balok (kiri & kanan) — ikonic dalam arsitektur tradisional Asia; keduanya masuk sistem `windowGlows` untuk efek flicker
+- **Depth 2.90**: tampil di atas pohon & lampu, di bawah bangunan lain; menciptakan kedalaman visual layered
+
 ## [0.62.0], Animated water mill (kincir air) at south shore
 
 ### Ditambahkan

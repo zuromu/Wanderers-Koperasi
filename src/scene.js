@@ -107,6 +107,7 @@ export class Village extends Phaser.Scene {
     this.drawWatermill();
     this.makeClouds();
     this.drawBuildings();
+    this.drawVillageGate();
     this.drawEntrancePots();
     this.makeWindowGlows();
     this.makeEntranceGlows();
@@ -773,6 +774,76 @@ export class Village extends Phaser.Scene {
       const cx = s.x*TILE + TILE/2, cy = s.y*TILE + TILE/2;
       offsets.forEach(([ox, oy], i) => drawPot(cx+ox, cy+oy, flowerC, 7700 + s.x*31 + i*13));
     });
+  }
+
+  /* -------- Gerbang masuk desa di tepi utara jalan -------- */
+  drawVillageGate(){
+    // Gate straddles the 2-tile path at cols 8–9, just at the water/land border (y ~ TILE)
+    const cx = 9 * TILE;    // center between col 8 end / col 9 start = 360px
+    const cy = TILE + 2;    // just at the water edge, top of row 1
+    const g  = this.add.graphics().setDepth(2.90);
+
+    // Ground shadows for pillars
+    g.fillStyle(C.shadow, 0.14).fillEllipse(cx-22, cy+32, 16, 5);
+    g.fillStyle(C.shadow, 0.14).fillEllipse(cx+22, cy+32, 16, 5);
+
+    // Left stone pillar
+    const drawPillar = (px) => {
+      g.fillStyle(C.stone).fillRect(px-6, cy-22, 12, 35);
+      g.fillStyle(0xb8b7c4, 0.42).fillRect(px-6, cy-22, 12, 8);
+      g.fillStyle(C.shadow, 0.18).fillRect(px-6, cy+16, 12, 8);
+      g.lineStyle(1.5, C.ink, 1).strokeRect(px-6, cy-22, 12, 35);
+      // Pillar cap
+      g.fillStyle(C.stoneDark).fillRect(px-8, cy-26, 16, 5);
+      g.fillStyle(0xb8b7c4, 0.35).fillRect(px-8, cy-26, 16, 2);
+      g.lineStyle(1.2, C.ink, 1).strokeRect(px-8, cy-26, 16, 5);
+      // Stone coursing lines
+      g.lineStyle(0.6, C.stoneDark, 0.20);
+      [-12, -2, 8, 18].forEach(oy => g.lineBetween(px-5, cy+oy, px+5, cy+oy));
+    };
+    drawPillar(cx - 20);
+    drawPillar(cx + 20);
+
+    // Horizontal beam connecting pillars
+    g.fillStyle(C.woodDark).fillRect(cx-28, cy-28, 56, 5);
+    g.fillStyle(0xd4a870, 0.35).fillRect(cx-28, cy-28, 56, 2);
+    g.lineStyle(1.5, C.ink, 1).strokeRect(cx-28, cy-28, 56, 5);
+    // Beam sag curve detail (carved line)
+    g.lineStyle(0.5, C.woodDark, 0.25).lineBetween(cx-26, cy-25, cx+26, cy-25);
+
+    // Decorative sign board hanging from center of beam
+    const sx = cx, sy = cy - 20;
+    g.fillStyle(0xc8903a, 1).fillRect(sx-16, sy-5, 32, 11);
+    g.fillStyle(0xd4a870, 0.38).fillRect(sx-16, sy-5, 32, 4);
+    g.lineStyle(1.5, C.ink, 1).strokeRect(sx-16, sy-5, 32, 11);
+    // Hanging strings from beam
+    g.lineStyle(0.8, C.ink, 0.50).lineBetween(sx-12, cy-27, sx-12, sy-5);
+    g.lineStyle(0.8, C.ink, 0.50).lineBetween(sx+12, cy-27, sx+12, sy-5);
+
+    // Small lanterns hanging from beam ends
+    const drawLantern = (lx) => {
+      g.lineStyle(0.8, C.ink, 0.5).lineBetween(lx, cy-27, lx, cy-18);
+      g.fillStyle(0xff4444, 0.9).fillRect(lx-4, cy-18, 8, 9);
+      g.fillStyle(0xff8888, 0.4).fillRect(lx-4, cy-18, 8, 4);
+      g.lineStyle(1, C.ink, 0.8).strokeRect(lx-4, cy-18, 8, 9);
+      g.fillStyle(C.stoneDark).fillRect(lx-5, cy-19, 10, 2);
+      g.fillStyle(C.stoneDark).fillRect(lx-4, cy-9, 8, 2);
+      g.lineStyle(0.5, C.ink, 0.6).strokeRect(lx-5, cy-19, 10, 2);
+    };
+    drawLantern(cx - 24);
+    drawLantern(cx + 24);
+
+    // Lantern warm glow
+    const lgw = this.add.graphics().setDepth(2.89);
+    lgw.fillStyle(0xff6040, 0.06).fillEllipse(cx-24, cy-14, 22, 14);
+    lgw.fillStyle(0xff6040, 0.06).fillEllipse(cx+24, cy-14, 22, 14);
+    this.windowGlows.push({ obj:lgw, base:0.70, rate:0.0030, phase:0,        amp:0.22 });
+
+    // Sign text "DESA KOPERASI" — tiny label
+    this.add.text(cx, sy + 0.5, 'DESA KOPERASI', {
+      fontFamily:"'Pixelify Sans','Trebuchet MS',sans-serif",
+      fontSize:'5px', fontStyle:'bold', color:'#f4ecd8',
+    }).setOrigin(0.5).setDepth(2.91);
   }
 
   /* -------- Bangunan prosedural (gaya pixel-art bergaris tinta) -------- */
