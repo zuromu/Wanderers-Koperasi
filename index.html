@@ -118,6 +118,89 @@
     <!-- Layar judul -->
     <div id="title">
       <div id="titleParticles" aria-hidden="true"></div>
+      <!-- Siluet desa di bawah layar judul -->
+      <svg id="titleSkyline" viewBox="0 0 800 90" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
+        <defs>
+          <linearGradient id="skyFog" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0" stop-color="#0a0810" stop-opacity="0"/>
+            <stop offset="1" stop-color="#0a0810" stop-opacity="1"/>
+          </linearGradient>
+        </defs>
+        <!-- ground -->
+        <rect x="0" y="78" width="800" height="12" fill="#0d0a18"/>
+        <!-- trees left -->
+        <rect x="22" y="54" width="7" height="26" fill="#140c24" fill-opacity=".88"/>
+        <ellipse cx="25" cy="44" rx="16" ry="12" fill="#140c24" fill-opacity=".82"/>
+        <rect x="108" y="50" width="8" height="30" fill="#140c24" fill-opacity=".85"/>
+        <ellipse cx="112" cy="38" rx="19" ry="14" fill="#140c24" fill-opacity=".80"/>
+        <!-- small cottage -->
+        <rect x="56" y="60" width="34" height="18" fill="#1a1030" fill-opacity=".88"/>
+        <polygon points="50,60 92,60 71,45" fill="#1a1030" fill-opacity=".90"/>
+        <circle cx="64" cy="66" r="2" fill="#ffd060" fill-opacity=".22"/>
+        <!-- koperasi: columns + pediment + flag -->
+        <rect x="145" y="40" width="64" height="38" fill="#1a1030" fill-opacity=".90"/>
+        <polygon points="138,40 216,40 177,18" fill="#1a1030" fill-opacity=".92"/>
+        <rect x="152" y="26" width="5" height="52" fill="#201840" fill-opacity=".70"/>
+        <rect x="165" y="26" width="5" height="52" fill="#201840" fill-opacity=".70"/>
+        <rect x="186" y="26" width="5" height="52" fill="#201840" fill-opacity=".70"/>
+        <rect x="199" y="26" width="5" height="52" fill="#201840" fill-opacity=".70"/>
+        <rect x="155" y="12" width="2" height="16" fill="#0d0a18" fill-opacity=".95"/>
+        <rect x="157" y="12" width="10" height="5" fill="#501010" fill-opacity=".75"/>
+        <rect x="157" y="17" width="10" height="5" fill="#d0d0d0" fill-opacity=".35"/>
+        <circle cx="168" cy="52" r="2" fill="#ffd060" fill-opacity=".20"/>
+        <!-- tree center-left -->
+        <rect x="224" y="54" width="7" height="26" fill="#140c24" fill-opacity=".82"/>
+        <ellipse cx="228" cy="44" rx="14" ry="11" fill="#140c24" fill-opacity=".76"/>
+        <!-- market stall -->
+        <rect x="250" y="58" width="48" height="20" fill="#1a1030" fill-opacity=".88"/>
+        <polygon points="244,58 304,58 274,42" fill="#1a1030" fill-opacity=".85"/>
+        <circle cx="266" cy="66" r="2" fill="#ffd060" fill-opacity=".20"/>
+        <!-- tree center -->
+        <rect x="320" y="50" width="8" height="30" fill="#140c24" fill-opacity=".82"/>
+        <ellipse cx="324" cy="38" rx="18" ry="14" fill="#140c24" fill-opacity=".76"/>
+        <!-- village hall: large, 5 columns, flag -->
+        <rect x="350" y="36" width="76" height="42" fill="#1a1030" fill-opacity=".90"/>
+        <polygon points="344,36 432,36 388,14" fill="#1a1030" fill-opacity=".92"/>
+        <rect x="358" y="22" width="5" height="56" fill="#201840" fill-opacity=".68"/>
+        <rect x="371" y="22" width="5" height="56" fill="#201840" fill-opacity=".68"/>
+        <rect x="388" y="22" width="5" height="56" fill="#201840" fill-opacity=".68"/>
+        <rect x="405" y="22" width="5" height="56" fill="#201840" fill-opacity=".68"/>
+        <rect x="418" y="22" width="5" height="56" fill="#201840" fill-opacity=".68"/>
+        <rect x="390" y="14" width="2" height="16" fill="#0d0a18" fill-opacity=".95"/>
+        <rect x="392" y="14" width="9" height="6" fill="#3a1860" fill-opacity=".75"/>
+        <circle cx="364" cy="50" r="2" fill="#ffd060" fill-opacity=".18"/>
+        <circle cx="408" cy="50" r="2" fill="#ffd060" fill-opacity=".18"/>
+        <!-- tree center-right -->
+        <rect x="438" y="52" width="7" height="28" fill="#140c24" fill-opacity=".82"/>
+        <ellipse cx="442" cy="42" rx="15" ry="12" fill="#140c24" fill-opacity=".76"/>
+        <!-- treasury -->
+        <rect x="466" y="46" width="48" height="32" fill="#1a1030" fill-opacity=".88"/>
+        <polygon points="460,46 520,46 490,30" fill="#1a1030" fill-opacity=".90"/>
+        <circle cx="490" cy="56" r="2" fill="#ffd060" fill-opacity=".20"/>
+        <!-- tree right -->
+        <rect x="530" y="50" width="8" height="30" fill="#140c24" fill-opacity=".82"/>
+        <ellipse cx="534" cy="38" rx="18" ry="14" fill="#140c24" fill-opacity=".76"/>
+        <!-- small house right -->
+        <rect x="566" y="58" width="34" height="20" fill="#1a1030" fill-opacity=".88"/>
+        <polygon points="560,58 602,58 581,43" fill="#1a1030" fill-opacity=".90"/>
+        <circle cx="574" cy="64" r="2" fill="#ffd060" fill-opacity=".22"/>
+        <!-- tree pair far right -->
+        <rect x="614" y="52" width="7" height="28" fill="#140c24" fill-opacity=".80"/>
+        <ellipse cx="618" cy="41" rx="14" ry="11" fill="#140c24" fill-opacity=".74"/>
+        <rect x="636" y="56" width="6" height="24" fill="#140c24" fill-opacity=".76"/>
+        <ellipse cx="639" cy="46" rx="11" ry="9" fill="#140c24" fill-opacity=".70"/>
+        <!-- rightmost cottage -->
+        <rect x="663" y="60" width="32" height="18" fill="#1a1030" fill-opacity=".88"/>
+        <polygon points="658,60 697,60 678,46" fill="#1a1030" fill-opacity=".90"/>
+        <!-- far right tree -->
+        <rect x="714" y="52" width="8" height="28" fill="#140c24" fill-opacity=".82"/>
+        <ellipse cx="718" cy="40" rx="16" ry="12" fill="#140c24" fill-opacity=".76"/>
+        <!-- rightmost faint building -->
+        <rect x="740" y="64" width="38" height="14" fill="#140c24" fill-opacity=".75"/>
+        <polygon points="736,64 780,64 758,52" fill="#140c24" fill-opacity=".78"/>
+        <!-- fog gradient overlay -->
+        <rect x="0" y="40" width="800" height="50" fill="url(#skyFog)"/>
+      </svg>
       <div class="title-card">
         <!-- Lambang: gandum + lingkaran koperasi + gedung -->
         <svg class="title-emblem" viewBox="0 0 110 60" xmlns="http://www.w3.org/2000/svg" width="110" height="60" aria-hidden="true">

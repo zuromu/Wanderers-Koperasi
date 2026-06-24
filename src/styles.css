@@ -154,6 +154,8 @@ kbd{background:#1e2130;border:1px solid #3a3e50;border-bottom:2px solid #3a3e50;
 
 /* Partikel emas naik di layar judul */
 #titleParticles{position:absolute;inset:0;overflow:hidden;border-radius:8px;pointer-events:none}
+/* Siluet desa di bawah layar judul */
+#titleSkyline{position:absolute;bottom:0;left:0;width:100%;pointer-events:none;z-index:1;border-radius:0 0 8px 8px}
 .t-spark{
   position:absolute;border-radius:50%;background:var(--gold);
   animation:tSpark linear infinite;opacity:0}
