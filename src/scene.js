@@ -106,6 +106,7 @@ export class Village extends Phaser.Scene {
     this.makeClouds();
     this.drawBuildings();
     this.makeWindowGlows();
+    this.makeEntranceGlows();
     this.drawPropsDecor();
     this.makeTorches();
     this.makeMarker();
@@ -571,6 +572,16 @@ export class Village extends Phaser.Scene {
         fg.lineStyle(0.5, C.ink, 0.5).strokeRect(0, -4, 14, 8);
         fg.x = cx; fg.y = cy-45;
         this.tweens.add({ targets:fg, scaleX:{ from:1, to:0.6 }, duration:700, yoyo:true, repeat:-1, ease:'Sine.easeInOut' });
+      }
+      if (s.id === 'balai'){
+        // Bendera ungu balai desa
+        this.add.rectangle(cx, cy-34, 2, 18, C.ink).setDepth(3.8).setOrigin(0.5, 1);
+        const bf = this.add.graphics().setDepth(3.8);
+        bf.fillStyle(0x6a50a0, 1).fillRect(0, -4, 12, 8);
+        bf.fillStyle(0x9070c8, 0.65).fillRect(0, -4, 12, 4);
+        bf.lineStyle(0.5, C.ink, 0.5).strokeRect(0, -4, 12, 8);
+        bf.x = cx; bf.y = cy - 50;
+        this.tweens.add({ targets:bf, scaleX:{ from:1, to:0.62 }, duration:940, yoyo:true, repeat:-1, ease:'Sine.easeInOut', delay:280 });
       }
     });
   }
@@ -1162,15 +1173,29 @@ export class Village extends Phaser.Scene {
   /* -------- Partikel pollen melayang -------- */
   makePollen(){
     const r = rng(99);
-    const colors = [C.foam, C.foam, 0xfffacd, C.gold, C.foam, 0xfff0b0];
-    for (let i=0; i<10; i++){
+    const colors = [C.foam, C.foam, 0xfffacd, C.gold, C.foam, 0xfff0b0, 0xffd070, 0xffe8a0, 0xffffff];
+    for (let i=0; i<28; i++){
       const x = r() * COLS*TILE;
-      const y = 30 + r() * (ROWS*TILE - 60);
+      const y = 20 + r() * (ROWS*TILE - 40);
       const col = colors[(r()*colors.length)|0];
-      const rad = 1.4 + r()*0.8;
-      const dot = this.add.arc(x, y, rad, 0, 360, false, col, 0.38+r()*0.28).setDepth(5);
-      this.pollen.push({ obj:dot, ox:x, oy:y, sp:0.11+r()*0.22, ph:r()*Math.PI*2 });
+      const rad = 1.1 + r()*1.2;
+      const alpha = 0.22 + r()*0.32;
+      const dot = this.add.arc(x, y, rad, 0, 360, false, col, alpha).setDepth(5);
+      this.pollen.push({ obj:dot, ox:x, oy:y, sp:0.08+r()*0.20, ph:r()*Math.PI*2, wdx:(r()-0.5)*0.04 });
     }
+  }
+
+  /* -------- Kolam cahaya hangat di depan pintu masuk bangunan -------- */
+  makeEntranceGlows(){
+    const g = this.add.graphics().setDepth(1.9);
+    SPOTS.filter(s => !s.deco).forEach(s => {
+      const cx = s.x*TILE + TILE/2;
+      const cy = s.y*TILE + TILE + 6;
+      g.fillStyle(0xffdc70, 0.030).fillEllipse(cx, cy, 48, 18);
+      g.fillStyle(0xffc840, 0.040).fillEllipse(cx, cy, 32, 12);
+      g.fillStyle(0xffe080, 0.034).fillEllipse(cx, cy, 18,  7);
+      g.fillStyle(0xfff0a0, 0.020).fillEllipse(cx, cy,  8,  4);
+    });
   }
 
   /* -------- Cahaya jendela berkedip (di atas grafis bangunan statis) -------- */
@@ -1702,12 +1727,13 @@ export class Village extends Phaser.Scene {
       const t = (Math.sin(time*0.002 + w._phase) + 1) / 2;
       w.fillColor = lerpC(C.water, C.waterHi, t*0.6);
     }
-    // Pollen melayang
+    // Pollen melayang (angin pelan ke kanan-kiri sesuai wdx)
     for (const p of this.pollen){
-      p.obj.x = p.ox + Math.sin(time * p.sp * 0.001 + p.ph) * 18;
-      p.obj.y = p.oy + Math.cos(time * p.sp * 0.0007 + p.ph) * 12;
-      p.ox += 0.04;
-      if (p.ox > COLS*TILE + 20) p.ox = -20;
+      p.obj.x = p.ox + Math.sin(time * p.sp * 0.001 + p.ph) * 15;
+      p.obj.y = p.oy + Math.cos(time * p.sp * 0.0008 + p.ph) * 9;
+      p.ox += 0.035 + p.wdx;
+      if (p.ox > COLS*TILE + 24) p.ox = -24;
+      if (p.ox < -24) p.ox = COLS*TILE + 24;
     }
     // Bayangan awan bergerak
     for (const cloud of this.clouds){
