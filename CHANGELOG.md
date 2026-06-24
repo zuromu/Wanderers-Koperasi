@@ -3,6 +3,14 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.72.0], Night-cycle window lighting + animated win screen
+
+### Ditambahkan / Diperbarui
+- **Lampu jendela siklus siang/malam**: `windowGlows` kini diskalakan dengan `nightScale` — redup saat siang (6%), berangsur terang saat senja (0.45→0.65), penuh saat malam (0.65→0.88), lalu redup lagi sebelum fajar; membuat bangunan "hidup" di malam hari
+- **Animasi nilai grade**: huruf nilai (A/B/C/D) di layar rapor kini muncul dengan animasi `gradeIn` — scale bounce + rotasi kecil + glow emas — lalu bernapas dengan `gradePulse`
+- **Daftar konsep bertahap**: lima item konsep koperasi di rapor muncul secara bertahap (stagger 0.17 detik per item) dengan animasi geser dari kiri
+- **Partikel sparkle terapung**: 14 titik emas kecil melayang naik di latar rapor, ditambahkan secara prosedural via JS dengan ukuran/posisi/timing acak (benih deterministic)
+
 ## [0.71.0], Quest-target building glow
 
 ### Ditambahkan
