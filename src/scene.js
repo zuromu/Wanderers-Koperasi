@@ -61,6 +61,7 @@ export class Village extends Phaser.Scene {
     this.locked      = true;
 
     this.drawGround();
+    this.drawRoadCrossings();
     this.drawGrassTufts();
     this.drawCliffEdges();
     this.drawWater();
@@ -342,6 +343,41 @@ export class Village extends Phaser.Scene {
             g.fillStyle(bc, 0.88).fillCircle(cx+(r()-0.5)*5, cy+(r()-0.5)*4, 1.7);
         }
       }
+    }
+  }
+
+  /* -------- Hiasan batu di persimpangan jalan utama -------- */
+  drawRoadCrossings(){
+    const g = this.add.graphics().setDepth(0.2);
+    // Persimpangan utama: baris 5 × col 9, baris 10 × col 9
+    const CX = [
+      [9*TILE + TILE/2, 5*TILE  + TILE/2],
+      [9*TILE + TILE/2, 10*TILE + TILE/2],
+    ];
+    for (const [cx, cy] of CX){
+      // Lingkaran terluar (batu lebih terang, inlay)
+      g.lineStyle(2.5, C.pathShade, 0.20).strokeCircle(cx, cy, 18);
+      g.lineStyle(1.5, C.pathShade, 0.13).strokeCircle(cx, cy, 26);
+      // Garis silang (mawar kompas)
+      g.lineStyle(2, C.pathShade, 0.16).lineBetween(cx-22, cy, cx+22, cy);
+      g.lineStyle(2, C.pathShade, 0.16).lineBetween(cx, cy-22, cx, cy+22);
+      // Diagonal lebih tipis
+      g.lineStyle(1, C.pathShade, 0.09).lineBetween(cx-17, cy-17, cx+17, cy+17);
+      g.lineStyle(1, C.pathShade, 0.09).lineBetween(cx-17, cy+17, cx+17, cy-17);
+      // Lingkaran tengah (ujung mawar kompas)
+      g.fillStyle(C.pathShade, 0.16).fillCircle(cx, cy, 4.5);
+      g.fillStyle(C.gold, 0.10).fillCircle(cx, cy, 3);
+    }
+    // Tanda persimpangan kecil di junction baris 5/2 dan col 9/3
+    const MINOR = [
+      [3*TILE+TILE/2, 5*TILE+TILE/2], [16*TILE+TILE/2, 5*TILE+TILE/2],
+      [3*TILE+TILE/2, 10*TILE+TILE/2],[16*TILE+TILE/2, 10*TILE+TILE/2],
+    ];
+    for (const [cx, cy] of MINOR){
+      g.lineStyle(1.5, C.pathShade, 0.14).strokeCircle(cx, cy, 10);
+      g.lineStyle(1, C.pathShade, 0.10).lineBetween(cx-12, cy, cx+12, cy);
+      g.lineStyle(1, C.pathShade, 0.10).lineBetween(cx, cy-12, cx, cy+12);
+      g.fillStyle(C.pathShade, 0.12).fillCircle(cx, cy, 3);
     }
   }
 
@@ -857,6 +893,39 @@ export class Village extends Phaser.Scene {
         g.fillStyle(C.leafHi, 0.5).fillCircle(px-1.5, py-4, 2);
       }
     }
+
+    // Dermaga kecil di tepi selatan (baris 12 → 13)
+    const DOCK_X = 5*TILE + TILE/2, DOCK_Y = 13*TILE;
+    const gd = this.add.graphics().setDepth(2.0);
+    // Papan lantai dermaga
+    gd.fillStyle(C.woodDark, 0.80).fillRect(DOCK_X-9, DOCK_Y-2, 18, 24);
+    gd.fillStyle(C.wood, 0.28).fillRect(DOCK_X-8, DOCK_Y, 16, 4);
+    gd.lineStyle(0.8, C.ink, 0.50).strokeRect(DOCK_X-9, DOCK_Y-2, 18, 24);
+    // Papan melintang
+    for (let row=0; row<4; row++) gd.lineStyle(0.5, C.ink, 0.22).lineBetween(DOCK_X-9, DOCK_Y+4+row*5, DOCK_X+9, DOCK_Y+4+row*5);
+    // Tiang patok
+    [-9, 9].forEach(ox => {
+      gd.fillStyle(C.ink, 0.45).fillRect(DOCK_X+ox-1, DOCK_Y, 2, 24);
+      gd.fillStyle(C.woodDark, 0.65).fillRect(DOCK_X+ox-0.5, DOCK_Y, 1, 24);
+    });
+    // Pelampung kecil di ujung
+    gd.fillStyle(0x3a70a0, 0.62).fillCircle(DOCK_X, DOCK_Y+21, 3.2);
+    gd.fillStyle(0x7ab0d8, 0.35).fillCircle(DOCK_X-0.8, DOCK_Y+20, 1.5);
+    gd.lineStyle(0.5, C.ink, 0.4).strokeCircle(DOCK_X, DOCK_Y+21, 3.2);
+
+    // Papan penanda masuk desa (tiang + papan kayu di barat jalur utara)
+    const sx = 7*TILE + TILE*0.62, sy = 2*TILE + TILE*0.55;
+    const gsg = this.add.graphics().setDepth(2.25);
+    gsg.fillStyle(C.woodDark, 0.88).fillRect(sx-1, sy-18, 2, 20);
+    gsg.lineStyle(0.5, C.ink, 0.5).strokeRect(sx-1, sy-18, 2, 20);
+    gsg.fillStyle(C.wood, 0.86).fillRoundedRect(sx-15, sy-24, 30, 9, 1);
+    gsg.fillStyle(0xd4a870, 0.30).fillRect(sx-14, sy-23, 28, 2);
+    gsg.fillStyle(C.woodDark, 0.15).fillRect(sx-14, sy-18, 28, 2);
+    gsg.lineStyle(0.8, C.ink, 0.58).strokeRoundedRect(sx-15, sy-24, 30, 9, 1);
+    // Motif ukiran kecil di papan
+    gsg.fillStyle(C.gold, 0.28).fillCircle(sx, sy-19, 2.5);
+    gsg.lineStyle(0.5, C.goldDark, 0.30).strokeCircle(sx, sy-19, 2.5);
+    gsg.fillStyle(C.gold, 0.18).fillRect(sx-10, sy-20, 6, 1).fillRect(sx+4, sy-20, 6, 1);
   }
 
   _drawBarrel(g, cx, cy){

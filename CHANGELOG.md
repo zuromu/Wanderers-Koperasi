@@ -3,6 +3,14 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.52.0], Road crossings, fishing dock, village signpost
+
+### Ditambahkan
+- **Mawar kompas di persimpangan utama**: pola batu hias (lingkaran + garis silang diagonal) di titik-titik persimpangan jalan utama (row 5 × col 9 dan row 10 × col 9) — jalan kini terasa dirancang, bukan sekadar grid kosong.
+- **Tanda persimpangan minor**: motif lingkaran kecil di 4 persimpangan jalur cabang (row 5/10 × col 3/16).
+- **Dermaga kecil**: dermaga kayu berpapan di tepi selatan (baris 13) dengan tiang patok dan pelampung biru kecil di ujungnya — menambah nuansa desa pesisir/sungai.
+- **Papan penanda masuk desa**: tiang kayu dengan papan berukir dan motif emas di barat jalur utara (col 7, row 2) — menandai bahwa pemain memasuki kawasan desa.
+
 ## [0.51.0], Distinct NPC sprites — 7 unique characters with own appearance
 
 ### Diubah
