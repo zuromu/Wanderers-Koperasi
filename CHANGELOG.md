@@ -3,6 +3,12 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.74.0], Festival bunting + village square stone plaza
+
+### Ditambahkan
+- **Umbul-umbul / bunting festival**: dua tali bendera segitiga warna-warni (merah, emas, teal, biru) direntangkan di sepanjang jalan utama (baris 5 dan 10) antara tiang lampu; bendera bergerak mengikuti angin (sinus berlapis, periode berbeda tiap bendera)
+- **Alun-alun batu di sumur desa**: cincin 22+14 batu kecil mengelilingi sumur dengan motif kompas emas di tengah — menandai sumur sebagai pusat alun-alun desa
+
 ## [0.73.0], Sunset water reflections + multi-chimney smoke + waving flag
 
 ### Ditambahkan

@@ -130,6 +130,8 @@ export class Village extends Phaser.Scene {
     this.makeFish();
     this.makeAnimals();
     this.makeButterflies();
+    this.drawVillagePlaza();
+    this.makeBunting();
     this.makeAtmosphere();
     this.makeSkyGlow();
     this.makeStars();
@@ -1720,6 +1722,46 @@ export class Village extends Phaser.Scene {
     if (ladangS) addSmoke(ladangS.x*TILE+TILE/2+10, ladangS.y*TILE+TILE/2-22, 5, 0xc4b86a, 0.20, 2.0, 88);
   }
 
+  /* -------- Lantai alun-alun batu di sekitar sumur desa -------- */
+  drawVillagePlaza(){
+    const well = SPOTS.find(s => s.id === 'well');
+    if (!well) return;
+    const cx = well.x*TILE + TILE/2, cy = well.y*TILE + TILE/2 + 6;
+    const g = this.add.graphics().setDepth(0.35);
+    const rp = rng(3317);
+    // Outer ring of cobblestones
+    for (let i=0; i<22; i++){
+      const a = (i/22)*Math.PI*2, r = 28 + rp()*4;
+      const sx = cx + Math.cos(a)*r, sy = cy + Math.sin(a)*r*0.55;
+      const sw = 6+rp()*4, sh = 3.5+rp()*2;
+      g.fillStyle(lerpC(C.stone, C.stoneDark, 0.2+rp()*0.35), 0.58+rp()*0.22);
+      g.fillEllipse(sx, sy, sw, sh);
+      g.lineStyle(0.5, C.ink, 0.20+rp()*0.12);
+      g.strokeEllipse(sx, sy, sw, sh);
+    }
+    // Middle ring (closer)
+    for (let i=0; i<14; i++){
+      const a = (i/14)*Math.PI*2+0.2, r = 18 + rp()*3;
+      const sx = cx + Math.cos(a)*r, sy = cy + Math.sin(a)*r*0.5;
+      const sw = 5+rp()*3, sh = 2.8+rp()*1.5;
+      g.fillStyle(lerpC(C.stone, 0xd0cfdc, rp()*0.4), 0.50+rp()*0.18);
+      g.fillEllipse(sx, sy, sw, sh);
+    }
+    // Centre star / compass-rose accent
+    g.fillStyle(C.pathShade, 0.32).fillEllipse(cx, cy+1, 18, 7);
+    g.fillStyle(C.gold, 0.18).fillCircle(cx, cy, 5);
+    g.lineStyle(0.6, C.goldDark, 0.28).strokeCircle(cx, cy, 5);
+  }
+
+  /* -------- Umbul-umbul / bunting festival melintas di jalan utama -------- */
+  makeBunting(){
+    this.buntingGfx = this.add.graphics().setDepth(3.87);
+    this._buntingLines = [
+      { x1:4*TILE+TILE/2, y1:5*TILE+TILE/2, x2:14*TILE+TILE/2, y2:5*TILE+TILE/2, sag:16 },
+      { x1:4*TILE+TILE/2, y1:10*TILE+TILE/2, x2:14*TILE+TILE/2, y2:10*TILE+TILE/2, sag:12 },
+    ];
+  }
+
   /* -------- Pantulan cahaya matahari sore di permukaan air -------- */
   makeWaterReflections(){
     this.waterGlowGfx = this.add.graphics().setDepth(1.08);
@@ -2503,6 +2545,44 @@ export class Village extends Phaser.Scene {
       this.flagGfx.lineStyle(0.6, C.ink, 0.45);
       this.flagGfx.lineBetween(fx+1.5, fy+1, fx+16+wave, fy+5+wave2);
       this.flagGfx.lineBetween(fx+16+wave, fy+5+wave2, fx+1.5, fy+9);
+    }
+    // Umbul-umbul / bunting festival melambai di angin
+    if (this.buntingGfx && this._buntingLines){
+      const bg = this.buntingGfx;
+      bg.clear();
+      const FCOLS = [C.roofRed, C.gold, C.roofTeal, 0x4f86c6, C.roofRed, C.gold, C.roofTeal, 0x4f86c6];
+      const wind  = Math.sin(time * 0.00115) * 2.8;
+      for (const ln of this._buntingLines){
+        const {x1, y1, x2, y2, sag} = ln;
+        const dx = x2-x1, dy = y2-y1, len = Math.sqrt(dx*dx+dy*dy);
+        const PTS = 36;
+        // Tali tipis
+        bg.lineStyle(0.9, C.woodDark, 0.50);
+        bg.beginPath();
+        for (let i=0; i<=PTS; i++){
+          const t = i/PTS;
+          const sx = x1+dx*t;
+          const sy = y1+dy*t + sag*Math.sin(Math.PI*t) + wind*Math.sin(t*Math.PI*3);
+          i===0 ? bg.moveTo(sx,sy) : bg.lineTo(sx,sy);
+        }
+        bg.strokePath();
+        // Segitiga bendera
+        const nFlags = Math.round(len/30);
+        for (let f=0; f<nFlags; f++){
+          const t = (f+0.5)/nFlags;
+          const fx2 = x1+dx*t;
+          const fy2 = y1+dy*t + sag*Math.sin(Math.PI*t) + wind*Math.sin(t*Math.PI*3);
+          const fh = 10, fw = 8;
+          const wo  = Math.sin(time*0.0024 + t*6.5)*1.8;
+          const col = FCOLS[f % FCOLS.length];
+          bg.fillStyle(col, 0.86);
+          bg.fillTriangle(fx2-fw/2, fy2+wo, fx2+fw/2, fy2+wo, fx2, fy2+fh+wo);
+          bg.lineStyle(0.5, C.ink, 0.38);
+          bg.lineBetween(fx2-fw/2, fy2+wo, fx2+fw/2, fy2+wo);
+          bg.lineBetween(fx2-fw/2, fy2+wo, fx2, fy2+fh+wo);
+          bg.lineBetween(fx2+fw/2, fy2+wo, fx2, fy2+fh+wo);
+        }
+      }
     }
     // Pollen melayang (angin pelan ke kanan-kiri sesuai wdx)
     for (const p of this.pollen){
