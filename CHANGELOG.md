@@ -3,6 +3,12 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.58.0], Blossom petals + fish in water
+
+### Ditambahkan
+- **Hujan kelopak bunga**: emitter partikel kelopak merah muda kecil yang jatuh dari atas — cocok dengan pohon berbunga yang ditambahkan di wave 57; warna bergantian antara merah muda pucat, putih, merah muda terang; depth 4.9 (di antara daun dan kupu-kupu)
+- **Ikan di baris air**: 6 ikan kecil (3 di baris air atas, 3 di baris bawah) bergerak pelan-pelan secara horizontal melalui baris air — tekstur oval biru dengan ekor segitiga dan highlight putih; arah acak (kiri/kanan), membalik ketika melewati tepi peta
+
 ## [0.57.0], Flowering blossom trees + bamboo grove near rice field
 
 ### Ditambahkan

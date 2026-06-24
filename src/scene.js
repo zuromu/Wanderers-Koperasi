@@ -90,6 +90,7 @@ export class Village extends Phaser.Scene {
     this.fireflies   = [];
     this.windowGlows = [];
     this.butterflies = [];
+    this.fishArr     = [];
     this.locked      = true;
 
     this.drawGround();
@@ -118,6 +119,8 @@ export class Village extends Phaser.Scene {
     this.makeNpcs();
     this.makeFireflies();
     this.makeLeaves();
+    this.makeBlossomPetals();
+    this.makeFish();
     this.makeButterflies();
     this.makeAtmosphere();
     this.makeVignette();
@@ -1480,6 +1483,56 @@ export class Village extends Phaser.Scene {
     }).setDepth(4.8);
   }
 
+  /* -------- Kelopak bunga melayang (dari pohon berbunga) -------- */
+  makeBlossomPetals(){
+    if (!this.textures.exists('petal')){
+      const g = this.add.graphics();
+      g.fillStyle(0xf8c8dc, 0.92).fillEllipse(5, 3, 8, 4.5);
+      g.generateTexture('petal', 10, 7);
+      g.destroy();
+    }
+    const W = COLS*TILE;
+    this.add.particles(W/2, -10, 'petal', {
+      x:{ min:0, max:W }, y:0,
+      speedY:{ min:10, max:32 },
+      speedX:{ min:-24, max:24 },
+      lifespan:{ min:6500, max:11000 },
+      scale:{ min:0.5, max:1.5 },
+      rotate:{ min:0, max:360 },
+      tint:[0xfce4f0, 0xf8c8dc, 0xffffff, 0xf0a0bc, 0xffeef8],
+      alpha:{ start:0.52, end:0 },
+      frequency:800, quantity:1,
+    }).setDepth(4.9);
+  }
+
+  /* -------- Ikan kecil di baris air (baris 0 dan 13) -------- */
+  makeFish(){
+    if (!this.textures.exists('fish')){
+      const fg = this.add.graphics();
+      fg.fillStyle(0x50a0c0, 0.82).fillEllipse(8, 4, 14, 6);
+      fg.fillStyle(0x2878a0, 0.78).fillTriangle(0, 0, 0, 8, -6, 4);
+      fg.fillStyle(0xc0e8f8, 0.28).fillEllipse(9, 3, 5, 2);
+      fg.generateTexture('fish', 18, 8);
+      fg.destroy();
+    }
+    const r = rng(7878);
+    const fishDefs = [
+      {row:0}, {row:0}, {row:0},
+      {row:ROWS-1}, {row:ROWS-1}, {row:ROWS-1},
+    ];
+    fishDefs.forEach(fd => {
+      const fy = fd.row * TILE + 10 + r()*20;
+      const spd = (50 + r()*70) * (r()>0.5 ? 1 : -1);
+      const fx = r() * COLS*TILE;
+      const f = this.add.image(fx, fy, 'fish')
+        .setDepth(1.1)
+        .setAlpha(0.42 + r()*0.22)
+        .setScale(0.8 + r()*0.5, 0.75 + r()*0.3);
+      if (spd < 0) f.setFlipX(true);
+      this.fishArr.push({ obj:f, spd, row:fd.row });
+    });
+  }
+
   /* -------- Kupu-kupu ambien (4 ekor, terbang melayang di area rumput) -------- */
   makeButterflies(){
     if (!this.textures.exists('butterfly')){
@@ -1821,6 +1874,12 @@ export class Village extends Phaser.Scene {
                + Math.cos(time * bf.sp * 0.0011 + bf.ph * 1.3) * 6;
       const fw = 0.22 + Math.abs(Math.sin(time * bf.flapSp + bf.flapPh)) * 0.78;
       bf.obj.setScale(fw * bf.sc, bf.sc);
+    }
+    // Ikan di baris air bergerak pelan
+    for (const f of this.fishArr){
+      f.obj.x += f.spd * 0.016;
+      if (f.spd > 0 && f.obj.x > COLS*TILE + 22) f.obj.x = -22;
+      if (f.spd < 0 && f.obj.x < -22) f.obj.x = COLS*TILE + 22;
     }
     // Warga desa bergerak
     for (const npc of this.npcs){
