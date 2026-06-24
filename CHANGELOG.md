@@ -3,6 +3,11 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.78.0], Animated sun
+
+### Ditambahkan
+- **Matahari animasi**: matahari busur melintasi langit siang (dayP 0.04–0.80) — merah-oranye saat fajar, kuning-emas saat siang, putih-emas saat tengah hari, oranye-merah tua saat senja; lebih besar dan bercahaya lebih lebar di cakrawala daripada saat di puncak; tersembunyi saat hujan; melengkapi trias langit bersama bulan dan bintang
+
 ## [0.77.0], Night moon + afternoon rain
 
 ### Ditambahkan
