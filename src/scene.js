@@ -1140,55 +1140,98 @@ export class Village extends Phaser.Scene {
     }
   }
 
-  /* -------- Tekstur sprite warga desa (1 kali generate, 6 varian) -------- */
-  makeNpcTextures(){
-    if (this.textures.exists('npc_0')) return;
-    const OUTFITS = [C.tunic, C.roofRed, C.roofBlue, C.roofGreen, C.gold, C.coral];
-    const HATS    = [C.goldDark, C.stoneDark, C.woodDark, C.roofTeal, C.hair, C.roofGreen];
-    OUTFITS.forEach((outfit, i) => {
-      const g = this.add.graphics();
-      // Sepatu dengan ujung sedikit lebih tebal
-      g.fillStyle(C.ink).fillRoundedRect(4, 25, 6, 4, 1).fillRoundedRect(11, 25, 6, 4, 1);
-      g.fillStyle(C.woodDark).fillRect(4, 25, 5, 3).fillRect(11, 25, 5, 3);
-      // Kaki (celana)
-      g.fillStyle(C.pants).fillRect(5, 17, 4, 9).fillRect(11, 17, 4, 9);
-      g.lineStyle(1, C.ink, 1).strokeRect(5, 17, 4, 9).strokeRect(11, 17, 4, 9);
-      // Ikat pinggang
-      g.fillStyle(C.woodDark, 0.7).fillRect(4, 18, 12, 2);
-      g.fillStyle(C.gold, 0.9).fillRect(9, 17.5, 2, 3);
-      // Badan dengan highlight pundak
-      g.fillStyle(outfit).fillRoundedRect(4, 9, 12, 10, 2);
-      g.fillStyle(0xffffff, 0.15).fillRect(4, 9, 12, 3);
-      g.lineStyle(1.5, C.ink, 1).strokeRoundedRect(4, 9, 12, 10, 2);
-      // Rambut di bawah topi
-      g.fillStyle(C.hair).fillRoundedRect(5, 4, 10, 5, 2);
-      // Kepala
-      g.fillStyle(C.skin).fillCircle(10, 5.5, 5.5);
-      g.fillStyle(C.skinShade, 0.3).fillCircle(11.5, 7, 3.5);
-      g.lineStyle(1.5, C.ink, 1).strokeCircle(10, 5.5, 5.5);
-      // Topi dengan pinggiran
-      g.fillStyle(HATS[i]).fillRoundedRect(4, -1, 12, 7, 2);
-      g.fillStyle(HATS[i]).fillRoundedRect(3, 5, 14, 2.5, 1);
-      g.lineStyle(1, C.ink, 0.9).strokeRoundedRect(4, -1, 12, 7, 2);
-      // Mata dengan sorotan
-      g.fillStyle(C.ink).fillRect(7.5, 5, 2, 2).fillRect(11.5, 5, 2, 2);
-      g.fillStyle(0xffffff, 0.7).fillRect(8, 5, 1, 1).fillRect(12, 5, 1, 1);
-      g.generateTexture(`npc_${i}`, 20, 30);
+  /* -------- Tekstur sprite unik per warga (7 karakter berbeda) -------- */
+  makeNamedNpcTextures(){
+    if (this.textures.exists('npc_darmo')) return;
+    const DEFS = [
+      { key:'npc_darmo',  outfit:0x5c6e38, pants:0x4a4a5a, hat:'white',    hairC:0xd0c8b8, hatC:0xd0c8b8, skinC:C.skin   },
+      { key:'npc_siti',   outfit:0xb03268, pants:0x4a3060, hat:'headscarf', hairC:C.hair,   hatC:0x8a1848, skinC:C.skin   },
+      { key:'npc_dodi',   outfit:0x2a7acc, pants:0x1a4488, hat:'none',      hairC:C.hair,   hatC:C.hair,   skinC:C.skin   },
+      { key:'npc_ratna',  outfit:0x2a8860, pants:0x3a5040, hat:'flower',    hairC:0x3a2010, hatC:0x3a2010, skinC:C.skin   },
+      { key:'npc_hasan',  outfit:0x1a3a70, pants:0x2a3a58, hat:'conical',   hairC:C.hair,   hatC:0xc0a040, skinC:0xc08060 },
+      { key:'npc_lastri', outfit:0x6a3090, pants:0x3a2060, hat:'bun',       hairC:0x2a1810, hatC:0x2a1810, skinC:C.skin, glasses:true },
+      { key:'npc_rudi',   outfit:0xe07020, pants:0x1a3888, hat:'cap',       hairC:C.hair,   hatC:0x1a4499, skinC:C.skin   },
+    ];
+    for (const d of DEFS){
+      const g = this.add.graphics({ x:0, y:0 });
+      g.fillStyle(C.ink).fillRoundedRect(4,25,6,4,1).fillRoundedRect(11,25,6,4,1);
+      g.fillStyle(C.woodDark).fillRect(4,25,5,3).fillRect(11,25,5,3);
+      g.fillStyle(d.pants||C.pants).fillRect(5,17,4,9).fillRect(11,17,4,9);
+      g.lineStyle(1,C.ink,1).strokeRect(5,17,4,9).strokeRect(11,17,4,9);
+      g.fillStyle(C.woodDark,0.7).fillRect(4,18,12,2);
+      g.fillStyle(C.gold,0.9).fillRect(9,17.5,2,3);
+      g.fillStyle(d.outfit).fillRoundedRect(4,9,12,10,2);
+      g.fillStyle(0xffffff,0.15).fillRect(4,9,12,3);
+      g.lineStyle(1.5,C.ink,1).strokeRoundedRect(4,9,12,10,2);
+      g.fillStyle(d.skinC).fillCircle(10,5.5,5.5);
+      g.fillStyle(C.skinShade,0.30).fillCircle(11.5,7,3.5);
+      g.lineStyle(1.5,C.ink,1).strokeCircle(10,5.5,5.5);
+      // Rambut / topi per karakter
+      if (d.hat === 'headscarf'){
+        g.fillStyle(d.hatC,0.88).fillEllipse(10,3.5,14,11);
+        g.fillStyle(d.hatC,0.72).fillRect(5,3,10,5);
+        g.lineStyle(0.5,C.ink,0.28).strokeEllipse(10,3.5,14,11);
+        g.fillStyle(0xffffff,0.12).fillEllipse(8,2,7,4);
+      } else if (d.hat === 'white'){
+        g.fillStyle(d.hairC).fillRoundedRect(4,1,12,7,3);
+        g.fillStyle(0xe0dcd4,0.38).fillCircle(8.5,4,3.5);
+        g.lineStyle(0.5,C.ink,0.14).lineBetween(5,4,15,4).lineBetween(6,6,14,6);
+      } else if (d.hat === 'none'){
+        g.fillStyle(d.hairC).fillRoundedRect(5,0,10,6,3);
+        g.fillStyle(0x9e7e5a,0.28).fillCircle(8,3,3);
+      } else if (d.hat === 'flower'){
+        g.fillStyle(d.hairC).fillRoundedRect(4,0,12,7,3);
+        g.fillStyle(0x7a5530,0.25).fillCircle(8.5,3,3.5);
+        g.lineStyle(0.7,C.ink,0.65).strokeRoundedRect(4,0,12,7,3);
+        g.fillStyle(0xff6888,0.92).fillCircle(14.5,1.5,2.2);
+        g.fillStyle(0xffee99,1.0).fillCircle(14.5,1.5,1.1);
+      } else if (d.hat === 'conical'){
+        g.fillStyle(d.hairC).fillRoundedRect(5,4,10,5,2);
+        g.fillStyle(d.hatC,0.82).fillTriangle(2,8,18,8,10,-3);
+        g.fillStyle(d.hatC,0.62).fillRect(1,7,18,2);
+        g.lineStyle(0.5,C.ink,0.30).strokeTriangle(2,8,18,8,10,-3);
+        g.lineStyle(0.5,0x8a6020,0.20);
+        for (let li=1;li<6;li++) g.lineBetween(2+li,8-li,18-li,8-li);
+      } else if (d.hat === 'bun'){
+        g.fillStyle(d.hairC).fillRoundedRect(4,2,12,6,3);
+        g.fillStyle(d.hairC,0.9).fillCircle(10,1,4);
+        g.lineStyle(0.5,C.ink,0.3).strokeCircle(10,1,4);
+        g.lineStyle(0.5,C.ink,0.20).lineBetween(6,3,14,3);
+        if (d.glasses){
+          g.lineStyle(0.8,C.ink,0.82);
+          g.strokeCircle(8,5.5,2).strokeCircle(12,5.5,2);
+          g.lineBetween(10,5.5,10.2,5.5).lineBetween(6,5.5,5,5).lineBetween(14,5.5,15,5);
+        }
+      } else if (d.hat === 'cap'){
+        g.fillStyle(d.hairC).fillRoundedRect(5,3,10,5,2);
+        g.fillStyle(d.hatC).fillRoundedRect(3,0,14,6,2);
+        g.fillStyle(d.hatC,0.82).fillRect(2,5.5,16,2.5);
+        g.lineStyle(0.5,C.ink,0.35).strokeRoundedRect(3,0,14,6,2);
+        g.fillStyle(0xffffff,0.15).fillRect(4,1,5,1.5);
+      } else {
+        g.fillStyle(d.hairC).fillRoundedRect(5,4,10,5,2);
+        g.fillStyle(d.hatC).fillRoundedRect(4,-1,12,7,2);
+        g.fillStyle(d.hatC).fillRoundedRect(3,5,14,2.5,1);
+        g.lineStyle(1,C.ink,0.9).strokeRoundedRect(4,-1,12,7,2);
+      }
+      g.fillStyle(C.ink).fillRect(7.5,5,2,2).fillRect(11.5,5,2,2);
+      g.fillStyle(0xffffff,0.7).fillRect(8,5,1,1).fillRect(12,5,1,1);
+      g.generateTexture(d.key, 20, 30);
       g.destroy();
-    });
+    }
   }
 
   /* -------- Warga desa yang berkeliaran -------- */
   makeNpcs(){
-    this.makeNpcTextures();
+    this.makeNamedNpcTextures();
     const NPC_DATA = [
-      { name:'Pak Darmo',  idx:0, sc:1.08, itype:'bob'  },
-      { name:'Bu Siti',    idx:1, sc:1.00, itype:'sway' },
-      { name:'Dodi',       idx:2, sc:0.82, itype:'rock' },
-      { name:'Ratna',      idx:3, sc:1.00, itype:'bob'  },
-      { name:'Pak Hasan',  idx:4, sc:1.05, itype:'sway' },
-      { name:'Bu Lastri',  idx:5, sc:1.00, itype:'rock' },
-      { name:'Rudi',       idx:1, sc:0.85, itype:'bob'  },
+      { name:'Pak Darmo',  key:'npc_darmo',  sc:1.08, itype:'bob'  },
+      { name:'Bu Siti',    key:'npc_siti',   sc:1.00, itype:'sway' },
+      { name:'Dodi',       key:'npc_dodi',   sc:0.82, itype:'rock' },
+      { name:'Ratna',      key:'npc_ratna',  sc:1.00, itype:'bob'  },
+      { name:'Pak Hasan',  key:'npc_hasan',  sc:1.05, itype:'sway' },
+      { name:'Bu Lastri',  key:'npc_lastri', sc:1.00, itype:'rock' },
+      { name:'Rudi',       key:'npc_rudi',   sc:0.85, itype:'bob'  },
     ];
     const walkable = [];
     for (let y=1; y<ROWS-1; y++)
@@ -1199,7 +1242,7 @@ export class Village extends Phaser.Scene {
       const [sx,sy] = walkable[Math.floor(Math.random()*walkable.length)];
       const wx = sx*TILE+TILE/2, wy = sy*TILE+TILE/2;
       const shadow = this.add.ellipse(0, 9, 18, 7, C.shadow, 0.28);
-      const sprite = this.add.image(0, 0, `npc_${d.idx}`).setOrigin(0.5, 0.88);
+      const sprite = this.add.image(0, 0, d.key).setOrigin(0.5, 0.88);
       const c = this.add.container(wx, wy, [shadow, sprite]).setDepth(2.5 + wy/(ROWS*TILE)*4).setScale(d.sc);
       if (d.itype === 'sway'){
         this.tweens.add({ targets:sprite, scaleX:{from:1,to:0.93}, duration:1100+i*90,  yoyo:true, repeat:-1, ease:'Sine.easeInOut' });

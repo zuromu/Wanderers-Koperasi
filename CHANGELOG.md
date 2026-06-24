@@ -3,6 +3,19 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.51.0], Distinct NPC sprites — 7 unique characters with own appearance
+
+### Diubah
+- **Sprite NPC unik per karakter**: setiap dari 7 warga desa kini memiliki tampilan khas yang berbeda:
+  - **Pak Darmo** — baju olive green, rambut putih/abu (lanjut usia), celana abu gelap
+  - **Bu Siti** — baju pink/magenta, kerudung merah gelap menutup kepala
+  - **Dodi** — baju biru cerah, celana navy, rambut pendek tanpa topi (anak kecil)
+  - **Ratna** — baju jade green, rambut cokelat gelap dengan bunga merah muda di rambut
+  - **Pak Hasan** — baju navy gelap, topi caping jerami/rotan, warna kulit lebih gelap
+  - **Bu Lastri** — baju ungu formal, sanggul rapi, kacamata bulat kecil
+  - **Rudi** — baju oranye, celana jeans biru, topi baseball biru
+- Setiap NPC memiliki satu texture unik (`npc_darmo`, `npc_siti`, dst.) — tidak ada lagi 6 varian warna generik yang berulang
+
 ## [0.50.0], Cliff edges + title screen polish — map borders, reed beds, varied particles
 
 ### Ditambahkan
