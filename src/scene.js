@@ -138,6 +138,7 @@ export class Village extends Phaser.Scene {
     this.makeBunting();
     this.makeAtmosphere();
     this.makeSkyGlow();
+    this.makeSun();
     this.makeStars();
     this.makeWaterReflections();
     this.makeBannerFlag();
@@ -2352,6 +2353,12 @@ export class Village extends Phaser.Scene {
     gEl.style.boxShadow=`0 0 0 1px #a9781b, 0 8px 32px rgba(0,0,0,.6), 0 0 52px ${glowC}, inset 0 0 0 1px rgba(224,165,43,.15)`;
   }
 
+  /* -------- Matahari siang — busur melintasi langit saat pagi-sore -------- */
+  makeSun(){
+    this.sunHaloGfx = this.add.graphics().setDepth(97.0);
+    this.sunGfx     = this.add.graphics().setDepth(97.05);
+  }
+
   /* -------- Bulan malam — busur melintasi langit saat malam -------- */
   makeMoon(){
     this.moonHaloGfx = this.add.graphics().setDepth(97.1);
@@ -2617,6 +2624,46 @@ export class Village extends Phaser.Scene {
       for (const s of this.stars){
         const tw = (Math.sin(time * s.sp * 0.0022 + s.ph) + 1) / 2;
         s.dot.setAlpha(starV * (0.28 + tw * 0.52));
+      }
+    }
+    // Matahari siang: busur melintasi langit saat pagi–sore (dayP 0.04–0.80)
+    if (this.sunGfx){
+      this.sunGfx.clear(); this.sunHaloGfx.clear();
+      // Rain hides sun
+      const RFADE = 0.045;
+      let rainI2 = 0;
+      if (dayP > 0.34 && dayP < 0.58){
+        const rt = (dayP - 0.34) / 0.24;
+        rainI2 = rt < RFADE ? rt/RFADE : rt > 1-RFADE ? (1-rt)/RFADE : 1;
+      }
+      let sunVis = 0;
+      if (dayP > 0.04 && dayP < 0.80){
+        sunVis = dayP < 0.10 ? (dayP-0.04)/0.06
+               : dayP > 0.74 ? (0.80-dayP)/0.06 : 1;
+      }
+      sunVis *= (1 - rainI2 * 0.88);
+      if (sunVis > 0.01){
+        const W = COLS*TILE;
+        const prog = (dayP - 0.04) / 0.76;
+        const sx = 28 + prog * (W - 56);
+        const sy = 17 - Math.sin(prog * Math.PI) * 11;
+        // Color: deep orange → warm yellow → white-gold → deep orange-red
+        const sunC = prog < 0.25 ? lerpC(0xff5a10, 0xffdd40, prog/0.25)
+                   : prog < 0.55 ? lerpC(0xffdd40, 0xfff8b0, (prog-0.25)/0.30)
+                   : lerpC(0xfff8b0, 0xff4010, (prog-0.55)/0.45);
+        const isLow = prog < 0.25 || prog > 0.72;
+        const glowR = isLow ? 42 : 30;
+        const glowA = isLow ? sunVis*0.10 : sunVis*0.05;
+        // Outer glow layers
+        this.sunHaloGfx.fillStyle(sunC, glowA * 0.5).fillCircle(sx, sy, glowR);
+        this.sunHaloGfx.fillStyle(sunC, glowA).fillCircle(sx, sy, glowR * 0.6);
+        // Sun body (larger at horizon, smaller at zenith)
+        const sunR = isLow ? 11 : 8.5;
+        this.sunGfx.fillStyle(sunC, sunVis * 0.94).fillCircle(sx, sy, sunR);
+        // Bright specular highlight
+        this.sunGfx.fillStyle(0xffffff, sunVis * (isLow ? 0.28 : 0.45)).fillCircle(sx - sunR*0.28, sy - sunR*0.28, sunR*0.44);
+        // Corona ring
+        this.sunGfx.lineStyle(0.7, sunC, sunVis * 0.10).strokeCircle(sx, sy, sunR + 2.5);
       }
     }
     // Bulan malam: busur melintasi langit saat malam (dayP 0.72–1.00 / 0.00–0.12)
