@@ -24,6 +24,9 @@ const P = {
   wanderer: `<svg viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg"><rect width="30" height="30" rx="3" fill="#241d2e"/><ellipse cx="15" cy="21" rx="7" ry="7" fill="#d4956a"/><path d="M5 17Q7 4 15 4Q23 4 25 17Q22 14 15 14Q8 14 5 17Z" fill="#1a1428"/><rect x="11" y="19" width="2" height="2" rx=".5" fill="#241d2e"/><rect x="17" y="19" width="2" height="2" rx=".5" fill="#241d2e"/><rect x="11" y="19" width="1" height="1" fill="#7a60ff" opacity=".75"/><rect x="17" y="19" width="1" height="1" fill="#7a60ff" opacity=".75"/><path d="M12 25q3 1.5 6 0" stroke="#8a4020" stroke-width="1" fill="none"/></svg>`,
   warning: `<svg viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg"><rect width="30" height="30" rx="3" fill="#c0432f"/><polygon points="15,5 2,27 28,27" fill="#e05040" opacity=".9"/><rect x="14" y="11" width="2" height="9" rx="1" fill="#fff"/><rect x="14" y="22.5" width="2" height="2.5" rx="1" fill="#fff"/></svg>`,
   tamat: `<svg viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg"><rect width="30" height="30" rx="3" fill="#7fc96b"/><polygon points="15,3 18.5,10.5 27,11.5 21,17.5 22.8,26 15,22 7.2,26 9,17.5 3,11.5 11.5,10.5" fill="#e0a52b" stroke="#a9781b" stroke-width=".8"/></svg>`,
+  quizCorrect: `<svg viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg"><rect width="30" height="30" rx="3" fill="#3a8a4f"/><circle cx="15" cy="15" r="10" fill="#4aaa60" stroke="#2a6a3f" stroke-width="1.5"/><polyline points="9,15 13,19 21,11" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>`,
+  quizWrong: `<svg viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg"><rect width="30" height="30" rx="3" fill="#8a3020"/><circle cx="15" cy="15" r="10" fill="#b04030" stroke="#6a2010" stroke-width="1.5"/><line x1="10" y1="10" x2="20" y2="20" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/><line x1="20" y1="10" x2="10" y2="20" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/></svg>`,
+  quiz: `<svg viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg"><rect width="30" height="30" rx="3" fill="#2d5a8a"/><circle cx="15" cy="15" r="10" fill="#3a72b0" stroke="#1a4a7a" stroke-width="1.5"/><text x="15" y="20" font-family="sans-serif" font-size="14" font-weight="bold" fill="#fff" text-anchor="middle">?</text></svg>`,
 };
 
 /* Badge berwarna per pembicara untuk header dialog */
@@ -38,8 +41,11 @@ const BADGE_MAP = {
   'Sumur Desa':        { c:'#3a7090', i:'S',  p: P.sumur     },
   'Warga Desa':        { c:'#4a6a5a', i:'W',  p: P.warga     },
   'Wanderer':          { c:'#241d2e', i:'?',  p: P.wanderer  },
-  'Peringatan Penting':{ c:'#c0432f', i:'!',  p: P.warning   },
-  'Tamat!':            { c:'#7fc96b', i:'★',  p: P.tamat     },
+  'Peringatan Penting':{ c:'#c0432f', i:'!',  p: P.warning      },
+  'Tamat!':            { c:'#7fc96b', i:'★',  p: P.tamat        },
+  'Kuis Koperasi':     { c:'#2d5a8a', i:'?',  p: P.quiz         },
+  'Benar!':            { c:'#3a8a4f', i:'✓',  p: P.quizCorrect  },
+  'Kurang Tepat':      { c:'#8a3020', i:'✗',  p: P.quizWrong    },
 };
 
 /* ---------------- Dialog (dengan efek ketik) ---------------- */
