@@ -3,6 +3,14 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.64.0], Corner foliage overlay — natural viewport frame
+
+### Ditambahkan
+- **Dedaunan sudut kanvas**: 4 kluster daun organik di sudut-sudut kanvas 800×560 — depth 101 (di atas semua lapisan termasuk vignette) sehingga membingkai dunia game layaknya melihat ke dalam desa melalui sela pepohonan
+- Sudut atas-kiri & atas-kanan: 8 elips dedaunan per sudut dengan variasi C.leaf/C.leafDark/C.leafHi, vein highlight tipis, dan 3 bunga mini (merah muda / hijau muda) per sudut
+- Sudut bawah-kiri & bawah-kanan: kluster rumput/alang-alang yang lebih tipis untuk tidak menghalangi gameplay di bagian bawah
+- PRNG seeded per sudut untuk variasi alpha alami
+
 ## [0.63.0], Village entrance gate (gerbang desa) at north path
 
 ### Ditambahkan
