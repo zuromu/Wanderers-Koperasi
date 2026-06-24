@@ -3,6 +3,17 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.50.0], Cliff edges + title screen polish — map borders, reed beds, varied particles
+
+### Ditambahkan
+- **Tebing batu utara**: baris batu berlapis di tepi atas baris 1 (berbatasan dengan air) — shadow gelap, strata batu, lumut hijau, dan batu menonjol sesekali; dunia tidak lagi berakhir dengan tepi air yang terpotong tiba-tiba.
+- **Alang-alang selatan**: deretan alang-alang cokelat dengan kepala biji cattail di batas bawah baris 12 (berbatasan dengan air baris 13) — menciptakan nuansa tepi sungai/danau yang natural.
+- **Tebing sisi barat & timur**: garis batu tipis di batas kiri dan kanan peta untuk konsistensi visual keempat sisi.
+- **Batu tepi pantai wave-49**: hasil `drawShoreline()` dari wave sebelumnya kini bekerja bersama tebing untuk menciptakan ekosistem tepi air yang kohesif.
+
+### Diubah
+- **Partikel judul lebih hidup**: 36 partikel (vs 28) dengan tiga varian — gold sparks, drifting sideways (melayang sisi), dan twinkle bintang putih-krem — layar judul terasa lebih bernyawa tanpa distraksi berlebihan.
+
 ## [0.49.0], NPC identity + world micro-detail — named villagers, shoreline, building props
 
 ### Ditambahkan
