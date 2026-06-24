@@ -731,31 +731,48 @@ export class Village extends Phaser.Scene {
   }
 
   _drawMarket(g, cx, cy){
-    // Badan warung
-    g.fillStyle(C.wood).fillRoundedRect(cx-13, cy-2, 26, 14, 2);
-    g.lineStyle(2, C.ink, 1).strokeRoundedRect(cx-13, cy-2, 26, 14, 2);
-    g.fillStyle(0xd4a870, 0.4).fillRect(cx-12, cy-1, 24, 3);
-    // Meja counter
-    g.fillStyle(C.woodDark).fillRect(cx-13, cy-2, 26, 4);
-    g.lineStyle(1, C.ink, 1).strokeRect(cx-13, cy-2, 26, 4);
-    // Kanopi
-    g.fillStyle(C.roofTeal).fillTriangle(cx-15, cy-2, cx+15, cy-2, cx, cy-15);
-    // Garis kanopi horizontal
-    g.lineStyle(0.8, 0x2d7a7a, 0.28);
-    for (let ri=2; ri<12; ri+=3){ const ry=cy-15+ri; const hw=ri*15/13; g.lineBetween(cx-hw,ry,cx+hw,ry); }
-    g.lineStyle(2, C.ink, 1);
-    g.strokePoints([{x:cx-15,y:cy-2},{x:cx+15,y:cy-2},{x:cx,y:cy-15}], true);
-    g.fillStyle(0x6cc4c4, 0.35).fillTriangle(cx-13, cy-2, cx+13, cy-2, cx, cy-13);
-    // Rumbai scallop di bawah kanopi
-    [-12,-8,-4,0,4,8,12].forEach((ox,i) => {
-      g.fillStyle(i%2===0 ? C.roofTeal : 0x2d7a7a, 0.92).fillCircle(cx+ox, cy-1, 3.2);
-      g.lineStyle(0.5, C.ink, 0.4).strokeCircle(cx+ox, cy-1, 3.2);
+    // Badan warung dengan tampilan depan lebih lebar
+    g.fillStyle(C.wood).fillRoundedRect(cx-14, cy-2, 28, 14, 2);
+    g.lineStyle(2, C.ink, 1).strokeRoundedRect(cx-14, cy-2, 28, 14, 2);
+    g.fillStyle(0xd4a870, 0.4).fillRect(cx-13, cy-1, 26, 3);
+    // Meja counter tebal
+    g.fillStyle(C.woodDark).fillRect(cx-14, cy-2, 28, 5);
+    g.lineStyle(1.5, C.ink, 1).strokeRect(cx-14, cy-2, 28, 5);
+    // Kanopi teal + garis sirap
+    g.fillStyle(C.roofTeal).fillTriangle(cx-16, cy-2, cx+16, cy-2, cx, cy-18);
+    g.lineStyle(0.7, 0x2d7a7a, 0.28);
+    for (let ri=2; ri<15; ri+=3){ const ry=cy-18+ri; const hw=ri*16/16; g.lineBetween(cx-hw,ry,cx+hw,ry); }
+    g.lineStyle(2, C.ink, 1).strokePoints([{x:cx-16,y:cy-2},{x:cx+16,y:cy-2},{x:cx,y:cy-18}], true);
+    g.fillStyle(0x6cc4c4, 0.3).fillTriangle(cx-14, cy-2, cx+14, cy-2, cx, cy-16);
+    // Rumbai scallop alternating teal/dark
+    [-14,-10,-6,-2,2,6,10,14].forEach((ox,i) => {
+      g.fillStyle(i%2===0 ? C.roofTeal : 0x2d7a7a, 0.92).fillCircle(cx+ox, cy-1.5, 3.5);
+      g.lineStyle(0.5, C.ink, 0.4).strokeCircle(cx+ox, cy-1.5, 3.5);
     });
-    // Barang dagangan di counter
-    [C.coral, C.success, C.gold].forEach((gc, i) => {
-      g.fillStyle(gc).fillCircle(cx-7+i*7, cy, 3);
-      g.lineStyle(1, C.ink, 1).strokeCircle(cx-7+i*7, cy, 3);
+    // Papan nama "PASAR" di atas atap (kecil)
+    g.fillStyle(0xc07010, 0.7).fillRect(cx-9, cy-26, 18, 7);
+    g.lineStyle(1, C.ink, 0.65).strokeRect(cx-9, cy-26, 18, 7);
+    g.fillStyle(0xf5e080, 0.5).fillRect(cx-8, cy-25.5, 16, 2);
+    // Barang dagangan baris bawah: sayuran (hijau), buah (oranye/merah), hasil bumi (coklat)
+    const goods = [
+      [cx-10, 0x3da040, cy+2],  // sayuran hijau
+      [cx-4,  0xe06020, cy+2],  // cabai merah
+      [cx+2,  0xf0c030, cy+2],  // pisang kuning
+      [cx+8,  0x6a3810, cy+2],  // hasil bumi coklat
+    ];
+    goods.forEach(([gx, gc, gy]) => {
+      g.fillStyle(gc, 0.9).fillCircle(gx, gy, 3.2);
+      g.lineStyle(0.8, C.ink, 0.8).strokeCircle(gx, gy, 3.2);
+      // highlight spot
+      g.fillStyle(0xffffff, 0.2).fillCircle(gx-1, gy-1, 1);
     });
+    // Hiasan: dua tali gantung dengan barang kering di sudut atas
+    g.lineStyle(0.8, C.woodDark, 0.6);
+    g.lineBetween(cx-12, cy-2, cx-9, cy-14);
+    g.lineBetween(cx+12, cy-2, cx+9, cy-14);
+    // Lingkaran kecil = bawang/lada di ujung tali
+    g.fillStyle(0xd8a060, 0.8).fillCircle(cx-9, cy-14, 2);
+    g.fillStyle(0xd8a060, 0.8).fillCircle(cx+9, cy-14, 2);
   }
 
   _drawHall(g, cx, cy){

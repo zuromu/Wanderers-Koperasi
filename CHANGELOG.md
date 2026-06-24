@@ -3,6 +3,23 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.54.0], Unique NPC portraits + market stall overhaul
+
+### Ditambahkan
+- **Potret NPC unik per karakter**: setiap dari 7 warga desa kini memiliki ikon potret SVG tersendiri di kotak dialog — tidak lagi menggunakan potret warga generik:
+  - **Pak Darmo** — rambut/topi putih di sisi kepala, corak petani tua
+  - **Bu Siti** — kerudung merah gelap menutup kepala, latar belakang merah maroon
+  - **Dodi** — kepala anak lebih kecil, mata lebih besar (proporsi anak kecil), rambut pendek gelap
+  - **Ratna** — rambut gelap, bunga merah-muda di samping kepala, latar hijau
+  - **Pak Hasan** — topi caping segitiga kuning emas, kulit lebih gelap, latar navy
+  - **Bu Lastri** — kacamata tipis, sanggul di sisi kepala, latar ungu
+  - **Rudi** — topi baseball biru navy dengan brim, latar oranye
+- **Pasar overhaul**: tampilan warung lebih kaya:
+  - Papan nama kecil di atas atap
+  - 4 dagangan berwarna nyata (sayuran hijau, cabai merah, pisang kuning, hasil bumi coklat) dengan highlight putih
+  - Tali gantung dengan barang kering di sudut atap
+  - Scallop rumbai 8 titik alternating (lebih rapat dan hidup)
+
 ## [0.53.0], NPC character dialogue + certificate visual overhaul
 
 ### Ditambahkan
