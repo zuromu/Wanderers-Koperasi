@@ -3,6 +3,13 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.55.0], Entrance glow pools + village hall flag + pollen density
+
+### Ditambahkan
+- **Kolam cahaya pintu masuk**: setiap bangunan utama kini memiliki cahaya hangat kekuningan yang tumpah di depan pintu (4 lapisan elips lembut, depth 1.9) — seperti cahaya interior yang bocor keluar
+- **Bendera balai desa**: tiang + bendera ungu yang berkibar di atas balai desa, mengikuti gaya bendera merah-putih di koperasi (tween scaleX yang bergantian)
+- **Lebih banyak partikel pollen**: dari 10 → 28 partikel, ukuran lebih bervariasi, alpha lebih jelas, gerakan angin ringan (wdx) masing-masing partikel sehingga ada yang melayang ke kanan, ada yang ke kiri
+
 ## [0.54.0], Unique NPC portraits + market stall overhaul
 
 ### Ditambahkan
