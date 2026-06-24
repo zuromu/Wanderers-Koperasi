@@ -3,6 +3,14 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.76.0], Living page ambience + dawn mist + dusk bats
+
+### Ditambahkan
+- **Ambient halaman dinamis**: background body HTML berubah sesuai siklus hari — biru gelap (malam), jingga hangat (fajar), biru sejuk (siang), merah-oranye (sunset), ungu tua (senja) — sehingga seluruh tab browser terasa "hidup"
+- **Cahaya bingkai kanvas**: box-shadow `#game` ikut bergeser — oranye membara saat sunset, keunguan saat malam, emas-putih saat fajar
+- **Kabut pagi di air**: 18 elips putih-biru tipis melayang di baris air atas/bawah saat fajar (dayP 0–0.28), memudar kurva lonceng saat pagi berlanjut
+- **Kawanan kelelawar senja**: 7 kelelawar kecil melintas langit dari kanan ke kiri saat dayP 0.64–0.92; sayap mengepak dengan variasi ritme tiap individu
+
 ## [0.75.0], Night-reactive lamp post ground glow
 
 ### Diperbarui
