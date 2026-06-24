@@ -1296,6 +1296,74 @@ export class Village extends Phaser.Scene {
     gsg.fillStyle(C.gold, 0.28).fillCircle(sx, sy-19, 2.5);
     gsg.lineStyle(0.5, C.goldDark, 0.30).strokeCircle(sx, sy-19, 2.5);
     gsg.fillStyle(C.gold, 0.18).fillRect(sx-10, sy-20, 6, 1).fillRect(sx+4, sy-20, 6, 1);
+
+    // === Tumpukan jerami (hay bales) di sebelah timur ladang ===
+    const hayX = ladang ? (ladang.x+1)*TILE + 8 : 4*TILE+12;
+    const hayY = ladang ? ladang.y*TILE + TILE*0.6 : 7*TILE+22;
+    const drawHayBale = (bx, by, w, h) => {
+      g.fillStyle(0xd4a030, 1).fillRoundedRect(bx, by, w, h, 2);
+      g.fillStyle(0xe8c060, 0.38).fillRoundedRect(bx+1, by+1, w-2, h*0.4, 1);
+      g.fillStyle(0xb08010, 0.22).fillRoundedRect(bx+1, by+h*0.6, w-2, h*0.35, 1);
+      g.lineStyle(1, C.ink, 0.8).strokeRoundedRect(bx, by, w, h, 2);
+      // Straw texture lines
+      g.lineStyle(0.6, 0xb08010, 0.22);
+      [0.25, 0.5, 0.75].forEach(t => g.lineBetween(bx+2, by+h*t, bx+w-2, by+h*t));
+      // Twine binding
+      g.lineStyle(1, 0x7a5010, 0.55).lineBetween(bx+w*0.35, by, bx+w*0.35, by+h);
+      g.lineStyle(1, 0x7a5010, 0.55).lineBetween(bx+w*0.65, by, bx+w*0.65, by+h);
+      // Shadow
+      g.fillStyle(C.shadow, 0.12).fillEllipse(bx+w*0.5, by+h+3, w*0.9, 4);
+    };
+    drawHayBale(hayX,     hayY, 18, 12);
+    drawHayBale(hayX+22,  hayY+4, 14, 10);
+    drawHayBale(hayX+8,   hayY-11, 15, 10);   // stacked on top-left
+
+    // Loose straw bits around bales
+    const rs2 = rng(5540);
+    for (let i=0; i<8; i++){
+      const lx = hayX + rs2()*36 - 4, ly = hayY + rs2()*16 - 2;
+      g.lineStyle(0.8, 0xc0900a, 0.38).lineBetween(lx, ly, lx+(rs2()-0.5)*8, ly+(rs2()-0.5)*4);
+    }
+
+    // === Perahu nelayan kayu di dermaga selatan ===
+    const BX = 5*TILE + TILE/2 + 22, BY = 13*TILE + 6;
+    const bg = this.add.graphics().setDepth(1.4);
+    // Hull outer (dark wood)
+    bg.fillStyle(C.woodDark, 1);
+    bg.fillPoints([
+      {x:BX-18,y:BY+2},{x:BX+18,y:BY+2},
+      {x:BX+14,y:BY+14},{x:BX-14,y:BY+14},
+    ], true, true);
+    bg.lineStyle(1.2, C.ink, 0.9);
+    bg.strokePoints([
+      {x:BX-18,y:BY+2},{x:BX+18,y:BY+2},
+      {x:BX+14,y:BY+14},{x:BX-14,y:BY+14},
+    ], true);
+    // Interior wood planks
+    bg.fillStyle(C.wood, 0.75).fillRect(BX-13, BY+4, 26, 8);
+    bg.fillStyle(C.woodDark, 0.18).fillRect(BX-12, BY+8, 24, 2);
+    bg.lineStyle(0.5, C.woodDark, 0.25);
+    [-5, 0, 5].forEach(ox => bg.lineBetween(BX+ox, BY+4, BX+ox, BY+12));
+    // Hull highlight (water line glint)
+    bg.fillStyle(C.waterHi, 0.28).fillRect(BX-17, BY+2, 34, 2);
+    // Small mast
+    bg.fillStyle(C.woodDark).fillRect(BX+2, BY-10, 2, 14);
+    bg.lineStyle(0.5, C.ink, 0.5).strokeRect(BX+2, BY-10, 2, 14);
+    // Rope tied to dock
+    bg.lineStyle(1, C.woodDark, 0.45);
+    bg.lineBetween(BX-16, BY+4, BX-22, BY+4);
+    bg.lineBetween(BX-22, BY+4, BX-22, BY+10);
+    // Water shadow under boat
+    bg.fillStyle(C.shadow, 0.12).fillEllipse(BX, BY+14, 36, 8);
+
+    // Jaring ikan tergantung di dermaga
+    const NX = 5*TILE + TILE/2 - 14, NY = 13*TILE - 4;
+    const ng = this.add.graphics().setDepth(2.05);
+    ng.lineStyle(0.6, C.woodDark, 0.45);
+    for (let row=0; row<3; row++) ng.lineBetween(NX-6, NY+row*4, NX+6, NY+row*4);
+    for (let col=0; col<4; col++) ng.lineBetween(NX-6+col*4, NY, NX-6+col*4, NY+8);
+    ng.fillStyle(C.woodDark, 0.55).fillRect(NX-7, NY-1, 14, 1.5);
+    ng.lineStyle(0.4, C.ink, 0.3).strokeRect(NX-7, NY-1, 14, 1.5);
   }
 
   _drawBarrel(g, cx, cy){
