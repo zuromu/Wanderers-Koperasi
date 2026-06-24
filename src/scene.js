@@ -32,6 +32,13 @@ const NPC_TIPS = [
   'Di RAT, setiap anggota punya SATU suara, tidak peduli besar kecil simpanannya. Inilah demokrasi ekonomi!',
   'SHU bukan bunga bank — ini bagi hasil keuntungan koperasi. Makin aktif kamu bertransaksi, makin besar SHU-mu.',
   'Gotong royong adalah jiwa koperasi: dari anggota, oleh anggota, dan untuk kesejahteraan anggota bersama.',
+  'Koperasi berbeda dari perusahaan biasa: tujuannya bukan memaksimalkan keuntungan pemilik, tapi mensejahterakan anggota.',
+  'Simpanan di koperasi bukan hilang — itu aset milikmu yang bisa diambil kembali saat keluar dari keanggotaan.',
+  'Bunga pinjaman rentenir bisa mencapai 10-30% per bulan! Koperasi tidak boleh memberatkan anggotanya seperti itu.',
+  'Koperasi Unit Desa (KUD) pernah menjadi tulang punggung pertanian Indonesia — menyalurkan pupuk, bibit, dan kredit tani.',
+  'Lambang koperasi Indonesia adalah pohon beringin, timbangan, bintang, roda gigi, padi-kapas, dan perisai — masing-masing punya makna mendalam.',
+  'Koperasi siswa di sekolah mengajarkan kewirausahaan sejak dini: belajar menabung, meminjam, dan berbagi hasil.',
+  'Menurut UU No.25/1992, koperasi adalah badan usaha yang beranggotakan orang-seorang atau badan hukum koperasi dengan melandaskan kegiatannya pada prinsip koperasi.',
 ];
 
 export class Village extends Phaser.Scene {

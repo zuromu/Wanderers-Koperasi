@@ -3,6 +3,12 @@
 Semua perubahan penting pada proyek ini dicatat di sini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
+## [0.42.0], Quiz portraits + NPC tip variety
+
+### Ditambahkan
+- **Portrait kuis**: `Kuis Koperasi` (biru tanda tanya), `Benar!` (hijau centang lingkaran), `Kurang Tepat` (merah silang lingkaran) kini punya portrait 30×30 masing-masing — tidak ada lagi speaker tanpa wajah di seluruh alur game.
+- **14 tips NPC** (dari 7): warga desa kini berbagi fakta koperasi yang lebih beragam — perbedaan simpanan vs aset, bahaya rentenir, KUD, lambang koperasi, koperasi siswa, dan referensi UU No.25/1992.
+
 ## [0.41.0], Dialogue portraits — pixel-art speaker faces per NPC/location
 
 ### Ditambahkan
